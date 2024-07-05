@@ -18,4 +18,5 @@ public class Member {
 	private String memEmail;
 	private String memEnroll;
 	private String memCategory;
+	private String memId2;
 }
