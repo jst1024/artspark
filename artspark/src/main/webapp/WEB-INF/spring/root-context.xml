@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- 
+		* root-context.xml
+		서버 구동과 동시에 web.xml 파일을 거쳐서 바로 로딩되는 문서 == preloading
+		=> 서버 구동과 동시에 바로 세팅(Bean 등록)해야 하는 내용들을 작성
+		주로 DB접속정보, 트랜잭션 처리, 외부모듈연결 등등..
+	-->
+	
+	<!-- 
+		bean : spring container가 관리하는 객체
+		
+		- property
+		name : 클래스 이름
+		value : 인자값
+	--> 
+	<bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="url" value="jdbc:oracle:thin:@13.125.190.53:1521:xe" />
+		<property name="username" value="c##artspark" />
+		<property name="password" value="1234" />
+ 	</bean>
+		
+	<!-- 
+		객체가 필요할 때 내부적으로 실행되는 코드
+		
+		BasicDataSource dataSource = new BasicDatatSource();
+		dataSource.setDriverName("oracle.jdbc.driver.OracleDriver");
+		dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:xe");
+		dataSource.setUsername("c##bclass");
+		dataSource.setPassword("1234");
+	 -->
+	 
+	 <!-- 
+	 	SqlSessionFactoryBean에 필요한 필드
+	 	configuration : 설정정보
+	 	dataSource :
+	  -->
+	 <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+	 	<property name="configLocation" value="classpath:mybatis-config.xml" />
+	 	<property name="dataSource" ref="dataSource" />
+	 </bean>
+	 
+	 <!-- 
+	 	SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
+	 	sqlSessionFactory.setConfigLocation("classpath:mybatis-config.xml");
+	 	sqlSessionFactory.setDataSource(dataSource);
+	  -->
+	  
+	  <bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession">
+	  	<constructor-arg ref="sqlSessionFactory" />
+	  </bean>
+	  
+	  <!-- 
+	  	SqlSessionTemplate sqlSession = new SqlSessionTemplate(); -> 에러 발생
+	  	-> SqlSessionTemplate은 기본 생성자가 없어서 sqlSessionFactory를 생성자매개변수에 넣어줘야함	
+	  -->
+	  
+	  
+	  <!-- 파일 업로드 관련 빈 등록 -->
+	  <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+	  		id="multipartResolver">
+	  	<property name="maxUploadSize" value="100000000"></property>
+	  	<property name="maxInMemorySize" value="100000000"></property>
+	  </bean>
+	  
+	  <!-- 
+	  		Mapper 애노테이션을 사용하기위한 준비과정
+	  		나중에 repository를 인터페이스로 쓰려면 여기다 넣으면됨!!! 
+	  -->
+	  <!--  	
+	  	<mybatis-spring:scan base-package="com.kh.artspark.notices.model.dao"/>
+	  -->
+	  
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
