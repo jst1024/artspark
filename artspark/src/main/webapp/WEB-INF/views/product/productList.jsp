@@ -49,7 +49,7 @@
 		
 		.card:hover {
 		    transform: scale(1.05); /* 카드 확대 및 약간 회전 */
-		    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* 그림자 효과 */
+		    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* 그림자 효과임 */
 		}
 		
 		.card-img-top {
