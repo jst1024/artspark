@@ -37,39 +37,41 @@
         <div class="row justify-content-center">
             <div class="col-md-10 col-lg-8">
                 <div class="form-container">
+                    <!--  
                     <div class="btn-group-full mb-4">
                         <button class="btn btn-outline-primary">일반회원 가입하기</button>
                         <button class="btn btn-outline-primary">판매자 가입하기</button>
                     </div>
+                     -->
                     <p class="text-center mb-4">만 14세 이상만 가능하고 서비스를 이용하실 수 있습니다.</p>
-                    <h4 class="text-center mb-4">일반회원 / 판매자 가입하기</h4>
-                    <form>
+                    <h4 class="text-center mb-4">회원가입</h4>
+                    <form action="join" method="post">
                         <div class="mb-3">
-                            <label for="userId" class="form-label">아이디</label>
+                            <label for="memId" class="form-label">아이디</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="userId" placeholder="내용을 입력해주세요">
+                                <input type="text" class="form-control" id="memId" name="memId" placeholder="이름을 입력해주세요" required>
                                 <button class="btn btn-dark" type="button">중복 확인</button>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="userPassword" class="form-label">비밀번호</label>
-                            <input type="password" class="form-control" id="userPassword" placeholder="내용을 입력해주세요">
+                            <label for="memPwd" class="form-label">비밀번호</label>
+                            <input type="password" class="form-control" id="memPwd" name="memPwd" placeholder="비밀번호를 입력해주세요" required>
                         </div>
                         <div class="mb-3">
-                            <label for="userPasswordConfirm" class="form-label">비밀번호 확인</label>
-                            <input type="password" class="form-control" id="userPasswordConfirm" placeholder="내용을 입력해주세요">
+                            <label for="userPwdConfirm" class="form-label">비밀번호 확인</label>
+                            <input type="password" class="form-control" id="memPwd" placeholder="비밀번호를 입력해주세요" required>
                         </div>
                         <div class="mb-3">
                             <label for="userName" class="form-label">이름</label>
-                            <input type="text" class="form-control" id="userName" placeholder="이름을 입력해주세요">
+                            <input type="text" class="form-control" id="memName" name="memName" placeholder="이름을 입력해주세요" required>
                         </div>
                         <div class="mb-3">
                             <label for="userNickname" class="form-label">닉네임</label>
-                            <input type="text" class="form-control" id="userNickname" placeholder="닉네임을 입력해주세요">
+                            <input type="text" class="form-control" id="memNickname" name="memNickname" placeholder="닉네임을 입력해주세요" required>
                         </div>
                         <div class="mb-3">
                             <label for="userEmail" class="form-label">이메일</label>
-                            <input type="email" class="form-control" id="userEmail" placeholder="내용을 입력해주세요">
+                            <input type="email" class="form-control" id="memEmail" name="memEmail" placeholder="이메일을 입력해주세요">
                         </div>
                         <div class="mb-4">
                             <label class="form-label d-block">성별</label>

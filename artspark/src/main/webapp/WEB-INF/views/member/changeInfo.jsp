@@ -31,23 +31,23 @@
             <form>
                 <div class="mb-3">
                     <label for="userId" class="form-label">아이디</label>
-                    <input type="text" class="form-control" id="userId" readonly>
+                    <input type="text" class="form-control" id="memId" name="memId" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="userName" class="form-label">이름</label>
-                    <input type="text" class="form-control" id="userName" placeholder="이름을 입력해주세요">
+                    <input type="text" class="form-control" id="memName" name="memName">
                 </div>
                 <div class="mb-3">
                     <label for="userEmail" class="form-label">닉네임</label>
-                    <input type="email" class="form-control" id="userNickName" placeholder="닉네임을 입력해주세요">
+                    <input type="email" class="form-control" id="memNickName" name="memNickname" >
                 </div>
                 <div class="mb-3">
                     <label for="userEmail" class="form-label">이메일</label>
-                    <input type="email" class="form-control" id="userEmail" placeholder="이메일을 입력해주세요">
+                    <input type="email" class="form-control" id="memEmail" name="memEmail">
                 </div>
                 <div class="mb-3">
                     <label for="userPassword" class="form-label">비밀번호</label>
-                    <input type="password" class="form-control" id="userPassword" placeholder="비밀번호를 입력해주세요">
+                    <input type="password" class="form-control" id="memPwd" name="memPwd">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">성별</label>
@@ -64,8 +64,8 @@
                 </div>
                 <div class="button-group">
                     <div class="left-buttons">
-                        <button type="button" class="btn btn-secondary">회원탈퇴</button>
-                        <button type="button" class="btn btn-info">판매자로 변경</button>
+                        <button type="submit" class="btn btn-secondary">회원탈퇴</button>
+                        <button type="submit" class="btn btn-info">판매자로 변경</button>
                     </div>
                     <button type="submit" class="btn btn-primary">저장</button>
                 </div>

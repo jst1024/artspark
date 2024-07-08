@@ -18,19 +18,19 @@
             <form>
               <div class="mb-3">
                 <label for="userid" class="form-label">아이디</label>
-                <input type="text" class="form-control" id="userid">
+                <input type="text" class="form-control" id="memId">
               </div>
               <div class="mb-3">
                 <label for="username" class="form-label">이름</label>
-                <input type="text" class="form-control" id="username" placeholder="내용을 입력해주세요">
+                <input type="text" class="form-control" id="memName">
               </div>
               <div class="mb-3">
                 <label for="email" class="form-label">이메일</label>
-                <input type="email" class="form-control" id="email" placeholder="내용을 입력해주세요">
+                <input type="email" class="form-control" id="memEmail">
               </div>
               <div class="mb-3">
                 <label for="password" class="form-label">비밀번호</label>
-                <input type="password" class="form-control" id="password" placeholder="내용을 입력해주세요">
+                <input type="password" class="form-control" id="memPwd">
               </div>
               <div class="mb-3">
                 <label class="form-label">성별</label>
@@ -59,7 +59,7 @@
                 </div>
                 <div class="mb-3">
                   <label for="nickname" class="form-label">닉네임</label>
-                  <input type="text" class="form-control" id="nickname" placeholder="내용을 입력해주세요">
+                  <input type="text" class="form-control" id="memNickname">
                 </div>
                 <div class="mb-3">
                   <label for="introduction" class="form-label">소개글</label>

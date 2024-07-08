@@ -37,8 +37,8 @@
                     </div>
                     
                     <div class="btn-group w-100">
-                        <button class="btn btn-secondary" type="button">로그인하기</button>
-                        <button class="btn btn-primary" type="button">비밀번호찾기</button>
+                        <a class="btn btn-secondary">로그인하기</a>
+                        <a class="btn btn-primary"">비밀번호찾기</a>
                     </div>
                 </div>
                 <div class="modal-footer">
