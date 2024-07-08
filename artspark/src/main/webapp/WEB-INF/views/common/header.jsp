@@ -14,6 +14,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+     <!-- alertify JS -->
+	<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/semantic.min.css"/>
     <style>
         .header {
             position: -webkit-sticky; /* Safari */
@@ -32,16 +38,18 @@
     <div class="container-fluid header">
         <div class="row align-items-center">
             <div class="col">
-                <img src="path/to/logo.png" alt="Logo" width="100">
+                <a href="${path2 }/index.jsp">
+                	<img src="${path2 }/resources/images/logo.png" alt="Logo" width="100">
+                </a>
             </div>
             <div class="col">
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <div class="collapse navbar-collapse">
                         <ul class="navbar-nav mr-auto">
-                            <li class="nav-item"><a class="nav-link" href="productList">일러스트</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">디자인</a></li>
-                            <li class="nav-item"><a class="nav-link" href="memberList">영상·음향</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">웹툰·만화</a></li>
+                            <li class="nav-item"><a class="nav-link" href="${path2 }/product">일러스트</a></li>
+                            <li class="nav-item"><a class="nav-link" href="${path2 }/product">디자인</a></li>
+                            <li class="nav-item"><a class="nav-link" href="${path2 }/product">영상·음향</a></li>
+                            <li class="nav-item"><a class="nav-link" href="${path2 }/product">웹툰·만화</a></li>
                             <li class="nav-item"><a class="nav-link" href="#">의뢰게시판</a></li>
                         </ul>
                         <form class="form-inline my-2 my-lg-0">
