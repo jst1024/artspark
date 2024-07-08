@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path1" value="${pageContext.servletContext.contextPath }" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -131,34 +132,57 @@
 		#total-price {
 			text-weight:bold;
 		}
+		.heart-icon {
+		    cursor: pointer;
+		    color: red;
+		    font-size: 1.5rem;
+		}
     </style>
 </head>
 <body>
 	<jsp:include page="../common/header.jsp" />
     <div class="container container-custom mt-5">
-    	<span>[용도] 제작 </span>&nbsp;&nbsp;&nbsp;
-    	<small style="color: #999;">[카테고리] / 작품번호 : [작품번호]</small><br>
-        <h2 style="margin-top:10px;">[작가명] 작가 · [작품 제목]</h2><br>
+    	<span>${ product.productPurpose } 제작 </span>&nbsp;&nbsp;&nbsp;
+    	<small style="color: #999;">${ product.productCategory } / 작품번호 : ${ product.productNo }</small><br>
+        <h2 style="margin-top:10px;">${ product.memId } 작가 · ${ product.productTitle }</h2><br>
         
 	    <div class="row" style="margin-bottom:150px;">
 	        <!-- 이미지 섹션 -->
 	        <div class="col-md-8">
-	            <img src="resources/images/cat1.jpg" class="img-preview">
-	            <img src="resources/images/cat2.jpg" class="img-preview">
-	            <img src="resources/images/cat3.jpg" class="img-preview">
+	            <img src="${path1 }/resources/images/cat1.jpg" class="img-preview">
+	            <img src="${path1 }/resources/images/cat2.jpg" class="img-preview">
+	            <img src="${path1 }/resources/images/cat3.jpg" class="img-preview">
 	        </div>
 	
 	        <!-- 설명 및 옵션 섹션 -->
 	        <div class="col-md-4">
 	            <div class="product-options">
 	                <div class="product-details">
-	                	<div style="margin-bottom: 15px">
-	                		<p style="font-size:24px; text-align:right; color:red;"><i class="far fa-heart"></i></p>
+	                	<div style="margin-bottom: 15px; text-align: right;">
+	                		<c:if test="${ sessionScope.loginUser eq null }">
+                        		<span class="heart-icon" onclick="loginAlert();">
+				                    <i class="far fa-heart"></i>
+				                </span>
+                        	</c:if>
+	                		<c:if test="${ sessionScope.loginUser != null }">
+                        		<c:if test="${ product.isLiked eq 1 }">
+		                        	<span class="heart-icon" onclick="clickHeart(this)">
+		                        		<input type="hidden" name="productNo" value="${ product.productNo }">
+					                    <i class="fas fa-heart"></i>
+					                </span>
+				                </c:if>
+				                <c:if test="${ product.isLiked eq 0 }">
+		                        	<span class="heart-icon" onclick="clickHeart(this)">
+		                        		<input type="hidden" name="productNo" value="${ product.productNo }">
+					                    <i class="far fa-heart"></i>
+					                </span>
+				                </c:if>
+			                </c:if>
 	                	</div>
-	                	<p><img id="profileImg" src="resources/images/profile.png" alt=""></p><br>
-	                    <p>[작가명] 작가</p>
-	                    <p><small>[작가 소개]</small><p><br><br>
-	                    <div class="star-rating"><p>★★★★★ <span style="color:black;"> 별점 5.0</span></p></div>
+	                	<p><img id="profileImg" src="${path1 }/resources/images/profile.png" alt=""></p><br>
+	                    <p>${ product.memId } 작가</p>
+	                    <p><small>${ product.artistIntro }</small><p><br><br>
+	                    <div class="star-rating"><p>★★★★★ <span style="color:black;"> 별점 ${ product.avgStar }</span></p></div>
 	                    <p>문의 답변율 n%</p><br><br>
 	                    <p><small style="color:red;"><i class="fas fa-exclamation-circle"></i> 채팅</small></p>
 	                    <p><small>채팅은 결제 후에 이용하실 수 있습니다.<br>결제 전에는 작가 문의 및 답변을 이용해주세요.</small></p>
@@ -174,23 +198,23 @@
 	                <div class="product-details" >
 	                    <p class="d-flex justify-content-between" style="margin-top: 20px;">
 					        <span>제출 파일 유형</span>
-					        <span>png</span>
+					        <span>${ product.detailType }</span>
 					    </p>
 					    <p class="d-flex justify-content-between">
 					        <span>해상도</span>
-					        <span>300dpi</span>
+					        <span>${ product.detailPixel }</span>
 					    </p>
 					    <p class="d-flex justify-content-between">
 					        <span>기본 사이즈</span>
-					        <span>2000이상</span>
+					        <span>${ product.detailSize }</span>
 					    </p>
 					    <p class="d-flex justify-content-between">
 					        <span>수정 횟수</span>
-					        <span>2회</span>
+					        <span>${ product.updateCount }회</span>
 					    </p>
 					    <p class="d-flex justify-content-between" style="margin-bottom: 20px;">
 					        <span>작업 기간</span>
-					        <span>결제일로부터 7일</span>
+					        <span>${ product.detailWorkdate }</span>
 					    </p>
 	                </div>
 	            </div>
@@ -202,33 +226,17 @@
 	            
 	            <div class="product-options">
 	                <div class="product-details product-bottom-line">
-	                    <p class="d-flex justify-content-between" style="margin-top: 20px;">
-					        <span class="option-name">[옵션명1]</span>
-					        <select class="price-option-select" id="price-option-select1">
-					        	<option value="" selected disabled>선택하세요.</option>
-					        	<option value="1000">[옵션 상세 목록1]</option>
-					        	<option value="2000">[옵션 상세 목록2]</option>
-					        	<option value="3000">[옵션 상세 목록3]</option>
-					        </select>
-					    </p>
-					    <p class="d-flex justify-content-between" style="margin-top: 20px;">
-					        <span class="option-name">[옵션명2]</span>
-					        <select class="price-option-select" id="price-option-select2">
-					        	<option value="" selected disabled>선택하세요.</option>
-					        	<option value="4000">[옵션 상세 목록1]</option>
-					        	<option value="5000">[옵션 상세 목록2]</option>
-					        	<option value="6000">[옵션 상세 목록3]</option>
-					        </select>
-					    </p>
-					    <p class="d-flex justify-content-between" style="margin-top: 20px; margin-bottom: 40px;">
-					        <span class="option-name">[옵션명3]</span>
-					        <select class="price-option-select" id="price-option-select3">
-					        	<option value="" selected disabled>선택하세요.</option>
-					        	<option value="7000">[옵션 상세 목록1]</option>
-					        	<option value="8000">[옵션 상세 목록2]</option>
-					        	<option value="9000">[옵션 상세 목록3]</option>
-					        </select>
-					    </p>
+	                	<c:forEach items="${ product.payOptionList }" var="payOption">
+		                    <p class="d-flex justify-content-between" style="margin-top: 20px;">
+						        <span class="option-name">${ payOption.optionName }</span>
+						        <select class="price-option-select" id="price-option-select1">
+						        	<option value="" selected disabled>선택하세요.</option>
+						        	<c:forEach items="${ payOption.detailOptionList }" var="detailOption">
+							        	<option value="${ detailOption.detailOptionPrice }">${ detailOption.detailOptionName } ( ${ detailOption.detailOptionPrice }원 )</option>
+						        	</c:forEach>
+						        </select>
+						    </p>
+					    </c:forEach>
 	                </div>
 	                
 	                <!-- 
@@ -389,11 +397,48 @@
 	                			const optionKey = $('#selectedOption' + optionId).val() + ' / '
 	                							+ $('#selectedDetailOption' + optionId).val();
 	                			selectedOptions.delete(optionKey);
-	                			console.log(optionKey);
+	                			// console.log(optionKey);
 	                			// 현재 div요소 삭제
 	                			$('#plus-option' + optionId).remove();
 	                		});
 	                	});
+	                	
+	                	// 빈 하트 클릭 시 : 빨간 하트로 토글 및 로그인유저의 찜 목록에 상품 추가
+	        			// 빨간 하트 클릭 시 : 빈 하트로 토글 및 로그인유저의 찜 목록에서 상품 삭제
+	                	function clickHeart(event) {
+	                		
+	                		const productNo = $(event).children().eq(0).val();
+	                		const icon = $(event).children().eq(1).attr('class');
+	                		
+	                		if (icon === 'far fa-heart') { // 찜이 안되어있는 경우
+	        			        $(event).children().eq(1).attr('class', 'fas fa-heart')
+	        			        
+	        			        // 찜테이블에 등록
+	        			        $.ajax({
+	        	        			url : 'jjim/' + productNo,
+	        	        			type : 'post',
+	        	        			success : result => {
+	        	        				alertify.alert(result.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+	        	        			}
+	        	        		});
+	        			    } else { // 찜이 되어있는 경우
+	        			    	$(event).children().eq(1).attr('class', 'far fa-heart')
+	        			    	
+	        			        // 찜테이블에서 삭제
+	        			        $.ajax({
+	        	        			url : 'jjim/' + productNo,
+	        	        			type : 'delete',
+	        	        			success : result => {
+	        	        				alertify.alert(result.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+	        	        			}
+	        	        		});
+	        			    }
+	                	}
+	                	
+	                	// 로그인 안하고 하트 누를 시 경고메세지 alert
+	                	function loginAlert() {
+	                		alertify.alert('로그인이 필요합니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+	                	}
 	                </script>
 	                
 	                <div class="product-details">
@@ -418,8 +463,8 @@
 	        </div>
 	        
 			<div class="col-md-12">
-	            <img src="resources/images/test04.png" class="img-preview">
-	            <img src="resources/images/test05.png" class="img-preview">
+	            <img src="${path1 }/resources/images/test04.png" class="img-preview">
+	            <img src="${path1 }/resources/images/test05.png" class="img-preview">
 	        </div>
 	        
 	        <div class="col-md-12">

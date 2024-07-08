@@ -13,4 +13,12 @@ public class MemberRepository {
 	public List<Member> memberList(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectList("memberMapper.memberList");
 	}
+
+	public Member login(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.selectOne("memberMapper.login",member);
+	}
+
+	public int delete(SqlSessionTemplate sqlSession, Member memId) {
+		return sqlSession.update("memberMapper.delete",memId);
+	}
 }
