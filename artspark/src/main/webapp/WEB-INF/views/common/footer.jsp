@@ -41,7 +41,8 @@
             <a href="#">이용약관</a> | 
             <a href="#">개인정보취급방침</a> | 
             <a href="#">공지사항</a> | 
-            <a href="#">문의사항</a>
+            <a href="#">문의사항</a> |
+            <a href="../webapp/WEB-INF/views/artist/artistPage.jsp">판매자페이지</a>
         </div>
 
         <div id="footer-2">
@@ -50,7 +51,7 @@
                회사명 : artspark  사업자등록번호 : xxx-xx-xxxxx<br>
                artspark는 통신판매 플랫폼 제공자이며, 통신판매의 당사자가 아닙니다. 상품, 상품정보, 거래에 관한 의무와 책임은 판매회원에게 있습니다.<br>
             </p> 
-            <p id="p2">Copyright © 1998-2024 승철 Educational Institute All Right Reserved</p>
+            <p id="p2">Copyright © 2024   All Right Reserved</p>
         </div>
     </div>
 </body>

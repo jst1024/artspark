@@ -26,18 +26,30 @@
             background-color: #ddd;
         }
 
+        .profile-img-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
         .profile-img {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            margin-bottom: 10px;
+        }
+
+        .profile-details {
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <div class="text-center">
-            <img src="path/to/profile.png" alt="Profile Image" class="profile-img">
+        <div class="profile-img-container">
+            <a href="프로필설정페이지">
+                <img src="/profile.png" alt="Profile Image" class="profile-img">
+            </a>
+        </div>
+        <div class="profile-details">
             <div>닉네임</div>
             <div>프로필</div>
         </div>
