@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <jsp:include page="common/menubar.jsp"/>
+    <jsp:include page="../common/header.jsp"/>
     <!-- 모달 트리거 버튼 -->
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <jsp:include page="common/footer.jsp"/>
+    <jsp:include page="../common/footer.jsp"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

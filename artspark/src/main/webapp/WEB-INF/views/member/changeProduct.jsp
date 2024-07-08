@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-  <jsp:include page="common/menubar.jsp"/>
+  <jsp:include page="../common/header.jsp"/>
     <div class="container mt-5 pt-5 mb-5">
         <div class="row">
           <div class="col-md-6">
@@ -80,6 +80,6 @@
           </div>
         </div>
       </div>  
-      <jsp:include page="common/footer.jsp"/>
+      <jsp:include page="../common/footer.jsp"/>
 </body>
 </html>

@@ -32,7 +32,7 @@
     </style>
 </head>
 <body>
-    <jsp:include page="common/menubar.jsp"/>
+    <jsp:include page="../common/header.jsp"/>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-10 col-lg-8">
@@ -96,7 +96,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="common/footer.jsp"/>
+    <jsp:include page="../common/footer.jsp"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

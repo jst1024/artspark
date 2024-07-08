@@ -9,7 +9,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <jsp:include page="common/menubar.jsp"/>
+    <jsp:include page="../common/header.jsp"/>
     
     <!-- 모달 트리거 버튼 -->
     <div class="container mt-5">
@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <jsp:include page="common/footer.jsp"/>
+    <jsp:include page="../common/footer.jsp"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
