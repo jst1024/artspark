@@ -12,6 +12,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/naver-editor/css/smart_editor2.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/naver-editor/js/HuskyEZCreator.js" charset="utf-8"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/naver-editor/js/SE2BasicCreator.js" charset="utf-8"></script>
     <style>
     	.container-custom {
             max-width: 1200px;
@@ -53,12 +56,16 @@
         <h2>작품 등록</h2><br>
         <p style="font-size: 14px;">✪ 스타일 또는 분야별로 나누어 등록해주세요.<br>
         ✪ 샘플 이미지는 최소 세장 이상 올려주시기 바랍니다.</p><br><br>
-        <form action="">
+        <form action="product" method="post" enctype="multipart/form-data">
             <div class="form-group row">
                 <label for="category" class="col-sm-2 col-form-label">카테고리</label>
+                <input type="hidden" name="memId" value="${ sessionScope.loginUser.memId }">
                 <div class="col-sm-3">
-                    <select class="form-control" id="category">
-                        <option>일러스트</option>
+                    <select class="form-control" name="productCategory" id="category">
+                        <option value="일러스트">일러스트</option>
+                        <option value="디자인">디자인</option>
+                        <option value="영상">영상 · 음향</option>
+                        <option value="만화">웹툰 · 만화</option>
                         <!-- Add more options here -->
                     </select>
                 </div>
@@ -67,7 +74,7 @@
             <div class="form-group row" style="margin-bottom: 60px !important;">
                 <label for="title" class="col-sm-2 col-form-label">제목</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="title" placeholder="제목을 입력해주세요.">
+                    <input type="text" class="form-control" id="title" name="productTitle" placeholder="제목을 입력해주세요.">
                     <small class="form-text text-danger" style="margin-top:10px;">* 특수문자 등으로 제목을 강조, 장식하는 경우 예고 없이 삭제됩니다</small>
                 </div>
             </div>
@@ -75,13 +82,13 @@
             <div class="form-group row" style="margin-bottom: 80px !important;">
                 <label for="mainImage" class="col-sm-2 col-form-label">대표 이미지</label>
                 <div class="col-sm-3">
-                    <input type="file" class="form-control-file" id="mainImage1" onchange="loadImg(this)">
+                    <input type="file" class="form-control-file" id="mainImage1" name="mainImage1" onchange="loadImg(this)" required>
                 </div>
                 <div class="col-sm-3">
-                    <input type="file" class="form-control-file" id="mainImage2" onchange="loadImg(this)">
+                    <input type="file" class="form-control-file" id="mainImage2" name="mainImage2" onchange="loadImg(this)">
                 </div>
                 <div class="col-sm-3">
-                    <input type="file" class="form-control-file" id="mainImage3" onchange="loadImg(this)">
+                    <input type="file" class="form-control-file" id="mainImage3" name="mainImage3" onchange="loadImg(this)">
                 </div>
                 
                 <!-- 업로드 파일 미리보기 -->
@@ -142,11 +149,11 @@
                 <div class="col-sm-3" style="border-top: 1px solid #e6e6e6">
                     <div class="form-group" style="line-height: 80px; margin-bottom:0px !important;">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="broadcast" value="option1">
+                            <input class="form-check-input" type="checkbox" name="productPurpose1" id="broadcast" value="상업용">
                             <label class="form-check-label" for="broadcast">상업용</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="nonProfit" value="option2">
+                            <input class="form-check-input" type="checkbox" name="productPurpose2" id="nonProfit" value="비상업용">
                             <label class="form-check-label" for="nonProfit">비상업용</label>
                         </div>
                     </div>
@@ -160,7 +167,7 @@
                 	<label for="fileType">제출 파일 유형</label>
                 </div>
                 <div class="col-sm-2" style="border-top: 1px solid #e6e6e6; line-height: 80px; margin-bottom:0px !important;">
-                    <input type="text" class="form-control" id="fileType" style="display: inline;">
+                    <input type="text" class="form-control" id="fileType" name="detailType" style="display: inline;">
                 </div>
                 <div class="col-sm-6" style="border-top: 1px solid #e6e6e6; line-height: 70px; margin-bottom:0px !important;">
                     <small class="form-text text-muted">예) png, jpg, ai ...</small>
@@ -171,7 +178,7 @@
                 	<label for="baseSize">기본 사이즈</label>
                 </div>
                 <div class="col-sm-2" style="border-top: 1px solid #e6e6e6; line-height: 80px; margin-bottom:0px !important;">
-                    <input type="text" class="form-control" id="baseSize" style="display: inline;" placeholder="0000px">
+                    <input type="text" class="form-control" id="baseSize" name="detailSize" style="display: inline;" placeholder="0000px">
                 </div>
                 <div class="col-sm-6" style="border-top: 1px solid #e6e6e6; line-height: 70px; margin-bottom:0px !important;">
                     <small class="form-text text-muted">예) 가로 3000px 이상, A4</small>
@@ -182,7 +189,7 @@
                 	<label for="resolution">작업 해상도</label>
                 </div>
                 <div class="col-sm-8" style="border-top: 1px solid #e6e6e6; line-height: 80px; margin-bottom:0px !important;">
-                    <input type="text" class="form-control" id="resolution" style="display: inline; width:160px;" placeholder="0000px"> dpi
+                    <input type="text" class="form-control" id="resolution" name="detailPixel" style="display: inline; width:160px;"> dpi
                 </div>
                 
                 <label for="" class="col-sm-2 col-form-label"></label>
@@ -190,7 +197,7 @@
                 	<label for="revisions">수정 횟수</label>
                 </div>
                 <div class="col-sm-8" style="border-top: 1px solid #e6e6e6; line-height: 80px; margin-bottom:0px !important;">
-                    <input type="number" class="form-control" min="0" value=0 id="revisions" style="display: inline; width:160px;"> 회
+                    <input type="number" class="form-control" name="updateCount" min="0" value=0 id="revisions" style="display: inline; width:160px;"> 회
                 </div>
                 
                 <label for="" class="col-sm-2 col-form-label"></label>
@@ -198,7 +205,7 @@
                 	<label for="workPeriod">작업 기간</label>
                 </div>
                 <div class="col-sm-8" style="border-top: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; line-height: 80px; margin-bottom:0px !important;">
-                    <input type="number" class="form-control" min="0" value=0 id="workPeriod" style="display: inline; width:160px;"> 일
+                    <input type="text" class="form-control" id="workPeriod" name="detailWorkdate" style="display: inline; width:160px;">
                 </div>
             </div>
             
@@ -234,9 +241,9 @@
                         	<!-- 자바스크립트로 옵션추가 버튼 클릭 시 테이블 한 행 추가, 삭제버튼 클릭시 체크박스 체크된 행 삭제 --> 
                             <tr id="optionList1">
                                 <td id="optionList_num1" style="text-align:center; line-height:40px;"><input type="checkbox" name="optionCheck" value="1" style="display: inline;"></td>
-                                <td><input type="text" class="form-control" name="optionName1" placeholder="옵션명"></td>
-                                <td><input type="text" class="form-control" name="optionSelect1" placeholder="옵션 선택 항목"></td>
-                                <td><input type="text" class="form-control option-price" name="optionPrice1" placeholder="0" style="text-align:right;"></td>
+                                <td><input type="text" class="form-control" id="optionName1" name="optionName" placeholder="옵션명"></td>
+                                <td><input type="text" class="form-control" id="optionSelect1" name="detailOptionName" placeholder="옵션 선택 항목"></td>
+                                <td><input type="text" class="form-control option-price" id="detailOptionPrice" name="detailOptionPrice" placeholder="0" style="text-align:right;"></td>
                             </tr>
                             
                         </tbody>
@@ -258,9 +265,9 @@
                 		line += '<tr id="optionList'+ i +'">'
                 				  + '<td id="optionList_num' + i +'" style="text-align:center; line-height:40px;"><input type="checkbox" name="optionCheck" value="'
                 				  + i + '" style="display: inline;"></td>'
-                				  + '<td><input type="text" class="form-control" name="optionName' + i + '" placeholder="옵션명"></td>'
-                				  + '<td><input type="text" class="form-control" name="optionSelect' + i + '" placeholder="옵션 선택 항목"></td>'
-                				  + '<td><input type="text" class="form-control option-price" name="optionPrice' + i + '" placeholder="0" style="text-align:right;"></td>'
+                				  + '<td><input type="text" class="form-control" id="optionName' + i + '" name="optionName" placeholder="옵션명"></td>'
+                				  + '<td><input type="text" class="form-control" id="optionSelect' + i + '" name="detailOptionName" placeholder="옵션 선택 항목"></td>'
+                				  + '<td><input type="text" class="form-control option-price" id="optionPrice' + i + '" name="detailOptionPrice" placeholder="0" style="text-align:right;"></td>'
                 				  + '</tr>';
                 				  
                 		$('#optionList').append(line);
@@ -320,15 +327,97 @@
             	
             </script>
             
+            <!-- 태그 -->
             <div class="form-group row">
                 <label for="searchTags" class="col-sm-2 col-form-label">검색 태그</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="searchTags" placeholder="#팬아트#삽화...10개까지 입력 가능. 단어 앞에 # 문자를 넣어주세요">
+                    <input type="text" class="form-control" id="searchTags" name="tags" placeholder="#팬아트#삽화...10개까지 입력 가능. 단어 앞에 # 문자를 넣어주세요">
                 </div>
             </div>
             
+            <!-- 본문 -->
+            <div class="smarteditor">
+            	<textarea name="productContent" id="content" rows="20" cols="10" 
+            	style="width: 100%;" placeholder="내용을 입력해 주세요.">
+            		
+            	</textarea>
+            </div>
+            
+            <script type="text/javascript">
+		        var oEditors = [];
+		
+	            // 스마트에디터를 초기화
+	            nhn.husky.EZCreator.createInIFrame({
+	                oAppRef: oEditors,
+	                elPlaceHolder: "content",
+	                sSkinURI: "${pageContext.request.contextPath}/resources/naver-editor/SmartEditor2Skin.html",
+	                fCreator: "createSEditor2"
+	            });
+		
+		        // 폼 전송 버튼 클릭 시 스마트에디터의 내용을 텍스트에어리어로 동기화
+		        function submitContents(e) {
+		        	// option-price의 값에서 ','를 빼고 number타입으로 변환
+		        	$('.option-price').each(function() {
+        				let originValue = $(this).val();
+        				let changeValue = originValue.replace(/,/g, '');
+        				
+        				$(this).val(Number(changeValue));
+        			})
+		        	
+		            // 에디터의 내용이 textarea에 반영됩니다.
+		            oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+		
+		            // 실제 form submit
+		            try {
+		                e.form.submit();
+		            } catch (e) {
+		                console.log(e);
+		            }
+		        }
+		        
+		        /*
+		        $(document).on('click', '.btn-primary', function(e) {
+        			e.preventDefault();
+        			
+        			// 모든 .option-price 필드 순회
+        			$('.option-price').each(function() {
+        				let originValue = $(this).val();
+        				let changeValue = originValue.replace(/,/g, '');
+        				console.log(changeValue);
+        				
+        				$(this).val(Number(changeValue));
+        				
+        				$(this).closest('form').submit();
+        			})
+        		});
+		        */
+		        
+		        
+		        // 이미지 업로드 기능
+		        /*
+		        function uploadImage() {
+		            var fileInput = document.getElementById("fileInput");
+		            var formData = new FormData();
+		            formData.append("file", fileInput.files[0]);
+
+		            fetch("/uploadImage", {
+		                method: "POST",
+		                body: formData
+		            })
+		            .then(response => response.json())
+		            .then(data => {
+		                var imageUrl = data.url;
+		                oEditors.getById["content"].exec("PASTE_HTML", ['<img src="' + imageUrl + '"/>']);
+		            })
+		            .catch(error => {
+		                console.error("Error uploading image:", error);
+		            });
+		        }
+		        */
+		    </script>
+            
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-				<button type="submit" class="btn-lg btn-primary me-md-2" type="button">작품 등록</button>&nbsp;&nbsp;&nbsp;&nbsp;
+				<button type="button" class="btn-lg btn-primary me-md-2" type="button" onclick="submitContents(this);">작품 등록</button>&nbsp;&nbsp;&nbsp;&nbsp;
 				<a href="productList" class="btn-lg btn-danger" type="button">취소</a>
 			</div>
         </form>
