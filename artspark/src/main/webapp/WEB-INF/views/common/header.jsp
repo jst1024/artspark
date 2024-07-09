@@ -8,28 +8,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>쇼핑몰</title>
-
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
-
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    
-     <!-- alertify JS -->
-	<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
-	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
-	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
-	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/semantic.min.css"/>
-
      <style>
 
         .header {
@@ -121,36 +99,18 @@
                             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                         </form>
 
-                        <a class="nav-link" href="#">로그인</a>
-                        <a class="nav-link" href="#">회원가입</a>
-                        <c:choose>
-                        	<c:when test="${ sessionScope.loginUser.memId eq 'admin' }">
-                                    <li class="nav-item"><a class="nav-link" href="logout">로그아웃</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="">관리자게시판</a></li>
-                                </c:when>
-                            <c:when test="${ sessionScope.loginUser eq null }">
-                                <a class="nav-link" href="join">회원가입</a>
-                                <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal">로그인</a>
-                            </c:when>
-                            <c:otherwise>
-                                <label>${ sessionScope.loginUser.memNickname }님 환영합니다.</label>&nbsp;&nbsp;
-                                <a href="#">마이페이지</a>
-                                <a href="logout">로그아웃</a>
-                            </c:otherwise>
-                        </c:choose>    
-
                         <ul class="navbar-nav auth-links">
                             <c:choose>
                                 <c:when test="${ sessionScope.loginUser.memId eq 'admin' }">
-                                    <li class="nav-item"><a class="nav-link" href="">로그아웃</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="logout">로그아웃</a></li>
                                     <li class="nav-item"><a class="nav-link" href="">관리자게시판</a></li>
                                 </c:when>
                                 <c:when test="${ sessionScope.loginUser eq null }">
-                                    <li class="nav-item"><a class="nav-link" href="">로그인</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="">회원가입</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal">로그인</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="join">회원가입</a></li>
                                 </c:when>
                                 <c:otherwise>
-                                    <li class="nav-item"><a class="nav-link" href="">로그아웃</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="logout">로그아웃</a></li>
                                     <li class="nav-item"><a class="nav-link" href="">회원정보</a></li>
                                 </c:otherwise>
                             </c:choose>
