@@ -71,19 +71,11 @@
 </head>
 <body>
     <div class="container-fluid header">
-        <div class="row align-items-center">
-            <div class="col">
-                <img src="path/to/logo.png" alt="Logo" width="100">
-
-                <a href="${path2 }/index.jsp">
-                	<img src="${path2 }/resources/images/logo.png" alt="Logo" width="100">
-                </a>
-
-        <div class="d-flex justify-content-between align-items-center">
+         <div class="d-flex justify-content-between align-items-center">
             <div class="p-2">
                 <a href="${path2 }/index.jsp">
                     <img src="${path2 }/resources/images/logo.png" alt="Logo" width="100">
-                </a>
+                 </a>
             </div>
             <div class="p-2 flex-grow-1">
                 <nav class="navbar navbar-expand navbar-light">
