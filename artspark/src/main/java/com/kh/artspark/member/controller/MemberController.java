@@ -6,8 +6,10 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.member.model.service.MemberService;
@@ -37,7 +39,7 @@ public class MemberController {
 	
 	
 	
-	@GetMapping("login")
+	@GetMapping("loginPage")
 	public String loginPage() {
 	    return "member/login"; // 로그인 페이지의 뷰 이름 반환
 	}
@@ -62,6 +64,31 @@ public class MemberController {
 		return mv;
 	}
 	
+	@GetMapping("joinPage")
+	public String joinPage() {
+		return "member/join";
+	}
+	
+	@PostMapping("join")
+	public String join(Member member, Model model) {
+		
+		log.info("회원가입 객체 : {}", member);
+		String encPwd = bcryptPasswordEncoder.encode(member.getMemPwd());
+		member.setMemPwd(encPwd);;
+		member.setMemCategory("A");  //회원가입하면 일반회원 카테고리를 가지고 가입한다.
+		String viewName ="";
+		if(memberService.insert(member) > 0) {//성공 => 메인~
+			
+			viewName ="redirect:/";
+		}else {
+			
+			model.addAttribute("errorMsg","회원가입실패");
+			
+			viewName =" common/errorPage";
+		}		
+			return viewName;
+
+	}
 	
 	//로그아웃!!
 	@GetMapping("logout")
@@ -69,4 +96,12 @@ public class MemberController {
 		session.removeAttribute("loginUser");
 		return "redirect:/";
 	}
+	
+	@ResponseBody
+	@GetMapping("idcheck")
+	public String checkId(String checkId) {
+		return memberService.idCheck(checkId) > 0 ? "ERROR" : "SUCCESS";
+	}
+	
+	
 }

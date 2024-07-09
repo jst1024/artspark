@@ -18,11 +18,11 @@
             <form>
               <div class="mb-3">
                 <label for="userid" class="form-label">아이디</label>
-                <input type="text" class="form-control" id="memId">
+                <input type="text" class="form-control" id="memId" readonly>
               </div>
               <div class="mb-3">
-                <label for="username" class="form-label">이름</label>
-                <input type="text" class="form-control" id="memName">
+                <label for="nickName" class="form-label">닉네임</label>
+                <input type="text" class="form-control" id="memNickname">
               </div>
               <div class="mb-3">
                 <label for="email" class="form-label">이메일</label>
@@ -31,19 +31,6 @@
               <div class="mb-3">
                 <label for="password" class="form-label">비밀번호</label>
                 <input type="password" class="form-control" id="memPwd">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">성별</label>
-                <div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male" value="male">
-                    <label class="form-check-label" for="male">남성</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female" value="female">
-                    <label class="form-check-label" for="female">여성</label>
-                  </div>
-                </div>
               </div>
             </form>
           </div>
@@ -56,10 +43,6 @@
                   <div>
                     <button class="btn btn-primary btn-sm">사진</button>
                   </div>
-                </div>
-                <div class="mb-3">
-                  <label for="nickname" class="form-label">닉네임</label>
-                  <input type="text" class="form-control" id="memNickname">
                 </div>
                 <div class="mb-3">
                   <label for="introduction" class="form-label">소개글</label>
