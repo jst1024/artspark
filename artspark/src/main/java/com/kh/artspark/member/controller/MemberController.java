@@ -41,7 +41,7 @@ public class MemberController {
 	
 	@GetMapping("loginPage")
 	public String loginPage() {
-	    return "member/login"; // 로그인 페이지의 뷰 이름 반환
+	    return "member/login2"; // 로그인 페이지의 뷰 이름 반환
 	}
 	
 	//로그인 할때 암호화된 비밀번호도 받아서 확인후 연결(bcrypt로 하고 oauth 방식으로 변경 예정...공부중....)
