@@ -1,83 +1,20 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="path2" value="${pageContext.servletContext.contextPath }" />
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>쇼핑몰</title>
-     <style>
 
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background-color: white;
-        }
-        
-        a {
-            text-decoration: none !important;
-            color: black !important;
-        }
+<jsp:include page="head.jsp" />
 
-        .navbar-nav {
-            white-space: nowrap;
-        }
-
-        .navbar-nav li {
-            margin-left: 10px; 
-        }
-
-        .navbar-nav .nav-item a,
-        .auth-links .nav-item a {
-            font-size: 14px; 
-            white-space: nowrap; 
-        }
-
-        .form-inline .form-control {
-            width: 200px; 
-        }
-
-        @media (max-width: 992px) {
-            .navbar-nav li,
-            .auth-links .nav-item a {
-                margin-left: 5px; 
-            }
-            .navbar-nav .nav-item a,
-            .auth-links .nav-item a {
-                font-size: 12px; 
-            }
-            .form-inline .form-control {
-                width: 100px; 
-            }
-        }
-
-        @media (max-width: 1737px) {
-            .navbar-nav li,
-            .auth-links .nav-item a {
-                margin-left: 5px; 
-            }
-            .navbar-nav .nav-item a,
-            .auth-links .nav-item a {
-                font-size: 12px; 
-            }
-            .form-inline .form-control {
-                width: 150px; 
-            }
-        }
-    </style>
-</head>
 <body>
     <div class="container-fluid header">
-         <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center">
             <div class="p-2">
                 <a href="${path2 }/index.jsp">
                     <img src="${path2 }/resources/images/logo.png" alt="Logo" width="100">
                 </a>
             </div>
-            <div class="p-2 flex-grow-1">
+            <div class="p-2 flex-grow-1 d-flex justify-content-end">
                 <nav class="navbar navbar-expand navbar-light">
                     <div class="navbar-collapse collapse">
                         <ul class="navbar-nav mr-auto">
@@ -118,7 +55,7 @@
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Login</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal">&times;"></button>
                 </div>
         
                 <form action="login" method="post">

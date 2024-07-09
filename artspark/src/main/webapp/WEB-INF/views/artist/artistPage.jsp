@@ -5,54 +5,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>판매자페이지</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<jsp:include page="../common/head.jsp" />
     <style>
-        a {
-            text-decoration: none !important;
-            color: black !important;
-        }
-        .header {
-            position: -webkit-sticky; 
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background-color: white;
-            width: 100%;
-            padding: 10px 0;
-        }
-        .sidebar {
-            height: calc(100vh - 60px); /* 헤더 높이를 제외한 전체 높이 */
-            position: fixed;
-            top: 60px; /* 헤더 높이만큼 아래에 위치 */
-            left: 0;
-            background-color: #f8f9fa;
-            padding-top: 20px;
-            width: 200px;
-        }
-        .sidebar a {
-            display: block;
-            color: black;
-            padding: 16px;
-            text-decoration: none;
-        }
-        .sidebar a:hover {
-            background-color: #ddd;
-        }
-        .profile-img-container {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .profile-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-        }
-        .profile-details {
-            text-align: center;
-        }
         .content {
             margin-left: 220px; /* 사이드바의 너비보다 조금 더 넓게 설정합니다 */
             padding: 20px;
