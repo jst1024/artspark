@@ -2,8 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
-		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	
@@ -71,11 +73,31 @@
 	  	<property name="maxInMemorySize" value="100000000"></property>
 	  </bean>
 	  
+	  <!-- @Transactional 어노테이션 트랜잭션 관리자 객체 생성 -->
+   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+      
+   <!-- @Transactional 어노테이션 처리 -->
+   <tx:annotation-driven transaction-manager="transactionManager" />
+      
+   <bean id="txAdvice" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+       <property name="transactionManager" ref="transactionManager"/>
+       <property name="transactionAttributes">
+           <props>
+               <prop key="sel*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
+               <prop key="countUp*">PROPAGATION_REQUIRES_NEW,ISOLATION_SERIALIZABLE</prop>
+               <prop key="*">PROPAGATION_REQUIRED</prop>
+           </props>
+       </property>
+   </bean>    
+	  
 	  <!-- 
 	  		Mapper 애노테이션을 사용하기위한 준비과정
 	  		나중에 repository를 인터페이스로 쓰려면 여기다 넣으면됨!!! 
 	  -->
 	  <mybatis-spring:scan base-package="com.kh.artspark.product.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.notice.model.dao"/>
 	  
 </beans>
 

@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.kh.artspark.notice.model.dao.NoticeDao;
+import com.kh.artspark.common.model.vo.ImgFile;
+import com.kh.artspark.notice.model.dao.NoticeMapper;
 import com.kh.artspark.notice.model.vo.Notice;
 
 import lombok.RequiredArgsConstructor;
@@ -16,53 +17,65 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NoticeServiceImpl implements NoticeService {
 
-	private final SqlSessionTemplate sqlSession;
-	private final NoticeDao noticeDao;
-	
+	private final NoticeMapper noticeMapper;
+
 	@Override
 	public int noticeCount() {
-		return noticeDao.noticeCount(sqlSession);
+		return noticeMapper.noticeCount();
 	}
 
 	@Override
 	public List<Notice> noticeFindAll(Map<String, Integer> map) {
-		return noticeDao.noticeFindAll(sqlSession, map);
+		return noticeMapper.noticeFindAll(map);
 	}
 
 	@Override
 	public int noticeSearchCount(Map<String, String> map) {
-		return noticeDao.noticeSearchCount(sqlSession, map);
+		return noticeMapper.noticeSearchCount(map);
 	}
 
 	@Override
 	public List<Notice> noticeFindByConditionAndKeyword(Map<String, String> map, RowBounds rowBounds) {
-		return noticeDao.noticeFindByConditionAndKeyword(sqlSession, map, rowBounds);
+		return noticeMapper.noticeFindByConditionAndKeyword(map, rowBounds);
 	}
 	
+	@Transactional
 	@Override
-	public int insertNotice(Notice notice) {
-		return noticeDao.insertNotice(sqlSession, notice);
+	public int insertNotice(Notice notice, ImgFile imgFile) {
+		 int result1 = noticeMapper.insertNotice(notice);
+		 int result2 = 1;
+		 
+		 if(imgFile.getOriginName() != null) {
+			  result2 = noticeMapper.insertImgFile(imgFile);
+		 }
+		 
+		 return result1 * result2;
 	}
-
+	/*
 	@Override
 	public int noticeIncreaseCount(int noticeNo) {
-		return noticeDao.noticeIncreaseCount(sqlSession, noticeNo);
+		return noticeMapper.noticeIncreaseCount(noticeNo);
 	}
-
+    */
 	@Override
 	public Notice noticeFindById(int noticeNo) {
-		return noticeDao.noticeFindById(sqlSession, noticeNo);
+		return noticeMapper.noticeFindById(noticeNo);
 	}
-
-	@Override
-	public int deleteNotice(int noticeNo) {
-		return noticeDao.deleteNotice(sqlSession, noticeNo);
-	}
-
+	
+	
+	/*
 	@Override
 	public int updateNotice(Notice notice) {
-		return noticeDao.updateNotice(sqlSession, notice);
+		return noticeMapper.updateNotice(notice);
 	}
+	*/
+	@Override
+	public int deleteNotice(int noticeNo) {
+		return noticeMapper.deleteNotice(noticeNo);
+	}
+	
+	
+
 	
 	
 }

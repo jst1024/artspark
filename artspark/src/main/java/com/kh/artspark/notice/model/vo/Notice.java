@@ -17,5 +17,6 @@ public class Notice {
 	private String noticeTitle; // 제목
 	private String noticeContent; // 내용
 	private Date noticeDate; // 작성일
-	private Member memId; // 회원아이디
+	private String memId; // 회원아이디
+
 }
