@@ -75,7 +75,7 @@
             <div class="p-2">
                 <a href="${path2 }/index.jsp">
                     <img src="${path2 }/resources/images/logo.png" alt="Logo" width="100">
-                 </a>
+                </a>
             </div>
             <div class="p-2 flex-grow-1">
                 <nav class="navbar navbar-expand navbar-light">
