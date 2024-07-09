@@ -4,84 +4,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="java.util.List, java.util.ArrayList, java.util.Map, java.util.HashMap, java.util.Date" %>
 <c:set var="path2" value="${pageContext.servletContext.contextPath }" />
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>artspark</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<style>
-    a {
-        text-decoration: none !important;
-        color: black !important;
-    }
-    .carousel-item {
-        height: 300px;
-        background-color: lightgray;
-    }
-    .category-icon {
-        display: inline-block;
-        width: 80px;
-        height: 80px;
-        background-color: lightblue;
-        border-radius: 10px;
-        margin: 10px;
-        line-height: 80px; 
-        text-align: center; 
-    }
-    .popular-writer-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .popular-writer {
-        width: calc((100% / 3) - 20px); /* 한 줄에 3개씩 배치하고, 간격 20px */
-        height: 300px; 
-        background-color: lightgray;
-        border-radius: 10px;
-        margin: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .popular-writer img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-    .default-image {
-        width: 100%;
-        height: 100%;
-        background-color: lightgray;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .section-title {
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-        margin-top: 20px;
-    }
-    .board-title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .board-title a {
-        margin-left: auto;
-        margin-right: 8px; 
-        text-decoration: none;
-        color: black;
-    }
-</style>
-</head>
-<body>
-    <jsp:include page="common/header.jsp"/>
-
-    <div id="content">
         <%-- 더미 데이터 설정 --%>
         <%
             // 배너 이미지
@@ -133,6 +55,86 @@
             }
             request.setAttribute("requests", requests);
         %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>artspark</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    a {
+        text-decoration: none !important;
+        color: black !important;
+    }
+    .carousel-item {
+        height: 300px;
+        background-color: lightgray;
+    }
+    .category-icon {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        background-color: lightblue;
+        border-radius: 10px;
+        margin: 10px;
+        margin-top : 40px;
+        line-height: 80px; 
+        text-align: center; 
+    }
+    .popular-writer-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .popular-writer {
+        width: calc((100% / 3) - 20px); /* 한 줄에 3개씩 배치하고, 간격 20px */
+        height: 300px; 
+        background-color: lightgray;
+        border-radius: 10px;
+        margin: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .popular-writer img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    .default-image {
+        width: 100%;
+        height: 100%;
+        background-color: lightgray;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .section-title {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+    .board-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .board-title a {
+        margin-left: auto;
+        margin-right: 8px; 
+        text-decoration: none;
+        color: black;
+    }
+</style>
+</head>
+<body>
+    <jsp:include page="common/header.jsp"/>
+
+    <div id="content">
 
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">

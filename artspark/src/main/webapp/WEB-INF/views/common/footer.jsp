@@ -51,7 +51,8 @@
                주소 : 서울시 중구 남대문로1가 48-6 2층 / 대표전화 : xx-xxx-xxxx / E-mail : artspark@artspark.kr<br>
                회사명 : artspark  사업자등록번호 : xxx-xx-xxxxx<br>
                artspark는 통신판매 플랫폼 제공자이며, 통신판매의 당사자가 아닙니다. 상품, 상품정보, 거래에 관한 의무와 책임은 판매회원에게 있습니다.<br>
-            </p> 
+            </p>
+            <br> 
             <p id="p2">Copyright © 2024 All Right Reserved</p>
         </div>
     </div>
