@@ -11,6 +11,7 @@
 	<typeAliases>
 		<typeAlias type="com.kh.artspark.member.model.vo.Member" alias="member" />
 		<typeAlias type="com.kh.artspark.notice.model.vo.Notice" alias="notice" />	
+		<typeAlias type="com.kh.artspark.common.model.vo.ImgFile" alias="ImgFile" />	
 		<typeAlias type="com.kh.artspark.product.model.vo.Product" alias="product" />
 		<typeAlias type="com.kh.artspark.product.model.vo.ProductDetail" alias="productDetail" />
 		<typeAlias type="com.kh.artspark.product.model.vo.PayOption" alias="payOption" />

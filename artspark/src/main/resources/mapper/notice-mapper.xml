@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="noticeMapper">
+<mapper namespace="com.kh.artspark.notice.model.dao.NoticeMapper">
 
 	<sql id="selectNotice">
 		SELECT
@@ -19,7 +19,6 @@
 			COUNT(NOTICE_NO)
 	  FROM
 	  		NOTICE
-
 </select>	
 
 <select id="noticeFindAll" resultType="notice" parameterType="map">
@@ -45,11 +44,12 @@
                        ORDER
                           BY
                              NOTICE_NO DESC))               
-WHERE
-      RNUM BETWEEN #{startValue} AND #{endValue} 
+	  WHERE
+      		 RNUM BETWEEN #{startValue} AND #{endValue} 
 	</select>
 	
-<select id="searchCount" parameterType="hashmap" resultType="int">
+	<!-- 검색 시 행의 개수 -->
+	<select id="noticeSearchCount" parameterType="hashmap" resultType="int">
 		SELECT
         		COUNT(NOTICE_NO)
 		  FROM
@@ -65,6 +65,101 @@ WHERE
 		   		NOTICE_CONTENT LIKE '%' || #{keyword} || '%'
 		  </if>
 	</select>
+	
+	<!-- 검색 결과 -->
+	<select id="noticeFindByConditionAndKeyword" parameterType="hashmap" resultType="notice">
+	
+	<include refid="selectNotice"/>
+	      FROM
+	      		NOTICE
+	     WHERE
+	   	<choose>
+	   		<when test="condition == 'title'">
+	   			NOTICE_TITLE LIKE '%' || #{keyword} || '%'
+	   		</when>
+			<otherwise>
+				NOTICE_CONTENT LIKE '%' || #{keyword} || '%'
+			</otherwise>
+    	</choose>
+     	 ORDER
+     	    BY
+     			NOTICE_NO DESC
+	</select>
+	<insert id="insertNotice" parameterType="notice">
+		INSERT
+	      INTO
+	      		NOTICE
+	      		(
+	      		NOTICE_NO,
+	      		NOTICE_TITLE,
+	      		NOTICE_CONTENT,
+	      		NOTICE_DATE,
+	      		MEM_ID
+	      		)
+      	VALUES
+      			(
+      			NOTICE_SEQ.NEXTVAL,
+      			#{noticeTitle},
+      			#{noticeContent},
+      			SYSDATE,
+      			#{memId}
+      			)
+	</insert>	
+	
+	<insert id="insertImgFile" parameterType="ImgFile">
+		INSERT
+	      INTO
+	      		IMG_FILE
+	      		(
+	      		FILE_NO,
+	      		BOARD_TYPE,
+	      		BOARD_NO,
+	      		ORIGIN_NAME,
+	      		CHANGE_NAME,
+	      		FILE_PATH,
+	      		FILE_DATE
+	      		)
+      	VALUES
+      			(
+      			IMG_FILE_SEQ.NEXTVAL,
+      			#{boardType},
+      			NOTICE_SEQ.CURRVAL,
+      			#{originName},
+      			#{changeName},
+      			#{imgFilePath},
+      			SYSDATE
+      			)
+	</insert>		
+	
+	<!-- 조회수 증가 
+	<update id="noticeIncreaseCount" parameterType="_int">  
+		UPDATE
+				NOTICE
+		   SET
+		   		COUNT    = COUNT + 1
+		 WHERE
+		 		NOTICE_NO = #{noticeNo}
+	</update>
+	-->
+	
+	<!-- 상세보기 -->
+	<select id="noticeFindById" parameterType="_int" resultType="notice">
+		<include refid="selectNotice"/>
+		
+		  FROM
+		  		NOTICE
+		 WHERE
+		 		NOTICE_NO = #{noticeNo}
+	</select>
+	
+	<delete id="deleteNotice" parameterType="_int">
+		DELETE
+		  FROM
+				NOTICE
+	   	 WHERE
+	   	 		NOTICE_NO = #{noticeNo}
+	</delete>
+	
 
 
 </mapper>
