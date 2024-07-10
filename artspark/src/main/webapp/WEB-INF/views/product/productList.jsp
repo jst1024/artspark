@@ -7,11 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 리스트</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <jsp:include page="../common/head.jsp"></jsp:include>
     <style>
 	    body {
 	    background-color: #f8f9fa;
@@ -35,7 +31,7 @@
 			padding: 20px;
 		}
 		
-		.product-card {
+		.card {
 		    cursor: pointer;
 		}
 		
@@ -53,7 +49,7 @@
 		}
 		
 		.card-img-top {
-		    width: 255px;
+		    width: 270px;
 		    height: 192px;
 		    object-fit: cover;
 		    transition: all 0.3s ease;
@@ -94,6 +90,8 @@
 		    opacity: 1;
 		}
 		
+		#pagingArea {width:fit-content; margin:auto;}
+		
 		.pagination .page-link {
 		    color: #007bff;
 		}
@@ -126,9 +124,14 @@
                 </div>
             </div>
             <div class="col-md-6 text-right">
-            	<a href="productInsertForm">
-                	<button class="btn btn-primary">작품 등록 / 수정</button>
-                </a>
+            	<c:if test="${ sessionScope.loginUser != null }">
+	            	<a href="productInsertForm">
+	                	<button class="btn btn-primary">작품 등록 / 수정</button>
+	                </a>
+                </c:if>
+                <c:if test="${ sessionScope.loginUser eq null }">
+                	<button class="btn btn-primary" onclick="loginAlert();">작품 등록 / 수정</button>
+                </c:if>
             </div>
         </div>
         <div class="row mb-3">
@@ -146,7 +149,7 @@
             <c:forEach items="${ productList }" var="product">
 	            <div class="col-md-3 mb-4 product-card">
 	                <div class="card">
-	                    <img class="card-img-top" src="resources/images/cat1.jpg" alt="Card image cap">
+	                    <img class="card-img-top" src="${ product.filePath }" alt="Card image cap">
 	                    <div class="card-body">
 	                        <h5 class="card-title">${ product.memNickname } / ${ product.productTitle }
 	                        <input type="hidden" name="productNo" value="${ product.productNo }">
@@ -184,13 +187,8 @@
         </div>
         
         <script>
-        	$(() => {
-        		
-        		
-        		
-        	});
         	
-        	$('.product-card').click(e => {
+        	$('.card').click(e => {
     		    if (!$(e.target).closest('.heart-icon').length) {
     		    	const productNo = $(e.currentTarget).find('input[name="productNo"]').val();
     		    	console.log(productNo);
@@ -237,14 +235,90 @@
         </script>
         
         <!-- 페이징 처리 -->
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-            </ul>
-        </nav>
+        <div id="pagingArea">
+	        <ul class="pagination">
+	        
+	        	<c:if test="${ category eq null }"> 
+	        		<c:choose>
+		        		<c:when test="${ pageInfo.currentPage eq 1 }">
+			            	<li class="page-item"><a class="page-link" href="#">이전</a></li>
+		            	</c:when>
+		            	<c:otherwise>
+		            		<li class="page-item"><a class="page-link" href="product?page=${ pageInfo.currentPage - 1 }">이전</a></li>
+		            	</c:otherwise>
+		            </c:choose>
+		            <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
+		            	<c:choose>
+			            	<c:when test="${ pageInfo.currentPage == p }">
+			            		<li class="page-item active">
+			            			<a class="page-link" href="#">${ p }</a>
+			            		</li>
+			            	</c:when>
+			            	<c:otherwise>
+			            		<li class="page-item">
+			            			<a class="page-link" href="product?page=${ p }">${ p }</a>
+			            		</li>
+			            	</c:otherwise>
+		            	</c:choose>
+		            </c:forEach>
+		            
+		            <c:choose>
+			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
+			            	<li class="page-item">
+			            		<a class="page-link" href="#">다음</a>
+			            	</li>
+			            </c:when>
+			            <c:otherwise>
+			            	<li class="page-item">
+			            		<a class="page-link" href="product?page=${ pageInfo.currentPage + 1 }">다음</a>
+			            	</li>
+			            </c:otherwise>
+		            </c:choose>
+	            </c:if>
+	            
+	            <c:if test="${ category != null }">
+	            	<c:choose>
+		        		<c:when test="${ pageInfo.currentPage eq 1 }">
+			            	<li class="page-item">
+			            		<a class="page-link" href="#">이전</a>
+			            	</li>
+		            	</c:when>
+		            	<c:otherwise>
+		            		<li class="page-item">
+		            			<a class="page-link" href="product?page=${ pageInfo.currentPage - 1 }&category=${ category }">이전</a>
+		            		</li>
+		            	</c:otherwise>
+		            </c:choose>
+		            <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
+		            	<c:choose>
+			            	<c:when test="${ pageInfo.currentPage == p }">
+			            		<li class="page-item active">
+			            			<a class="page-link" href="#">${ p }</a>
+			            		</li>
+			            	</c:when>
+			            	<c:otherwise>
+			            		<li class="page-item">
+			            			<a class="page-link" href="product?page=${ p }&category=${ category }">${ p }</a>
+			            		</li>
+			            	</c:otherwise>
+		            	</c:choose>
+		            </c:forEach>
+		            
+		            <c:choose>
+			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
+			            	<li class="page-item">
+			            		<a class="page-link" href="#">다음</a>
+			            	</li>
+			            </c:when>
+			            <c:otherwise>
+			            	<li class="page-item">
+			            		<a class="page-link" href="product?page=${ pageInfo.currentPage + 1 }&category=${ category }">다음</a>
+			            	</li>
+			            </c:otherwise>
+		            </c:choose>
+	            </c:if>
+	        </ul>
+	    </div>
     </div>
     <jsp:include page="../common/footer.jsp" />
 </body>

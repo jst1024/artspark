@@ -5,18 +5,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @ToString
-public class ProductDetail {
+public class ProductFile {
 	
+	private int fileNo;
+	private String originName;
+	private String changeName;
+	private String filePath;
+	private String fileDate;
 	private int productNo;
-	private String productPurpose;
-	private String detailType;
-	private String detailSize;
-	private String detailPixel;
-	private int updateCount;
-	private String detailWorkdate;
 	
 }

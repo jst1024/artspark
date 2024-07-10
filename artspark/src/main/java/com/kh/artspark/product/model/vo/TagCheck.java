@@ -1,7 +1,9 @@
 package com.kh.artspark.product.model.vo;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import lombok.Getter;
+
 import lombok.Setter;
 import lombok.ToString;
 
@@ -9,11 +11,10 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-public class DetailOption {
+public class TagCheck {
 	
-	private int detailOptionNo;
-	private String detailOptionName;
-	private int detailOptionPrice;
-	private int payOptionNo;
+	private int tagCheckNo;
+	private int productNo;
+	private int tagNo;
 	
 }

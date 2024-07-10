@@ -4,15 +4,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.session.RowBounds;
 
+import com.kh.artspark.product.model.vo.DetailOption;
+import com.kh.artspark.product.model.vo.PayOption;
 import com.kh.artspark.product.model.vo.Product;
 import com.kh.artspark.product.model.vo.ProductDetail;
-import com.kh.artspark.product.model.vo.ProductForm;
+import com.kh.artspark.product.model.vo.ProductFile;
+import com.kh.artspark.product.model.vo.Tag;
+import com.kh.artspark.product.model.vo.TagCheck;
 
 @Mapper
 public interface ProductMapper {
 	
-	List<Map<String, Object>> findAllProductList(String loginUserId);
+	int productAllCount();
+
+	int productCategoryCount(String category);
+	
+	List<Map<String, Object>> findAllProductList(String loginUserId, RowBounds rowBounds);
 
 	int insertJjim(Map<String, Object> map);
 
@@ -20,18 +29,24 @@ public interface ProductMapper {
 
 	Map<String, Object> findById(Map<String, Object> map);
 
-	void insertProduct(Product product);
+	int insertProduct(Product product);
 
-	void insertProductDetail(ProductDetail productDetail);
+	int insertProductDetail(ProductDetail productDetail);
 
-	int tagCheck(String tagName);
+	Integer tagCheck(Tag tag);
 
-	void insertTag(int tagNo);
+	int insertTag(TagCheck tagCheck);
 
-	void insertTagCheck(String tagName);
+	int insertTagCheck(Tag tag);
+	
+	int insertProductFile(ProductFile productFile);
 
-	void insertPayOption(List<String> changeList);
+	int insertPayOption(PayOption payOption);
 
-	void insertDetailOption(ProductForm productForm);
+	int insertDetailOption(DetailOption detailOption);
+
+	List<ProductFile> findByIdFile(int productNo);
+
+	List<Tag> findByIdTag(int productNo);
 
 }

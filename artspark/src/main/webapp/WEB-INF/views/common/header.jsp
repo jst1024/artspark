@@ -70,6 +70,16 @@
     </style>
 </head>
 <body>
+
+	<!-- 포워딩 된 상황에서 sessionScope에 alertMsg가 존재할 때 -->
+	<c:if test="${ not empty alertMsg }">
+		<script>
+			// 서버에 alertMsg가 존재할 때
+			alertify.alert('${alertMsg}').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true}); 
+		</script>
+		<c:remove var="alertMsg" scope="session"/>
+	</c:if>
+
     <div class="container-fluid header">
          <div class="d-flex justify-content-between align-items-center">
             <div class="p-2">
