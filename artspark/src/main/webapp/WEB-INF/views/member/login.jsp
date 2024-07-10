@@ -30,12 +30,12 @@
                     <div class="text-center mb-5">
                         <h2>Art Spark</h2>
                     </div>
-                    <form>
+                    <form action="login" method="post">
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="아이디를 입력하세요">
+                            <input type="text" class="form-control" name="memId" placeholder="아이디를 입력하세요">
                         </div>
                         <div class="mb-3">
-                            <input type="password" class="form-control" placeholder="비밀번호를 입력해주세요">
+                            <input type="password" class="form-control" name="memPwd" placeholder="비밀번호를 입력해주세요">
                         </div>
                         <button type="submit" class="btn btn-primary w-100 mb-3">로그인</button>
                         <div class="d-flex justify-content-between">

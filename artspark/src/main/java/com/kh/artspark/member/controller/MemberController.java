@@ -50,7 +50,7 @@ public class MemberController {
 	    if(loginUser !=null && bcryptPasswordEncoder.matches(member.getMemPwd(),loginUser.getMemPwd())){
 	    //if (loginUser != null && member.getMemPwd().equals(loginUser.getMemPwd())) {
 	    	log.info("아이디: {}",loginUser.getMemId());
-	    	log.info("아이디: {}",loginUser.getMemPwd());
+	    	log.info("비밀번호: {}",loginUser.getMemPwd());
 	        if ("D".equals(loginUser.getMemCategory())) {
 	            // 블랙리스트 사용자
 	            mv.addObject("blacklistUser", true);

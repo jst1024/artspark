@@ -45,7 +45,7 @@
                                     <li class="nav-item"><a class="nav-link" href="">관리자게시판</a></li>
                                 </c:when>
                                 <c:when test="${ sessionScope.loginUser eq null }">
-                                    <li class="nav-item"><a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal">로그인</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="loginPage" >로그인</a></li>
                                     <li class="nav-item"><a class="nav-link" href="join">회원가입</a></li>
                                 </c:when>
                                 <c:otherwise>
@@ -56,33 +56,6 @@
                         </ul>
                     </div>
                 </nav>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="loginModal">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Login</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;"></button>
-                </div>
-        
-                <form action="login" method="post">
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        <label for="memId" class="mr-sm-2">ID : </label>
-                        <input type="text" class="form-control mb-2 mr-sm-2" placeholder="아이디 입력" id="memId" name="memId"> <br>
-                        <label for="memPwd" class="mr-sm-2">Password : </label>
-                        <input type="password" class="form-control mb-2 mr-sm-2" placeholder="비밀번호 입력" id="memPwd" name="memPwd">
-                    </div>
-                           
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">로그인</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
