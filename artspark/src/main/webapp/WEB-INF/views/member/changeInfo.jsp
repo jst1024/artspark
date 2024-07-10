@@ -28,14 +28,10 @@
     <div class="container">
         <div class="form-container">
             <h2 class="mb-4">회원 정보 수정</h2>
-            <form>
+            <form action="" method="">
                 <div class="mb-3">
                     <label for="userId" class="form-label">아이디</label>
                     <input type="text" class="form-control" id="memId" name="memId" readonly>
-                </div>
-                <div class="mb-3">
-                    <label for="userName" class="form-label">이름</label>
-                    <input type="text" class="form-control" id="memName" name="memName">
                 </div>
                 <div class="mb-3">
                     <label for="userEmail" class="form-label">닉네임</label>
@@ -49,23 +45,10 @@
                     <label for="userPassword" class="form-label">비밀번호</label>
                     <input type="password" class="form-control" id="memPwd" name="memPwd">
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">성별</label>
-                    <div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="gender" id="male" value="male">
-                            <label class="form-check-label" for="male">남성</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="gender" id="female" value="female">
-                            <label class="form-check-label" for="female">여성</label>
-                        </div>
-                    </div>
-                </div>
                 <div class="button-group">
                     <div class="left-buttons">
                         <button type="submit" class="btn btn-secondary">회원탈퇴</button>
-                        <button type="submit" class="btn btn-info">판매자로 변경</button>
+                        <a class="btn btn-info" href="changeProduct">판매자로 변경</a>
                     </div>
                     <button type="submit" class="btn btn-primary">저장</button>
                 </div>

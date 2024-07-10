@@ -31,15 +31,15 @@ public class MemberServiceImpl implements MemberService {
 	}
 	@Override
 	public int insert(Member member) {
-		return 0;
+		return memberRepository.insert(sqlSession,member);
 	}
 	@Override
 	public int idCheck(String memId) {
-		return 0;
+		return memberRepository.idcheck(sqlSession,memId);
 	}
 	@Override
 	public int update(Member member) {
-		return 0;
+		return memberRepository.update(sqlSession,member);
 	}
 	@Override
 	public int findId(Member member) {

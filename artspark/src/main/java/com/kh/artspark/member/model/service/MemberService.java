@@ -12,7 +12,7 @@ public interface MemberService {
 	// 로그인(SELECT)
 	Member login(Member member);
 		
-	//회원수정
+	//회원가입
 	int insert(Member member);
 	
 	//id중복체크
