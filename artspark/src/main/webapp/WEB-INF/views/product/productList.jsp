@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path2" value="${pageContext.servletContext.contextPath }" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,20 +109,20 @@
         <div class="row my-4">
             <div class="col-md-2">
                 <select class="form-control">
-                    <option>일러스트</option>
-                    <option>디자인</option>
-                    <option>영상·음향</option>
-                    <option>웹툰·만화</option>
+                    <option>최신순</option>
+                    <option>인기순</option>
                     <!-- Add other options here -->
                 </select>
             </div>
             <div class="col-md-4">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="검색어 입력">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="button">검색</button>
-                    </div>
-                </div>
+	            <form action="${path2 }/product/search" method="get">
+	                <div class="input-group">
+		                    <input type="text" class="form-control" name="keyword" placeholder="검색어 입력">
+		                    <div class="input-group-append">
+		                        <button class="btn btn-primary" type="submit">검색</button>
+		                    </div>
+	                </div>
+                </form>
             </div>
             <div class="col-md-6 text-right">
             	<c:if test="${ sessionScope.loginUser != null }">
@@ -137,8 +138,19 @@
         <div class="row mb-3">
             <div class="col">
                 <div id="hashtags">
-                	<c:forEach begin="1" end="36">
-                    	<button class="tagbtn">#태그입력</button>
+                	<c:forEach items="${ tags }" var="tag">
+                		<c:choose>
+                		<c:when test="${ category.equals('') }">
+	                		<a href="product/search?keyword=${ tag.tagName }">
+	                    		<button class="tagbtn" style="margin-bottom: 10px;">#${ tag.tagName }</button>
+	                    	</a>
+                    	</c:when>
+                    	<c:otherwise>
+                    		<a href="product/search?keyword=${ tag.tagName }&category=${ category }">
+	                    		<button class="tagbtn" style="margin-bottom: 10px;">#${ tag.tagName }</button>
+	                    	</a>
+                    	</c:otherwise>
+                    	</c:choose>
                     </c:forEach>
                     <!-- Add other tags here -->
                 </div>
@@ -149,7 +161,7 @@
             <c:forEach items="${ productList }" var="product">
 	            <div class="col-md-3 mb-4 product-card">
 	                <div class="card">
-	                    <img class="card-img-top" src="${ product.filePath }" alt="Card image cap">
+	                    <img class="card-img-top" src="${path2 }/${ product.filePath }" alt="Card image cap">
 	                    <div class="card-body">
 	                        <h5 class="card-title">${ product.memNickname } / ${ product.productTitle }
 	                        <input type="hidden" name="productNo" value="${ product.productNo }">
@@ -192,7 +204,7 @@
     		    if (!$(e.target).closest('.heart-icon').length) {
     		    	const productNo = $(e.currentTarget).find('input[name="productNo"]').val();
     		    	console.log(productNo);
-    		        location.href = 'product/' + productNo;
+    		        location.href = '${path2 }/product/' + productNo;
     		    }
     		});
         	
@@ -285,7 +297,7 @@
 		            	</c:when>
 		            	<c:otherwise>
 		            		<li class="page-item">
-		            			<a class="page-link" href="product?page=${ pageInfo.currentPage - 1 }&category=${ category }">이전</a>
+		            			<a class="page-link" href="category?page=${ pageInfo.currentPage - 1 }&category=${ category }">이전</a>
 		            		</li>
 		            	</c:otherwise>
 		            </c:choose>
@@ -298,7 +310,7 @@
 			            	</c:when>
 			            	<c:otherwise>
 			            		<li class="page-item">
-			            			<a class="page-link" href="product?page=${ p }&category=${ category }">${ p }</a>
+			            			<a class="page-link" href="category?page=${ p }&category=${ category }">${ p }</a>
 			            		</li>
 			            	</c:otherwise>
 		            	</c:choose>
@@ -312,7 +324,7 @@
 			            </c:when>
 			            <c:otherwise>
 			            	<li class="page-item">
-			            		<a class="page-link" href="product?page=${ pageInfo.currentPage + 1 }&category=${ category }">다음</a>
+			            		<a class="page-link" href="category?page=${ pageInfo.currentPage + 1 }&category=${ category }">다음</a>
 			            	</li>
 			            </c:otherwise>
 		            </c:choose>

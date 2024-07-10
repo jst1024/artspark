@@ -52,15 +52,9 @@ public class ProductController {
 	// 상품 목록 전체 조회
 	@GetMapping
 	public String findAllProductList(@RequestParam(value="page", defaultValue = "1") int page,
-									@RequestParam(value="category", defaultValue = "") String category,
 									HttpSession session, Model model) {
 		
-		int listCount;
-		if(category.equals("")) {
-			listCount = productService.productAllCount();
-		} else {
-			listCount = productService.productCategoryCount(category);
-		}
+		int listCount = productService.productAllCount();
 		int currentPage = page;
 		int pageLimit = 5;
 		int boardLimit = 1;
@@ -78,8 +72,67 @@ public class ProductController {
 		} else {
 			productList = productService.findAllProductList("", rowBounds);
 		}
+		
+		// 태그 목록 30개 불러오기
+		List<Tag> tags = productService.getTags();
+
+		model.addAttribute("tags", tags);
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("productList", productList);
+		
+		return "product/productList";
+	}
+	
+	// 카테고리별 상품 목록 조회
+	@GetMapping("category")
+	public String findCategoryList(@RequestParam(value="page", defaultValue = "1") int page,
+									@RequestParam(value="category") String category,
+									HttpSession session, Model model) {
+		
+		int listCount = productService.productCategoryCount(category);
+		int currentPage = page;
+		int pageLimit = 5;
+		int boardLimit = 1;
+		
+		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
+
+		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
+		
+		Map<String, String> map = new HashMap<String, String>();
+		
+		// 찜테이블에 있는 멤버아이디와 로그인유저의 아이디를 비교하기위함 
+		if(session.getAttribute("loginUser") != null) {
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			map.put("loginUserId", loginUser.getMemId());
+			map.put("category", category);
+			productList = productService.findAllCategoryList(map, rowBounds);
+		} else {
+			map.put("loginUserId", "");
+			map.put("category", category);
+			productList = productService.findAllCategoryList(map, rowBounds);
+		}
+		
+		// 태그 목록 30개 불러오기
+		List<Tag> tags = productService.getTags();
+		
+		model.addAttribute("tags", tags);
+		model.addAttribute("category", category);
+		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("productList", productList);
+		
+		return "product/productList";
+	}
+	
+	// keyword 검색(작가명, 작품제목, 태그) 기능
+	@GetMapping("search")
+	public String searchProduct(String keyword,
+								@RequestParam(value="page", defaultValue = "1") int page,
+								HttpSession session,
+								Model model) {
+		log.info("{}", keyword);
+//		int searchCount = productService.productSearchCount();
 		
 		return "product/productList";
 	}

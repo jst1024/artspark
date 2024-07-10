@@ -28,10 +28,11 @@
                 <nav class="navbar navbar-expand navbar-light">
                     <div class="navbar-collapse collapse">
                         <ul class="navbar-nav mr-auto">
-                            <li class="nav-item"><a class="nav-link" href="${path2 }/product">일러스트</a></li>
-                            <li class="nav-item"><a class="nav-link" href="${path2 }/product">디자인</a></li>
-                            <li class="nav-item"><a class="nav-link" href="${path2 }/product">영상·음향</a></li>
-                            <li class="nav-item"><a class="nav-link" href="${path2 }/product">웹툰·만화</a></li>
+                        	<li class="nav-item"><a class="nav-link" href="${path2 }/product">전체</a></li>
+                            <li class="nav-item"><a class="nav-link" href="${path2 }/product/category?category=일러스트">일러스트</a></li>
+                            <li class="nav-item"><a class="nav-link" href="${path2 }/product/category?category=디자인">디자인</a></li>
+                            <li class="nav-item"><a class="nav-link" href="${path2 }/product/category?category=영상 · 음향">영상·음향</a></li>
+                            <li class="nav-item"><a class="nav-link" href="${path2 }/product/category?category=웹툰 · 만화">웹툰·만화</a></li>
                             <li class="nav-item"><a class="nav-link" href="#">의뢰게시판</a></li>
                         </ul>
                         <form class="form-inline my-2 my-lg-0">
