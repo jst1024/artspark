@@ -61,7 +61,10 @@ public class NoticeServiceImpl implements NoticeService {
 	public Notice noticeFindById(int noticeNo) {
 		return noticeMapper.noticeFindById(noticeNo);
 	}
-	
+	@Override
+	public ImgFile findImgFileByNoticeNo(int noticeNo) {
+		return noticeMapper.findImgFileByNoticeNo(noticeNo);
+	}	
 	
 	/*
 	@Override
@@ -73,6 +76,8 @@ public class NoticeServiceImpl implements NoticeService {
 	public int deleteNotice(int noticeNo) {
 		return noticeMapper.deleteNotice(noticeNo);
 	}
+
+
 	
 	
 

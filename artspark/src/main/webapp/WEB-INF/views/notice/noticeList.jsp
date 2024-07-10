@@ -59,137 +59,134 @@
     </style>
 </head>
 <body>
-    <div id="header">
-      <jsp:include page="../common/header.jsp" />
-    </div>
-    
-    <div class="container-main">
-        <div class="search-form">
-            <form class="form-inline" action="noticeSearchCount" method="get">
-                <select class="custom-select mr-2" name="condition">
-                    <option selected value="title">제목</option>
-                    <option value="content">내용</option>
-                </select>
-                	<input class="form-control mr-2" type="text" placeholder="검색" name="keyword" value="${keyword}">
-                <button class="btn btn-primary" type="submit">검색</button>
-            </form>
-        </div>
-        
-        <script>
-        $(() => {
-            $('#searchForm option[value="${condition}"]').attr('selected', true);
-        });
-        </script>
-        
-        <div class="table-wrapper">
-            <table class="table table-hover" id="noticeList">
-                <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>제목</th>
-                        <th>작성일</th>
-                        <th>작성자</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:choose>
-                        <c:when test="${empty noticeList}"> 
-                            <tr>
-                                <td colspan="5">조회된 결과가 존재하지 않습니다.</td>
-                            </tr>
-                        </c:when>
-                        <c:otherwise>
-                            <c:forEach var="notice" items="${noticeList}" varStatus="status">
-                                <tr class="notice-Detail">
-                                    <td>${notice.noticeNo}</td>
-                                    <td>${notice.noticeTitle}</td>
-                                    <td>${notice.noticeDate}</td>
-                                    <td><c:out value="${notice.memId}" default="admin"/></td>
-                                </tr>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
-                </tbody>
-            </table>
-        </div>
-        
-        <script>
-               $(() => {
-            	   console.dir('pagingArea');
-            	   
-            	   $('.notice-Detail').click(e => {
-            		   location.href = 'noticeDetail?noticeNo=' + $(e.currentTarget).children().eq(0).text();
-            	   });
-               });
-        </script>
-        
-        <!-- 페이징 -->
-        <div id="pagingArea">
-            <ul class="pagination pagination-custom">
-                <!-- 이전 -->
-                <c:choose>
-                    <c:when test="${pageInfo.startPage eq pageInfo.currentPage || empty noticeList }">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#">이전</a>
-                        </li>
-                    </c:when>
-                    <c:when test="${empty condition}">
-                        <li>
-                            <a class="page-link" href="noticelist?page=${pageInfo.currentPage - 1}">이전</a>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li>
-                            <a class="page-link" href="noticeSearch?page=${pageInfo.currentPage - 1}&condition=${condition}&keyword=${keyword}">이전</a>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
-                
-                <c:forEach begin="${pageInfo.startPage}" end="${pageInfo.endPage}" var="p">
-                    <c:choose>
-                        <c:when test="${empty condition}">
-                            <li class="page-item">
-                                <a class="page-link" href="noticelist?page=${p}">${p}</a>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="page-item">
-                                <a class="page-link" href="noticeSearch?page=${p}&condition=${condition}&keyword=${keyword}">${p}</a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-                
-                <!-- 다음 -->
-                <c:choose>
-                    <c:when test="${pageInfo.maxPage eq pageInfo.currentPage || empty noticeList }">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#">다음</a>
-                        </li>
-                    </c:when>
-                    <c:when test="${empty condition}">
-                        <li class="page-item">
-                            <a class="page-link" href="noticelist?page=${pageInfo.currentPage + 1}">다음</a>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li>
-                            <a class="page-link" href="noticeSearch?page=${pageInfo.currentPage + 1}&condition=${condition}&keyword=${keyword}">다음</a>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
-            </ul>
-        </div>
-        
-        <c:if test="${sessionScope.loginUser.memId eq 'admin'}">
-            <a class="btn btn-secondary write-btn" href="noticeInsert">글쓰기</a>
-            <button type="button" class="btn btn-secondary" onclick="location.href='managePage'">관리자페이지</button>
-        </c:if>
-    </div>
-    
-    <div id="footer">
-      <jsp:include page="../common/footer.jsp" />
-    </div>
-    
+
+        <jsp:include page="../common/header.jsp" />
+
+	    <div class="container-main">
+	        <div class="search-form">
+	            <form class="form-inline" action="noticeSearchCount" method="get">
+	                <select class="custom-select mr-2" name="condition">
+	                    <option selected value="title">제목</option>
+	                    <option value="content">내용</option>
+	                </select>
+	                	<input class="form-control mr-2" type="text" placeholder="검색" name="keyword" value="${keyword}">
+	                <button class="btn btn-primary" type="submit">검색</button>
+	            </form>
+	        </div>
+	        
+	        <script>
+	        $(() => {
+	            $('#searchForm option[value="${condition}"]').attr('selected', true);
+	        });
+	        </script>
+	        
+	        <div class="table-wrapper">
+	            <table class="table table-hover" id="noticeList">
+	                <thead>
+	                    <tr>
+	                        <th>번호</th>
+	                        <th>제목</th>
+	                        <th>작성일</th>
+	                        <th>작성자</th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	                    <c:choose>
+	                        <c:when test="${empty noticeList}"> 
+	                            <tr>
+	                                <td colspan="5">조회된 결과가 존재하지 않습니다.</td>
+	                            </tr>
+	                        </c:when>
+	                        <c:otherwise>
+	                            <c:forEach var="notice" items="${noticeList}" varStatus="status">
+	                                <tr class="notice-Detail">
+	                                    <td>${notice.noticeNo}</td>
+	                                    <td>${notice.noticeTitle}</td>
+	                                    <td>${notice.noticeDate}</td>
+	                                    <td><c:out value="${notice.memId}" default="admin"/></td>
+	                                </tr>
+	                            </c:forEach>
+	                        </c:otherwise>
+	                    </c:choose>
+	                </tbody>
+	            </table>
+	        </div>
+	        
+	        <script>
+	               $(() => {
+	            	   console.dir('pagingArea');
+	            	   
+	            	   $('.notice-Detail').click(e => {
+	            		   location.href = 'noticeDetail?noticeNo=' + $(e.currentTarget).children().eq(0).text();
+	            	   });
+	               });
+	        </script>
+	        
+	        <!-- 페이징 -->
+	        <div id="pagingArea">
+	            <ul class="pagination pagination-custom">
+	                <!-- 이전 -->
+	                <c:choose>
+	                    <c:when test="${pageInfo.startPage eq pageInfo.currentPage || empty noticeList }">
+	                        <li class="page-item disabled">
+	                            <a class="page-link" href="#">이전</a>
+	                        </li>
+	                    </c:when>
+	                    <c:when test="${empty condition}">
+	                        <li>
+	                            <a class="page-link" href="noticelist?page=${pageInfo.currentPage - 1}">이전</a>
+	                        </li>
+	                    </c:when>
+	                    <c:otherwise>
+	                        <li>
+	                            <a class="page-link" href="noticeSearch?page=${pageInfo.currentPage - 1}&condition=${condition}&keyword=${keyword}">이전</a>
+	                        </li>
+	                    </c:otherwise>
+	                </c:choose>
+	                
+	                <c:forEach begin="${pageInfo.startPage}" end="${pageInfo.endPage}" var="p">
+	                    <c:choose>
+	                        <c:when test="${empty condition}">
+	                            <li class="page-item">
+	                                <a class="page-link" href="noticelist?page=${p}">${p}</a>
+	                            </li>
+	                        </c:when>
+	                        <c:otherwise>
+	                            <li class="page-item">
+	                                <a class="page-link" href="noticeSearch?page=${p}&condition=${condition}&keyword=${keyword}">${p}</a>
+	                            </li>
+	                        </c:otherwise>
+	                    </c:choose>
+	                </c:forEach>
+	                
+	                <!-- 다음 -->
+	                <c:choose>
+	                    <c:when test="${pageInfo.maxPage eq pageInfo.currentPage || empty noticeList }">
+	                        <li class="page-item disabled">
+	                            <a class="page-link" href="#">다음</a>
+	                        </li>
+	                    </c:when>
+	                    <c:when test="${empty condition}">
+	                        <li class="page-item">
+	                            <a class="page-link" href="noticelist?page=${pageInfo.currentPage + 1}">다음</a>
+	                        </li>
+	                    </c:when>
+	                    <c:otherwise>
+	                        <li>
+	                            <a class="page-link" href="noticeSearch?page=${pageInfo.currentPage + 1}&condition=${condition}&keyword=${keyword}">다음</a>
+	                        </li>
+	                    </c:otherwise>
+	                </c:choose>
+	            </ul>
+	        </div>
+	        
+	        <c:if test="${sessionScope.loginUser.memId eq 'admin'}">
+	            <a class="btn btn-secondary write-btn" href="noticeInsert">글쓰기</a>
+	            <button type="button" class="btn btn-secondary" onclick="location.href='managePage'">관리자페이지</button>
+	        </c:if>
+	    </div>
+	    
+	    <jsp:include page="../common/footer.jsp" />
+	    
 </body>
 </html>
