@@ -132,7 +132,7 @@ public class ProductController {
 								HttpSession session,
 								Model model) {
 		log.info("{}", keyword);
-//		int searchCount = productService.productSearchCount();
+		int searchCount = productService.productSearchCount();
 		
 		return "product/productList";
 	}
