@@ -38,31 +38,88 @@ public class MemberController {
 	
 	
 	
-	
 	@GetMapping("loginPage")
 	public String loginPage() {
-	    return "member/login2"; // 로그인 페이지의 뷰 이름 반환
+	    return "member/login"; // 로그인 페이지의 뷰 이름 반환
 	}
 	
 	//로그인 할때 암호화된 비밀번호도 받아서 확인후 연결(bcrypt로 하고 oauth 방식으로 변경 예정...공부중....)
 	@PostMapping("login")
 	public ModelAndView login(Member member, ModelAndView mv, HttpSession session) {
-		
-		Member loginUser = memberService.login(member);
-		
-		log.info("로그인: {}", loginUser.getMemId());
-		log.info("비밀번호: {}", loginUser.getMemPwd());
-		if (loginUser != null && member.getMemPwd().equals(loginUser.getMemPwd())) {
-		//if(loginUser != null && bcryptPasswordEncoder.matches(member.getMemPwd(), loginUser.getMemPwd())){
-			session.setAttribute("loginUser", loginUser);
-			mv.setViewName("redirect:/");
-		}else {
-			mv.addObject("errorMsg","로그인 실패!").setViewName("common/errorPage");
-		}
-
-		
-		return mv;
+	    Member loginUser = memberService.login(member);
+	    if(loginUser !=null && bcryptPasswordEncoder.matches(member.getMemPwd(),loginUser.getMemPwd())){
+	    //if (loginUser != null && member.getMemPwd().equals(loginUser.getMemPwd())) {
+	    	log.info("아이디: {}",loginUser.getMemId());
+	    	log.info("아이디: {}",loginUser.getMemPwd());
+	        if ("D".equals(loginUser.getMemCategory())) {
+	            // 블랙리스트 사용자
+	            mv.addObject("blacklistUser", true);
+	            mv.setViewName("redirect:/");
+	        } else {
+	            // 정상 사용자
+	            session.setAttribute("loginUser", loginUser);
+	            mv.setViewName("redirect:/");
+	        }
+	    } else {
+	    	//비밀번호나 아이디 오류
+	        mv.addObject("errorMsg", "아이디/비밀번호 오류입니다.!").setViewName("common/errorPage");
+	    }
+	    
+	    return mv;
 	}
+	
+
+	@GetMapping("updatePage")
+	public String upatePage() {
+	    return "member/changeInfo"; // 로그인 페이지의 뷰 이름 반환
+	}
+	
+	@PostMapping("update")
+	public String update(Member member, HttpSession session, Model model) {
+		
+		log.info("수정 요청 멤버:{}",member);
+	
+		// 1 / 0
+		if(memberService.update(member) > 0) {
+			
+			session.setAttribute("loginUser",memberService.login(member));
+			session.setAttribute("alertMsg","정보 수정 성공");	
+		
+			return "redirect:/";
+			
+		}else {
+			model.addAttribute("errorMsg","정보 수정에 실패했습니다.");
+			return "common/errorPage";
+		}
+		
+	}
+	
+	@GetMapping("updateProduct")
+	public String upateProduct() {
+	    return "member/changeProduct"; // 로그인 페이지의 뷰 이름 반환
+	}
+	
+	@PostMapping("productUpdate")
+	public String productUpdate(Member member, HttpSession session, Model model) {
+		
+		log.info("수정 요청 멤버:{}",member);
+	
+		// 1 / 0
+		if(memberService.update(member) > 0) {
+			
+			session.setAttribute("loginUser",memberService.login(member));
+			session.setAttribute("alertMsg","정보 수정 성공");	
+		
+		
+			return "redirect:/";
+			
+		}else {
+			model.addAttribute("errorMsg","정보 수정에 실패했습니다.");
+			return "common/errorPage";
+		}
+		
+	}
+	
 	
 	@GetMapping("joinPage")
 	public String joinPage() {
