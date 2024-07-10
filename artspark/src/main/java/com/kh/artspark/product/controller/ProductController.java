@@ -1,12 +1,18 @@
 package com.kh.artspark.product.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,16 +22,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.common.model.vo.Message;
+import com.kh.artspark.common.model.vo.PageInfo;
+import com.kh.artspark.common.template.PageTemplate;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.product.model.service.ProductService;
 import com.kh.artspark.product.model.vo.Product;
 import com.kh.artspark.product.model.vo.ProductDetail;
+import com.kh.artspark.product.model.vo.ProductFile;
 import com.kh.artspark.product.model.vo.ProductForm;
+import com.kh.artspark.product.model.vo.Tag;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,17 +51,34 @@ public class ProductController {
 	
 	// 상품 목록 전체 조회
 	@GetMapping
-	public String findAllProductList(HttpSession session, Model model) {
+	public String findAllProductList(@RequestParam(value="page", defaultValue = "1") int page,
+									@RequestParam(value="category", defaultValue = "") String category,
+									HttpSession session, Model model) {
+		
+		int listCount;
+		if(category.equals("")) {
+			listCount = productService.productAllCount();
+		} else {
+			listCount = productService.productCategoryCount(category);
+		}
+		int currentPage = page;
+		int pageLimit = 5;
+		int boardLimit = 1;
+		
+		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
+
+		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
 		
 		// 찜테이블에 있는 멤버아이디와 로그인유저의 아이디를 비교하기위함 
-//		if(session.getAttribute("loginUser") != null) {
-//			Member loginUser = (Member) session.getAttribute("loginUser");
-//			List<Map<String, Object>> productList = productService.findAllProductList(loginUser.getMemId());
-//			model.addAttribute("productList", productList);
-//			return "product/productList";
-//		}
-		
-		List<Map<String, Object>> productList = productService.findAllProductList("");
+		if(session.getAttribute("loginUser") != null) {
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			productList = productService.findAllProductList(loginUser.getMemId(), rowBounds);
+		} else {
+			productList = productService.findAllProductList("", rowBounds);
+		}
+		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("productList", productList);
 		
 		return "product/productList";
@@ -125,9 +153,13 @@ public class ProductController {
 		}
 		
 		Map<String, Object> product = productService.findById(map);
+		List<ProductFile> productFiles = productService.findByIdFile(productNo);
+		List<Tag> productTags = productService.findByIdTag(productNo);
 		
 //		log.info("PayOption: {}", product.get("payOptionList"));
 		
+		mv.addObject("productFiles", productFiles);
+		mv.addObject("productTags", productTags);
 		mv.addObject("product", product).setViewName("product/productDetail");
 		
 		return mv;
@@ -142,20 +174,19 @@ public class ProductController {
 								String productPurpose1,
 								String productPurpose2,
 								String tags,
-								MultipartFile mainImage1,
-								MultipartFile mainImage2,
-								MultipartFile mainImage3,
+								MultipartFile[] mainImage,
+								HttpSession session,
 								Model model) {
 		
-		log.info("입력 정보 : {}", product);
-		log.info("입력 정보 : {}", productDetail);
-		log.info("입력 정보 : {}", productForm);
-		log.info("입력 정보 : {}", tags);
-		log.info("입력 정보 : {}", productPurpose1);
-		log.info("입력 정보 : {}", productPurpose2);
-//		log.info("사진1 : {}", mainImage1);
-//		log.info("사진2 : {}", mainImage2);
-//		log.info("사진3 : {}", mainImage3);
+//		log.info("입력 정보 : {}", product);
+//		log.info("입력 정보 : {}", productDetail);
+//		log.info("입력 정보 : {}", productForm);
+//		log.info("입력 정보 : {}", tags);
+//		log.info("입력 정보 : {}", productPurpose1);
+//		log.info("입력 정보 : {}", productPurpose2);
+//		log.info("사진들 : {}", mainImage[0]);
+//		log.info("사진들 : {}", mainImage[1]);
+//		log.info("사진들 : {}", mainImage[2]);
 		
 		String productPurpose = "";
 		if(productPurpose1 != null && productPurpose2 != null) {
@@ -169,17 +200,80 @@ public class ProductController {
 		productDetail.setProductPurpose(productPurpose);
 		
 		String[] tagArray = tags.split("#");
-		List<String> tagList = new ArrayList<>();
+		List<Tag> tagList = new ArrayList<>();
 		
 		for(String s : tagArray) {
 			if(!s.trim().isEmpty()) {
-				tagList.add(s);
+				Tag tag = new Tag();
+				tag.setTagName(s.trim());
+				tagList.add(tag);
 			}
 		}
 		
-		int result = productService.insertProduct(product, productDetail, productForm, tagList);
+//		log.info("태그 : {}", tagList);
 		
-		return "";
+		// 파일 처리
+		List<ProductFile> productFiles = new ArrayList<>();
+		
+		for(int i=0; i<mainImage.length; i++) {
+			if(!mainImage[i].getOriginalFilename().equals("")) {
+				ProductFile productFile = new ProductFile();
+				String changeName = saveFile(mainImage[i], session);
+				
+				productFile.setOriginName(mainImage[i].getOriginalFilename());
+				productFile.setChangeName(changeName);
+				productFile.setFilePath("resources/uploadFiles/" + changeName);
+				
+				productFiles.add(productFile);
+			}
+		}
+		
+		
+		// 중복 제거를 위해 HashSet에 리스트를 넣어 중복을 제거한 뒤 다시 ArrayList로 변환
+		List<String> optionNameList = productForm.getOptionName();
+		List<String> changeList = new ArrayList<String>(new HashSet<String>(optionNameList));
+		
+//		log.info("changeList : {}", changeList);
+		
+		int result = productService.insertProduct(product, productDetail, changeList, 
+				productForm, tagList, productFiles);
+		
+		if(result > 0) {
+			session.setAttribute("alertMsg", "상품 등록 성공!");
+			return "redirect:/product";
+		}
+		
+		model.addAttribute("errorMsg", "상품 등록 실패..ㅠ");
+		return "error/errorPage";
+	}
+	
+	// 파일 이름 바꾸고 저장하는 메서드
+	public String saveFile(MultipartFile upfile, HttpSession session) {
+		
+		String originName = upfile.getOriginalFilename();
+		String ext = originName.substring(originName.lastIndexOf('.')+1, originName.length());
+		
+		int num = (int) (Math.random() * 900) + 100;
+		// 곱하는 값 : 값의 범위
+		// 더하는 값 : 시작값
+		// ex) 100 ~ 999
+		
+		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		
+		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+		
+		String changeName = "ARTSPARK_" + currentTime + "_" + num + "." + ext;
+		
+		
+		try {
+			upfile.transferTo(new File(savePath + changeName));
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return changeName;
 	}
 	
 }

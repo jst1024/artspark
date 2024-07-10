@@ -8,12 +8,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>작품 상세보기</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <jsp:include page="../common/head.jsp"></jsp:include>
     <style>
+    	body {
+	    	background-color: #f8f9fa;
+		}
     	#profileImg {
     		width:110px;
     		height:110px;
@@ -144,14 +143,14 @@
     <div class="container container-custom mt-5">
     	<span>${ product.productPurpose } 제작 </span>&nbsp;&nbsp;&nbsp;
     	<small style="color: #999;">${ product.productCategory } / 작품번호 : ${ product.productNo }</small><br>
-        <h2 style="margin-top:10px;">${ product.memId } 작가 · ${ product.productTitle }</h2><br>
+        <h2 style="margin-top:10px;">${ product.memNickname } 작가 · ${ product.productTitle }</h2><br>
         
 	    <div class="row" style="margin-bottom:150px;">
 	        <!-- 이미지 섹션 -->
 	        <div class="col-md-8">
-	            <img src="${path1 }/resources/images/cat1.jpg" class="img-preview">
-	            <img src="${path1 }/resources/images/cat2.jpg" class="img-preview">
-	            <img src="${path1 }/resources/images/cat3.jpg" class="img-preview">
+	        	<c:forEach items="${ productFiles }" var="productFile">
+	            	<img src="${path1 }/${ productFile.filePath }" class="img-preview">
+	            </c:forEach>
 	        </div>
 	
 	        <!-- 설명 및 옵션 섹션 -->
@@ -180,7 +179,7 @@
 			                </c:if>
 	                	</div>
 	                	<p><img id="profileImg" src="${path1 }/resources/images/profile.png" alt=""></p><br>
-	                    <p>${ product.memId } 작가</p>
+	                    <p>${ product.memNickname } 작가</p>
 	                    <p><small>${ product.artistIntro }</small><p><br><br>
 	                    <div class="star-rating"><p>★★★★★ <span style="color:black;"> 별점 ${ product.avgStar }</span></p></div>
 	                    <p>문의 답변율 n%</p><br><br>
@@ -456,10 +455,9 @@
 	    </div>
 	    
 	    <!-- 본문 들어갈 자리 -->
-	    <div class="row" style="margin-bottom: 150px;">
+	    <div class="row" style="margin-bottom: 70px;">
 	    	<div class="col-md-12">
-	            <h3>여기엔 본문 내용이랑 사진 들어갈거임 ㅇㅇ</h3>
-	            <p>ㅎㅇㅋㅋ</p>
+	            ${ product.productContent }
 	        </div>
 	        
 			<div class="col-md-12">
@@ -467,9 +465,16 @@
 	            <img src="${path1 }/resources/images/test05.png" class="img-preview">
 	        </div>
 	        
-	        <div class="col-md-12">
-	            <p>본문 끝 ㅋㅋ</p>
-	        </div>
+	    </div>
+	    
+	    <!-- 태그 -->
+	    <div class="tags" style="margin-bottom: 150px; text-align:center; background-color:#f1f3f5">
+	    	<span><i class="fas fa-tag"></i> </span>
+	    	<span style="font-size: 20px;">
+	    		<c:forEach items="${ productTags }" var="tag">
+	    			&nbsp;#${ tag.tagName }&nbsp;&nbsp;
+	    		</c:forEach>
+	    	</span>
 	    </div>
 	    
 	    <!-- 문의 및 답변 -->
