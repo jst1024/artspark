@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>공지사항 상세보기</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
         .container-main {
             max-width: 1200px;
@@ -27,6 +30,11 @@
             width: 100%;
             max-width: 200px;
         }
+        .img-fixed {
+            width: 500px;
+            height: 500px;
+            object-fit: cover;
+        }
         @media (max-width: 1200px) {
             .container-main {
                 padding: 0 15px;
@@ -35,6 +43,7 @@
     </style>
 </head>
 <body>
+    <jsp:include page="../common/header.jsp" />
     <div class="container-fluid" style="max-width: 1920px;">
         <div class="container-main">
             <h2 class="mt-5">공지사항 상세보기</h2>
@@ -52,13 +61,13 @@
                     </tr>
                     <tr>
                         <td colspan="4" class="notice-content">
-                        	<div class="mb-3 text-center">
-                        		<c:if test="${imgFile != null }">
-                               		<img src="${imgFile.imgFilePath}" alt="첨부 이미지" class="img-fluid">
-                            	</c:if>
+                            <div class="mb-3 text-center">
+                                <c:if test="${imgFile != null}">
+                                    <img src="${imgFile.imgFilePath}" alt="첨부 이미지" class="img-fluid img-fixed">
+                                </c:if>
                                 <c:if test="${imgFile == null}">
-                                	<span></span>
-                            	</c:if>
+                                    <span></span>
+                                </c:if>
                             </div>
                             <p>${notice.noticeContent}</p>
                         </td>
@@ -82,10 +91,10 @@
                         <button type="button" class="btn btn-secondary" onclick="location.href='managePage'">관리자페이지</button>
                         <button type="button" class="btn btn-primary" onclick="location.href='updateNotice?noticeNo=${notice.noticeNo}'">수정하기</button>
                             <form action="deleteNotice" method="post" style="display:inline;">
-	                            <input type="hidden" name="noticeNo" value="${notice.noticeNo}">
-	                            <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
-	                            <button type="submit" class="btn btn-danger">삭제하기</button>
-                        	</form>
+                                <input type="hidden" name="noticeNo" value="${notice.noticeNo}">
+                                <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
+                                <button type="submit" class="btn btn-danger">삭제하기</button>
+                            </form>
                     </c:when>
                     <c:otherwise>
                         <button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
@@ -94,6 +103,8 @@
             </div>
         </div>
     </div>
+    <jsp:include page="../common/footer.jsp" />
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

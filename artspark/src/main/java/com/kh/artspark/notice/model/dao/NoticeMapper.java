@@ -35,12 +35,14 @@ public interface NoticeMapper {
 	
 	// 상세조회
 	Notice noticeFindById(int noticeNo);
-	
+	ImgFile findImgFileByNoticeNo(int noticeNo);
 	/*
 	// 수정하기
 	int updateNotice(Notice notice);
 	*/
 	// 삭제하기
 	int deleteNotice(int noticeNo);
+
+	
 	
 }

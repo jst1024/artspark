@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>공지사항</title>
+    <title>공지사항 수정</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -51,27 +51,39 @@
     <jsp:include page="../common/header.jsp" />
 
     <div class="container-custom">
-        <h2>공지사항 등록</h2>
-        <form action="noticeInsert" method="post" enctype="multipart/form-data" onsubmit="return submitContents(this)">
+        <h2>공지사항 수정</h2>
+        <form action="noticeUpdate" method="post" enctype="multipart/form-data" onsubmit="return submitContents(this)">
             <div class="form-group">
                 <label for="title">제목</label>
                 <input type="hidden" value="${sessionScope.loginUser.memId}" name="memId">
-                <input type="text" class="form-control" id="title" name="noticeTitle" placeholder="제목을 입력해주세요">
+                <input type="hidden" value="${notice.noticeNo}" name="noticeNo">
+                <input type="text" class="form-control" id="title" name="noticeTitle" placeholder="제목을 입력해주세요" value="${notice.noticeTitle}">
             </div>
             <div class="form-group">
                 <label for="editorTxt">내용</label>
-                <textarea class="form-control" id="editorTxt" name="noticeContent" rows="10" placeholder="내용을 입력해주세요"></textarea>
+                <textarea class="form-control" id="editorTxt" name="noticeContent" rows="10" placeholder="내용을 입력해주세요">${notice.noticeContent}</textarea>
             </div>
             <div class="form-group">
                 <label for="file">첨부파일</label>
                 <div class="file-input-wrapper">
                     <label class="btn btn-secondary" for="file">파일 선택</label>
                     <input type="file" id="file" name="upfile" onchange="updateFileName(this)">
-                    <span id="file-name" class="file-name">선택된 파일 없음</span>
+                    <span id="file-name" class="file-name">
+                        <c:if test="${not empty imgFile}">
+                            현재 파일: ${imgFile.originName}
+                        </c:if>
+                        <c:if test="${empty imgFile}">
+                            선택된 파일 없음
+                        </c:if>
+                    </span>
                 </div>
                 <small class="form-text text-muted">업로드 가능 파일 (pdf 등) 최대 업로드 파일 크기 (50MB)</small>
+                <c:if test="${not empty imgFile}">
+                    <input type="hidden" name="existingFilePath" value="${imgFile.imgFilePath}">
+                    <input type="hidden" name="existingFileName" value="${imgFile.originName}">
+                </c:if>
             </div>
-            <button type="submit" class="btn btn-primary" style="float: right;">등록하기</button>
+            <button type="submit" class="btn btn-primary" style="float: right;">수정하기</button>
         </form>
     </div>
     

@@ -12,6 +12,17 @@
 	            NOTICE_DATE noticeDate,
 				MEM_ID memId
 	</sql>
+	
+	<sql id="selectImgFile">
+		SELECT
+		        FILE_NO imgFile,
+		        BOARD_TYPE boardType,
+		        BOARD_NO boardNo,
+		        ORIGIN_NAME originName,
+		        CHANGE_NAME changeName,
+		        FILE_PATH imgFilePath,
+		        FILE_DATE imgFileDate
+	</sql>
 
 
 <select id="noticeCount" resultType="_int">
@@ -150,6 +161,15 @@
 		  		NOTICE
 		 WHERE
 		 		NOTICE_NO = #{noticeNo}
+	</select>
+	
+	<select id="findImgFileByNoticeNo" parameterType="int" resultType="com.kh.artspark.common.model.vo.ImgFile">
+	<include refid="selectImgFile"/>
+    FROM 
+        	IMG_FILE 
+    WHERE 
+        	BOARD_NO = #{noticeNo} 
+      AND   BOARD_TYPE = '공지'
 	</select>
 	
 	<delete id="deleteNotice" parameterType="_int">
