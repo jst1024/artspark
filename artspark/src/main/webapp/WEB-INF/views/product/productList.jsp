@@ -117,7 +117,12 @@
             <div class="col-md-4">
 	            <form action="${path2 }/product/search" method="get">
 	                <div class="input-group">
-		                    <input type="text" class="form-control" name="keyword" placeholder="검색어 입력">
+	                		<c:if test="${ empty keyword }">
+		                    	<input type="text" class="form-control" name="keyword" placeholder="검색어 입력">
+		                    </c:if>
+		                    <c:if test="${ not empty keyword }">
+		                    	<input type="text" class="form-control" name="keyword" value="${ keyword }" placeholder="검색어 입력">
+		                    </c:if>
 		                    <div class="input-group-append">
 		                        <button class="btn btn-primary" type="submit">검색</button>
 		                    </div>
@@ -139,18 +144,9 @@
             <div class="col">
                 <div id="hashtags">
                 	<c:forEach items="${ tags }" var="tag">
-                		<c:choose>
-                		<c:when test="${ category.equals('') }">
-	                		<a href="product/search?keyword=${ tag.tagName }">
-	                    		<button class="tagbtn" style="margin-bottom: 10px;">#${ tag.tagName }</button>
-	                    	</a>
-                    	</c:when>
-                    	<c:otherwise>
-                    		<a href="product/search?keyword=${ tag.tagName }&category=${ category }">
-	                    		<button class="tagbtn" style="margin-bottom: 10px;">#${ tag.tagName }</button>
-	                    	</a>
-                    	</c:otherwise>
-                    	</c:choose>
+                		<a href="${path2 }/product/search?keyword=${ tag.tagName }">
+                    		<button class="tagbtn" style="margin-bottom: 10px;">#${ tag.tagName }</button>
+                    	</a>
                     </c:forEach>
                     <!-- Add other tags here -->
                 </div>
@@ -158,6 +154,11 @@
         </div>
         <div class="row">
             <!-- Product Cards -->
+            <c:if test="${ empty productList }">
+            	<div style="margin: 20px;">
+            		<h3>상품이 존재하지 않습니다.</h3>
+            	</div>
+            </c:if>
             <c:forEach items="${ productList }" var="product">
 	            <div class="col-md-3 mb-4 product-card">
 	                <div class="card">
@@ -256,7 +257,12 @@
 			            	<li class="page-item"><a class="page-link" href="#">이전</a></li>
 		            	</c:when>
 		            	<c:otherwise>
-		            		<li class="page-item"><a class="page-link" href="product?page=${ pageInfo.currentPage - 1 }">이전</a></li>
+		            		<c:if test="${ empty keyword }">
+		            			<li class="page-item"><a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage - 1 }">이전</a></li>
+		            		</c:if>
+		            		<c:if test="${ not empty keyword }">
+		            			<li class="page-item"><a class="page-link" href="${path2 }/product/search/?page=${ pageInfo.currentPage - 1 }&keyword=${keyword}">이전</a></li>
+		            		</c:if>
 		            	</c:otherwise>
 		            </c:choose>
 		            <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
@@ -267,9 +273,16 @@
 			            		</li>
 			            	</c:when>
 			            	<c:otherwise>
-			            		<li class="page-item">
-			            			<a class="page-link" href="product?page=${ p }">${ p }</a>
-			            		</li>
+			            		<c:if test="${ empty keyword }">
+				            		<li class="page-item">
+				            			<a class="page-link" href="${path2 }/product?page=${ p }">${ p }</a>
+				            		</li>
+			            		</c:if>
+			            		<c:if test="${ not empty keyword }">
+				            		<li class="page-item">
+				            			<a class="page-link" href="${path2 }/product/search?page=${ p }&keyword=${keyword}">${ p }</a>
+				            		</li>
+			            		</c:if>
 			            	</c:otherwise>
 		            	</c:choose>
 		            </c:forEach>
@@ -281,9 +294,16 @@
 			            	</li>
 			            </c:when>
 			            <c:otherwise>
-			            	<li class="page-item">
-			            		<a class="page-link" href="product?page=${ pageInfo.currentPage + 1 }">다음</a>
-			            	</li>
+			            	<c:if test="${ empty keyword }">
+				            	<li class="page-item">
+				            		<a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage + 1 }">다음</a>
+				            	</li>
+			            	</c:if>
+			            	<c:if test="${ not empty keyword }">
+				            	<li class="page-item">
+				            		<a class="page-link" href="${path2 }/product/search?page=${ pageInfo.currentPage + 1 }&keyword=${keyword}">다음</a>
+				            	</li>
+			            	</c:if>
 			            </c:otherwise>
 		            </c:choose>
 	            </c:if>

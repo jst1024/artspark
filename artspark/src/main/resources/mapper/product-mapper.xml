@@ -25,23 +25,38 @@
 	<!-- 검색 상품 개수 조회 -->
 	<select id="productSearchCount" parameterType="String" resultType="_int">
 		SELECT
-				COUNT(*)
+		        COUNT(*)
 		  FROM
-		  		PRODUCT P
-		  		JOIN (
-		  				SELECT
-		  						TAG_NAME
-		  				  FROM
-		  				  		TAG
-		  				 WHERE
-		  			 )
-		 WHERE
-		 		PRODUCT_TITLE LIKE '%' || #{keyword} '%'
-		    OR
-		    	MEM_ID LIKE '%' || #{keyword} '%'
-		    OR
-		    					
+		        (
+		        SELECT
+				        P.PRODUCT_TITLE,
+				        M.MEM_NICKNAME,
+				        MIN(TN.TAG_NAME) AS TAG_NAME
+				  FROM
+				        PRODUCT P
+				        JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
+				        JOIN (
+				                SELECT
+				                        T.TAG_NAME,
+				                        TC.PRODUCT_NO
+				                  FROM
+				                        TAG T
+				                        JOIN TAG_CHECK TC ON T.TAG_NO = TC.TAG_NO
+				             ) TN ON P.PRODUCT_NO = TN.PRODUCT_NO
+				 WHERE
+				        PRODUCT_TITLE LIKE '%' || #{keyword} || '%'
+				    OR
+				        M.MEM_NICKNAME LIKE '%' || #{keyword} || '%'
+				    OR
+				        TN.TAG_NAME LIKE '%' || #{keyword} || '%'
+				 GROUP
+			        BY
+			            P.PRODUCT_TITLE,
+			            M.MEM_NICKNAME
+		        )
 	</select>
+	
+	
 	
 	<!-- 태그 30개 조회 -->
 	<select id="getTags" resultType="tag">
@@ -63,7 +78,7 @@
 		 		ROWNUM BETWEEN 1 AND 30
 	</select>
 	
-	
+	<!-- 상품 목록 resultMap -->
 	<resultMap id="productResultMap" type="hashmap">
 	    <result property="productNo" column="PRODUCT_NO"/>
 	    <result property="productTitle" column="PRODUCT_TITLE"/>
@@ -209,6 +224,87 @@
 	     		P.PRODUCT_NO DESC
 	</select>
 	
+	<!-- 상품 검색 -->
+	<select id="productSearchList" parameterType="map" resultMap="productResultMap">
+		SELECT
+				P.PRODUCT_NO,
+				P.PRODUCT_TITLE,
+				M.MEM_ID,
+				M.MEM_NICKNAME,
+				PD.PRODUCT_PURPOSE,
+				NVL(AVG(R.REVIEW_STAR), 0) AS AVG_STAR,
+				NVL(MIN_DO.MIN_PRICE, 0) AS MIN_PRICE,
+				NVL(JB.IS_LIKED, 0) AS IS_LIKED	,
+				PF.CHANGE_NAME,		
+				PF.FILE_PATH,
+                MIN(TN.TAG_NAME) AS TAG_NAME
+		  FROM
+		  		PRODUCT P
+		  		JOIN 		MEMBER M ON P.MEM_ID = M.MEM_ID
+		  		JOIN 		PRODUCT_DETAIL PD ON P.PRODUCT_NO = PD.PRODUCT_NO
+		  		LEFT JOIN 	REVIEW R ON P.PRODUCT_NO = R.PRODUCT_NO
+		  		JOIN 	(
+			  				SELECT
+			  						PO.PRODUCT_NO,
+			  						MIN(DO.DETAIL_OPTION_PRICE) MIN_PRICE
+			  				  FROM
+			  					  	PAY_OPTION PO
+			  					  	JOIN DETAIL_OPTION DO ON PO.PAY_OPTION_NO = DO.PAY_OPTION_NO
+			  				 GROUP
+			  					BY
+			  					 	PO.PRODUCT_NO	
+			  			  )	MIN_DO ON P.PRODUCT_NO = MIN_DO.PRODUCT_NO
+		  		LEFT JOIN (
+		  					SELECT
+		  							J.PRODUCT_NO,
+		  							1 AS IS_LIKED
+		  					  FROM
+		  					  		JJIM J
+		  					 WHERE
+		  							J.MEM_ID = #{loginUserId}		
+		  				  )	JB ON P.PRODUCT_NO = JB.PRODUCT_NO 	
+		  		JOIN PRODUCTFILE PF ON P.PRODUCT_NO = PF.PRODUCT_NO
+		  		JOIN 	(
+		  					SELECT
+		  							PRODUCT_NO,
+		  							MIN(FILE_NO) FIRST_NO
+		  					  FROM
+		  					  		PRODUCTFILE
+		  					 GROUP
+		  					 	BY
+		  					 		PRODUCT_NO
+		  				) PF_MIN ON PF.FILE_NO = PF_MIN.FIRST_NO
+                JOIN (
+                        SELECT
+                                T.TAG_NAME,
+                                TC.PRODUCT_NO
+                          FROM
+                                TAG T
+                                JOIN TAG_CHECK TC ON T.TAG_NO = TC.TAG_NO
+                     ) TN ON P.PRODUCT_NO = TN.PRODUCT_NO
+          WHERE
+                PRODUCT_TITLE LIKE '%' || #{keyword} || '%'
+            OR
+                M.MEM_NICKNAME LIKE '%' || #{keyword} || '%'
+            OR
+                TN.TAG_NAME LIKE '%' || #{keyword} || '%'
+		 GROUP
+		 	BY
+		 		P.PRODUCT_NO,
+	            P.PRODUCT_TITLE,
+	            M.MEM_ID,
+	            M.MEM_NICKNAME,
+	            PD.PRODUCT_PURPOSE,
+	            MIN_DO.MIN_PRICE,
+	            JB.IS_LIKED,
+	            PF.CHANGE_NAME,		
+				PF.FILE_PATH
+	     ORDER
+	     	BY
+	     		P.PRODUCT_NO DESC
+	</select>
+	
+	<!-- 찜 등록 -->
 	<insert id="insertJjim" parameterType="map">
 		INSERT
 		  INTO
@@ -226,6 +322,7 @@
 				)
 	</insert>
 	
+	<!-- 찜 삭제 -->
 	<delete id="deleteJjim" parameterType="map">
 		DELETE
 		  FROM

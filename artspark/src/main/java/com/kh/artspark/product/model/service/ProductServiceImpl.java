@@ -38,15 +38,10 @@ private final ProductMapper productMapper;
 	}
 	
 	@Override
-	public int productSearchCount() {
-		return productMapper.productSearchCount();
+	public int productSearchCount(String keyword) {
+		return productMapper.productSearchCount(keyword);
 	}
 
-	@Override
-	public int categorySearchCount(String category) {
-		return productMapper.categorySearchCount();
-	}
-	
 	@Override
 	public List<Map<String, Object>> findAllProductList(String loginUserId, RowBounds rowBounds) {
 		return productMapper.findAllProductList(loginUserId, rowBounds);
@@ -55,6 +50,11 @@ private final ProductMapper productMapper;
 	@Override
 	public List<Map<String, Object>> findAllCategoryList(Map<String, String> map, RowBounds rowBounds) {
 		return productMapper.findAllCategoryList(map, rowBounds);
+	}
+	
+	@Override
+	public List<Map<String, Object>> productSearchList(Map<String, String> map, RowBounds rowBounds) {
+		return productMapper.productSearchList(map, rowBounds);
 	}
 	
 	@Override

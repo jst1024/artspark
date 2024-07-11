@@ -20,16 +20,16 @@ public interface ProductService {
 	int productCategoryCount(String category);
 	
 	// 검색 상품 개수 조회
-	int productSearchCount();
+	int productSearchCount(String keyword);
 
-	// 카테고리별 검색 상품 개수 조회 
-	int categorySearchCount(String category);
-	
 	// 모든 상품 목록 조회
 	List<Map<String, Object>> findAllProductList(String loginUserId, RowBounds rowBounds);
 	
 	// 카테고리별 상품 목록 조회
 	List<Map<String, Object>> findAllCategoryList(Map<String, String> map, RowBounds rowBounds);
+	
+	// 검색 상품목록 조회
+	List<Map<String, Object>> productSearchList(Map<String, String> map, RowBounds rowBounds);
 	
 	// 태그 30개 조회
 	List<Tag> getTags();

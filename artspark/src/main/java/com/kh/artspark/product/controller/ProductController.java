@@ -75,7 +75,7 @@ public class ProductController {
 		
 		// 태그 목록 30개 불러오기
 		List<Tag> tags = productService.getTags();
-
+		
 		model.addAttribute("tags", tags);
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("productList", productList);
@@ -131,8 +131,38 @@ public class ProductController {
 								@RequestParam(value="page", defaultValue = "1") int page,
 								HttpSession session,
 								Model model) {
-		log.info("{}", keyword);
-		int searchCount = productService.productSearchCount();
+		log.info("키워드 : {}", keyword);
+		int searchCount = productService.productSearchCount(keyword);
+		log.info("검색 수 : {}개", searchCount);
+		int currentPage = page;
+		int pageLimit = 5;
+		int boardLimit = 1;
+		
+		PageInfo pageInfo = PageTemplate.getPageInfo(searchCount, currentPage, pageLimit, boardLimit);
+		
+		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
+		
+		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("keyword", keyword);
+		
+		if(session.getAttribute("loginUser") != null) {
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			map.put("loginUserId", loginUser.getMemId());
+		} else {
+			map.put("loginUserId", "");
+		}
+		
+		productList = productService.productSearchList(map, rowBounds);
+		
+		// 태그 목록 30개 불러오기
+		List<Tag> tags = productService.getTags();
+		
+		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("tags", tags);
+		model.addAttribute("productList", productList);
+		model.addAttribute("keyword", keyword);
 		
 		return "product/productList";
 	}
@@ -328,6 +358,7 @@ public class ProductController {
 		
 		return changeName;
 	}
+	
 	
 }
 
