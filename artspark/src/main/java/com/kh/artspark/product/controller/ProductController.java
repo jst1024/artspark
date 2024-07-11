@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ProductController {
 
+	// ㅋㅋ내가낙서하고감
 	@GetMapping("productList")
 	public String productList() {
 		return "product/productList";
