@@ -1,6 +1,8 @@
 package com.kh.artspark.member.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -160,5 +163,21 @@ public class MemberController {
 		return memberService.idCheck(checkId) > 0 ? "ERROR" : "SUCCESS";
 	}
 	
+	
+	@GetMapping("findId")
+    public Map<String, Object> findId(@RequestParam String memEmail) {
+        Map<String, Object> response = new HashMap<>();
+        
+        String foundId = memberService.findId(memEmail);
+        
+        if (foundId != null) {
+            response.put("success", true);
+            response.put("id", foundId);
+        } else {
+            response.put("success", false);
+            response.put("errorMsg", "해당 이메일로 등록된 아이디가 없습니다.");
+        }
+        return response;
+    }
 	
 }

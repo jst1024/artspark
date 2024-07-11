@@ -42,8 +42,8 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.update(sqlSession,member);
 	}
 	@Override
-	public int findId(Member member) {
-		return 0;
+	public String findId(String memEmail) {
+		return memberRepository.findId(sqlSession,memEmail);
 	}
 	@Override
 	public int findPwd(Member member) {
