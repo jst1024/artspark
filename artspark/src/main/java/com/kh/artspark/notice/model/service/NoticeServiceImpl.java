@@ -66,18 +66,24 @@ public class NoticeServiceImpl implements NoticeService {
 		return noticeMapper.findImgFileByNoticeNo(noticeNo);
 	}	
 	
-	/*
+	@Transactional
 	@Override
-	public int updateNotice(Notice notice) {
-		return noticeMapper.updateNotice(notice);
+	public int updateNotice(Notice notice, ImgFile imgFile) {
+		 int result1 = noticeMapper.updateNotice(notice);
+		 int result2 = 1;
+		 
+		 if(imgFile.getOriginName() != null) {
+			  result2 = noticeMapper.updateImgFile(imgFile);
+		 }
+		 
+		 return result1 * result2;
 	}
-	*/
 	@Override
 	public int deleteNotice(int noticeNo) {
 		return noticeMapper.deleteNotice(noticeNo);
 	}
-
-
+	
+	
 	
 	
 

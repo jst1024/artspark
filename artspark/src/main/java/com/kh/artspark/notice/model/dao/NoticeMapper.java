@@ -30,18 +30,25 @@ public interface NoticeMapper {
     // 파일 등록
     int insertImgFile(ImgFile imgFile);
 	
+    /*
 	//게시글 조회수 증가
 	int noticeIncreaseCount(int noticeNo);
-	
+	*/
+    
 	// 상세조회
 	Notice noticeFindById(int noticeNo);
 	ImgFile findImgFileByNoticeNo(int noticeNo);
-	/*
+	
 	// 수정하기
 	int updateNotice(Notice notice);
-	*/
+	
+	// 파일 수정
+    int updateImgFile(ImgFile imgFile);
+	
 	// 삭제하기
 	int deleteNotice(int noticeNo);
+
+
 
 	
 	

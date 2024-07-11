@@ -67,10 +67,10 @@
                 <label for="file">첨부파일</label>
                 <div class="file-input-wrapper">
                     <label class="btn btn-secondary" for="file">파일 선택</label>
-                    <input type="file" id="file" name="upfile" onchange="updateFileName(this)">
+                    <input type="file" id="file" name="reUpFile" onchange="updateFileName(this)">
                     <span id="file-name" class="file-name">
                         <c:if test="${not empty imgFile}">
-                            현재 파일: ${imgFile.originName}
+                            현재 파일: ${imgFile.changeName}
                         </c:if>
                         <c:if test="${empty imgFile}">
                             선택된 파일 없음
@@ -78,10 +78,6 @@
                     </span>
                 </div>
                 <small class="form-text text-muted">업로드 가능 파일 (pdf 등) 최대 업로드 파일 크기 (50MB)</small>
-                <c:if test="${not empty imgFile}">
-                    <input type="hidden" name="existingFilePath" value="${imgFile.imgFilePath}">
-                    <input type="hidden" name="existingFileName" value="${imgFile.originName}">
-                </c:if>
             </div>
             <button type="submit" class="btn btn-primary" style="float: right;">수정하기</button>
         </form>

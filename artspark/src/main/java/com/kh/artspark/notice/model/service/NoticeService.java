@@ -27,10 +27,10 @@ public interface NoticeService {
 	// 게시글 상세조회
 	Notice noticeFindById(int noticeNo);
 	ImgFile findImgFileByNoticeNo(int noticeNo);
-	/*
+	
 	// 수정
-	int updateNotice(Notice notice);
-	*/
+	int updateNotice(Notice notice, ImgFile imgFile);
+	
 	//삭제
 	int deleteNotice(int noticeNo);
 	
