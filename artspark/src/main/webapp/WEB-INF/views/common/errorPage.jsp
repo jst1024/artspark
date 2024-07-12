@@ -6,7 +6,7 @@
     <title>난 에러페이지얌</title> 
 </head>
 <body>
-    <jsp:include page="header.jsp" />
+
 
     <br>
     <div align="center">

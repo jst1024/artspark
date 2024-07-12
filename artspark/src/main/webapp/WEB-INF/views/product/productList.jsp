@@ -7,7 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 리스트</title>
-    <jsp:include page="../common/head.jsp"></jsp:include>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
 	    body {
 	    background-color: #f8f9fa;
@@ -31,7 +35,7 @@
 			padding: 20px;
 		}
 		
-		.card {
+		.product-card {
 		    cursor: pointer;
 		}
 		
@@ -49,7 +53,7 @@
 		}
 		
 		.card-img-top {
-		    width: 270px;
+		    width: 255px;
 		    height: 192px;
 		    object-fit: cover;
 		    transition: all 0.3s ease;
@@ -90,8 +94,6 @@
 		    opacity: 1;
 		}
 		
-		#pagingArea {width:fit-content; margin:auto;}
-		
 		.pagination .page-link {
 		    color: #007bff;
 		}
@@ -108,10 +110,7 @@
         <div class="row my-4">
             <div class="col-md-2">
                 <select class="form-control">
-                    <option>일러스트</option>
-                    <option>디자인</option>
-                    <option>영상·음향</option>
-                    <option>웹툰·만화</option>
+                    <option>작가</option>
                     <!-- Add other options here -->
                 </select>
             </div>
@@ -124,14 +123,9 @@
                 </div>
             </div>
             <div class="col-md-6 text-right">
-            	<c:if test="${ sessionScope.loginUser != null }">
-	            	<a href="productInsertForm">
-	                	<button class="btn btn-primary">작품 등록 / 수정</button>
-	                </a>
-                </c:if>
-                <c:if test="${ sessionScope.loginUser eq null }">
-                	<button class="btn btn-primary" onclick="loginAlert();">작품 등록 / 수정</button>
-                </c:if>
+            	<a href="productInsertForm">
+                	<button class="btn btn-primary">작품 등록 / 수정</button>
+                </a>
             </div>
         </div>
         <div class="row mb-3">
@@ -146,40 +140,23 @@
         </div>
         <div class="row">
             <!-- Product Cards -->
-            <c:forEach items="${ productList }" var="product">
-	            <div class="col-md-3 mb-4 product-card">
+            <c:forEach begin="1" end="12">
+	            <div class="col-md-3 mb-4 product-card" v-for="item in items" :key="item.id">
 	                <div class="card">
-	                    <img class="card-img-top" src="${ product.filePath }" alt="Card image cap">
+	                    <img class="card-img-top" src="resources/images/cat1.jpg" alt="Card image cap">
 	                    <div class="card-body">
-	                        <h5 class="card-title">${ product.memNickname } / ${ product.productTitle }
-	                        <input type="hidden" name="productNo" value="${ product.productNo }">
-	                        	<c:if test="${ sessionScope.loginUser eq null }">
-	                        		<span class="heart-icon" onclick="loginAlert();">
-					                    <i class="far fa-heart"></i>
-					                </span>
-	                        	</c:if>
-	                        	<c:if test="${ sessionScope.loginUser != null }">
-	                        		<c:if test="${ product.isLiked eq 1 }">
-			                        	<span class="heart-icon" onclick="clickHeart(this)">
-			                        		<input type="hidden" name="productNo" value="${ product.productNo }">
-						                    <i class="fas fa-heart"></i>
-						                </span>
-					                </c:if>
-					                <c:if test="${ product.isLiked eq 0 }">
-			                        	<span class="heart-icon" onclick="clickHeart(this)">
-			                        		<input type="hidden" name="productNo" value="${ product.productNo }">
-						                    <i class="far fa-heart"></i>
-						                </span>
-					                </c:if>
-				                </c:if>
+	                        <h5 class="card-title">작가이름 / 제목
+	                        	<span class="heart-icon" onclick="toggleHeart(event, this)">
+				                    <i class="far fa-heart"></i>
+				                </span>
 	                        </h5>
 	                        <div class="d-flex justify-content-between">
 	                            <div>
-	                                <span class="badge badge-warning">★★★★★(${ product.avgStar })</span>
+	                                <span class="badge badge-warning">★★★★★</span>
 	                            </div>
-	                            <div>${ product.minPrice }원 ~</div>
+	                            <div>50000원 ~</div>
 	                        </div>
-	                        <p class="card-text">${ product.productPurpose }</p>
+	                        <p class="card-text">용도(상업용)</p>
 	                    </div>
 	                </div>
 	            </div>
@@ -187,138 +164,38 @@
         </div>
         
         <script>
-        	
-        	$('.card').click(e => {
-    		    if (!$(e.target).closest('.heart-icon').length) {
-    		    	const productNo = $(e.currentTarget).find('input[name="productNo"]').val();
-    		    	console.log(productNo);
-    		        location.href = 'product/' + productNo;
-    		    }
-    		});
-        	
-			// 빈 하트 클릭 시 : 빨간 하트로 토글 및 로그인유저의 찜 목록에 상품 추가
-			// 빨간 하트 클릭 시 : 빈 하트로 토글 및 로그인유저의 찜 목록에서 상품 삭제
-        	function clickHeart(event) {
+        	$(() => {
         		
-        		const productNo = $(event).children().eq(0).val();
-        		const icon = $(event).children().eq(1).attr('class');
-        		
-        		if (icon === 'far fa-heart') { // 찜이 안되어있는 경우
-			        $(event).children().eq(1).attr('class', 'fas fa-heart')
-			        
-			        // 찜테이블에 등록
-			        $.ajax({
-	        			url : 'product/jjim/' + productNo,
-	        			type : 'post',
-	        			success : result => {
-	        				alertify.alert(result.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
-	        			}
-	        		});
-			    } else { // 찜이 되어있는 경우
-			    	$(event).children().eq(1).attr('class', 'far fa-heart')
-			    	
-			        // 찜테이블에서 삭제
-			        $.ajax({
-	        			url : 'product/jjim/' + productNo,
-	        			type : 'delete',
-	        			success : result => {
-	        				alertify.alert(result.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
-	        			}
-	        		});
+        		$('.product-card').click(e => {
+        		    if (!$(e.target).closest('.heart-icon').length) {
+        		        location.href = 'productDetail';
+        		    }
+        		});
+        	});
+        	
+        	// 하트 클릭시 토글
+        	function toggleHeart(event, element) {
+			    event.stopPropagation(); // 이벤트 전파 방지
+			    const icon = element.querySelector('i');
+			    if (icon.classList.contains('far')) {
+			        icon.classList.remove('far');
+			        icon.classList.add('fas');
+			    } else {
+			        icon.classList.remove('fas');
+			        icon.classList.add('far');
 			    }
-        	}
-        	
-        	// 로그인 안하고 하트 누를 시 경고메세지 alert
-        	function loginAlert() {
-        		alertify.alert('로그인이 필요합니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
-        	}
+			}
         </script>
         
         <!-- 페이징 처리 -->
-        <div id="pagingArea">
-	        <ul class="pagination">
-	        
-	        	<c:if test="${ category eq null }"> 
-	        		<c:choose>
-		        		<c:when test="${ pageInfo.currentPage eq 1 }">
-			            	<li class="page-item"><a class="page-link" href="#">이전</a></li>
-		            	</c:when>
-		            	<c:otherwise>
-		            		<li class="page-item"><a class="page-link" href="product?page=${ pageInfo.currentPage - 1 }">이전</a></li>
-		            	</c:otherwise>
-		            </c:choose>
-		            <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
-		            	<c:choose>
-			            	<c:when test="${ pageInfo.currentPage == p }">
-			            		<li class="page-item active">
-			            			<a class="page-link" href="#">${ p }</a>
-			            		</li>
-			            	</c:when>
-			            	<c:otherwise>
-			            		<li class="page-item">
-			            			<a class="page-link" href="product?page=${ p }">${ p }</a>
-			            		</li>
-			            	</c:otherwise>
-		            	</c:choose>
-		            </c:forEach>
-		            
-		            <c:choose>
-			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
-			            	<li class="page-item">
-			            		<a class="page-link" href="#">다음</a>
-			            	</li>
-			            </c:when>
-			            <c:otherwise>
-			            	<li class="page-item">
-			            		<a class="page-link" href="product?page=${ pageInfo.currentPage + 1 }">다음</a>
-			            	</li>
-			            </c:otherwise>
-		            </c:choose>
-	            </c:if>
-	            
-	            <c:if test="${ category != null }">
-	            	<c:choose>
-		        		<c:when test="${ pageInfo.currentPage eq 1 }">
-			            	<li class="page-item">
-			            		<a class="page-link" href="#">이전</a>
-			            	</li>
-		            	</c:when>
-		            	<c:otherwise>
-		            		<li class="page-item">
-		            			<a class="page-link" href="product?page=${ pageInfo.currentPage - 1 }&category=${ category }">이전</a>
-		            		</li>
-		            	</c:otherwise>
-		            </c:choose>
-		            <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
-		            	<c:choose>
-			            	<c:when test="${ pageInfo.currentPage == p }">
-			            		<li class="page-item active">
-			            			<a class="page-link" href="#">${ p }</a>
-			            		</li>
-			            	</c:when>
-			            	<c:otherwise>
-			            		<li class="page-item">
-			            			<a class="page-link" href="product?page=${ p }&category=${ category }">${ p }</a>
-			            		</li>
-			            	</c:otherwise>
-		            	</c:choose>
-		            </c:forEach>
-		            
-		            <c:choose>
-			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
-			            	<li class="page-item">
-			            		<a class="page-link" href="#">다음</a>
-			            	</li>
-			            </c:when>
-			            <c:otherwise>
-			            	<li class="page-item">
-			            		<a class="page-link" href="product?page=${ pageInfo.currentPage + 1 }&category=${ category }">다음</a>
-			            	</li>
-			            </c:otherwise>
-		            </c:choose>
-	            </c:if>
-	        </ul>
-	    </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">4</a></li>
+            </ul>
+        </nav>
     </div>
     <jsp:include page="../common/footer.jsp" />
 </body>
