@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.artspark.request.model.dao.RequestMapper">
+	<sql id="selectRequest">
+		SELECT
+				REQ_NO reqNo,
+				REQ_PURPOSE reqPurpose,
+	            REQ_TITLE reqTitle,
+	            REQ_CATEGORY reqCategory,
+	            REQ_CONTENT reqContent,
+	            REQ_DATE reqDate,
+	            REQ_COUNT reqCount,
+				MEM_ID memId
+	</sql>
+	
+	<sql id="selectImgFile">
+		SELECT
+		        FILE_NO imgFile,
+		        BOARD_TYPE boardType,
+		        BOARD_NO boardNo,
+		        ORIGIN_NAME originName,
+		        CHANGE_NAME changeName,
+		        FILE_PATH imgFilePath,
+		        FILE_DATE imgFileDate
+	</sql>
+	
+	<select id="requestCount" resultType="_int">
+		SELECT 
+				COUNT(REQ_NO)
+		  FROM
+		  		REQUEST
+	</select>	
+	
+	<!-- 검색 시 행의 개수 -->
+	<select id="requestSearchCount" parameterType="map" resultType="_int">
+	    SELECT 
+	       		COUNT(*)
+	      FROM 
+	      	    REQUEST
+	     WHERE 
+	            REQ_CATEGORY = #{category}
+	    <if test="condition == 'writer'">
+	       AND 
+	            MEM_ID LIKE '%' || #{keyword} || '%'
+	    </if>
+	    <if test="condition == 'title'">
+	       AND 
+	            REQ_TITLE LIKE '%' || #{keyword} || '%'
+	    </if>	    
+	    <if test="condition == 'content'">
+	       AND 
+	            REQ_CONTENT LIKE '%' || #{keyword} || '%'
+	    </if>
+	</select>
+	
+		<!-- 검색 결과-->
+	<select id="requestFindConditionAndKeyword" parameterType="hashmap" resultType="request">
+	
+	<include refid="selectRequest"/>
+	      FROM
+	      		REQUEST
+	     WHERE
+	     		REQ_CATEGORY = #{category}
+	   	<choose>
+	   		<when test="condition == 'writer'">
+	   	   AND	
+	   		    MEM_ID LIKE '%' || #{keyword} || '%'
+	   		</when>	   	
+	   		<when test="condition == 'title'">
+	   	   AND	
+	   			REQ_TITLE LIKE '%' || #{keyword} || '%'
+	   		</when>
+			<otherwise>
+		   AND	
+				REQ_CONTENT LIKE '%' || #{keyword} || '%'
+			</otherwise>
+    	</choose>
+     	 ORDER
+     	    BY
+     			REQ_NO DESC
+	</select>
+	
+	<select id="requestFindAll" resultType="request" parameterType="map">
+	
+	<include refid="selectRequest"/>
+  	  FROM
+            (SELECT 
+                    REQ_NO,
+                    REQ_PURPOSE,
+                    REQ_TITLE,
+                    REQ_CATEGORY,
+                  	REQ_CONTENT,
+                    REQ_DATE,
+                    REQ_COUNT,
+                 	MEM_ID,
+                    ROWNUM RNUM 
+              FROM
+                   	 (SELECT 
+                             REQ_NO,
+                             REQ_PURPOSE,
+                             REQ_TITLE,
+                             REQ_CATEGORY,
+                             REQ_CONTENT,
+                             REQ_DATE,
+                             REQ_COUNT,
+							 MEM_ID
+                        FROM
+                             REQUEST                            
+                       ORDER
+                          BY
+                             REQ_NO DESC))               
+	  WHERE
+      		 RNUM BETWEEN #{startValue} AND #{endValue} 
+	</select>
+	<insert id="insertRequest" parameterType="request">
+		INSERT
+	      INTO
+	      		REQUEST
+	      		(
+	      		REQ_NO,
+	      		REQ_PURPOSE,
+	      		REQ_TITLE,
+	      		REQ_CATEGORY,
+	      		REQ_CONTENT,
+	      		REQ_DATE,
+	      		REQ_COUNT,
+	      		MEM_ID
+	      		)
+      	VALUES
+      			(
+      			REQUEST_SEQ.NEXTVAL,      			
+      			#{reqPurpose},
+      			#{reqTitle},
+      			#{reqCategory},
+      			#{reqContent},
+      			SYSDATE,
+      			DEFAULT,
+      			#{memId}
+      			)
+	</insert>
+	<insert id="insertImgFile" parameterType="ImgFile" useGeneratedKeys="true" keyProperty="imgFileNo">
+		INSERT
+	      INTO
+	      		IMG_FILE
+	      		(
+	      		FILE_NO,
+	      		BOARD_TYPE,
+	      		BOARD_NO,
+	      		ORIGIN_NAME,
+	      		CHANGE_NAME,
+	      		FILE_PATH,
+	      		FILE_DATE
+	      		)
+      	VALUES
+      			(
+      			IMG_FILE_SEQ.NEXTVAL,
+      			#{boardType},
+      			REQUEST_SEQ.CURRVAL,
+      			#{originName},
+      			#{changeName},
+      			#{imgFilePath},
+      			SYSDATE
+      			)
+	</insert>			
+	
+	<update id="increaseCount" parameterType="_int">  
+		UPDATE
+				REQUEST
+		   SET
+		   		REQ_COUNT = REQ_COUNT + 1
+		 WHERE
+		 		REQ_NO = #{reqNo}
+	</update>
+
+
+
+	
+</mapper>

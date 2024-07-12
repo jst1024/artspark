@@ -32,7 +32,7 @@
                             <li class="nav-item"><a class="nav-link" href="${path2 }/product">디자인</a></li>
                             <li class="nav-item"><a class="nav-link" href="${path2 }/product">영상·음향</a></li>
                             <li class="nav-item"><a class="nav-link" href="${path2 }/product">웹툰·만화</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">의뢰게시판</a></li>
+                            <li class="nav-item"><a class="nav-link" href="${path2 }/requestlist">의뢰게시판</a></li>
                         </ul>
                         <form class="form-inline my-2 my-lg-0">
                             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
