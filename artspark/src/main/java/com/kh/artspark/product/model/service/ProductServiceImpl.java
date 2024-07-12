@@ -38,8 +38,28 @@ private final ProductMapper productMapper;
 	}
 	
 	@Override
+	public int productSearchCount(String keyword) {
+		return productMapper.productSearchCount(keyword);
+	}
+
+	@Override
 	public List<Map<String, Object>> findAllProductList(String loginUserId, RowBounds rowBounds) {
 		return productMapper.findAllProductList(loginUserId, rowBounds);
+	}
+	
+	@Override
+	public List<Map<String, Object>> findAllCategoryList(Map<String, String> map, RowBounds rowBounds) {
+		return productMapper.findAllCategoryList(map, rowBounds);
+	}
+	
+	@Override
+	public List<Map<String, Object>> productSearchList(Map<String, String> map, RowBounds rowBounds) {
+		return productMapper.productSearchList(map, rowBounds);
+	}
+	
+	@Override
+	public List<Tag> getTags() {
+		return productMapper.getTags();
 	}
 
 	@Override

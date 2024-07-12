@@ -52,15 +52,9 @@ public class ProductController {
 	// 상품 목록 전체 조회
 	@GetMapping
 	public String findAllProductList(@RequestParam(value="page", defaultValue = "1") int page,
-									@RequestParam(value="category", defaultValue = "") String category,
 									HttpSession session, Model model) {
 		
-		int listCount;
-		if(category.equals("")) {
-			listCount = productService.productAllCount();
-		} else {
-			listCount = productService.productCategoryCount(category);
-		}
+		int listCount = productService.productAllCount();
 		int currentPage = page;
 		int pageLimit = 5;
 		int boardLimit = 1;
@@ -78,8 +72,97 @@ public class ProductController {
 		} else {
 			productList = productService.findAllProductList("", rowBounds);
 		}
+		
+		// 태그 목록 30개 불러오기
+		List<Tag> tags = productService.getTags();
+		
+		model.addAttribute("tags", tags);
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("productList", productList);
+		
+		return "product/productList";
+	}
+	
+	// 카테고리별 상품 목록 조회
+	@GetMapping("category")
+	public String findCategoryList(@RequestParam(value="page", defaultValue = "1") int page,
+									@RequestParam(value="category") String category,
+									HttpSession session, Model model) {
+		
+		int listCount = productService.productCategoryCount(category);
+		int currentPage = page;
+		int pageLimit = 5;
+		int boardLimit = 1;
+		
+		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
+
+		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
+		
+		Map<String, String> map = new HashMap<String, String>();
+		
+		// 찜테이블에 있는 멤버아이디와 로그인유저의 아이디를 비교하기위함 
+		if(session.getAttribute("loginUser") != null) {
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			map.put("loginUserId", loginUser.getMemId());
+			map.put("category", category);
+			productList = productService.findAllCategoryList(map, rowBounds);
+		} else {
+			map.put("loginUserId", "");
+			map.put("category", category);
+			productList = productService.findAllCategoryList(map, rowBounds);
+		}
+		
+		// 태그 목록 30개 불러오기
+		List<Tag> tags = productService.getTags();
+		
+		model.addAttribute("tags", tags);
+		model.addAttribute("category", category);
+		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("productList", productList);
+		
+		return "product/productList";
+	}
+	
+	// keyword 검색(작가명, 작품제목, 태그) 기능
+	@GetMapping("search")
+	public String searchProduct(String keyword,
+								@RequestParam(value="page", defaultValue = "1") int page,
+								HttpSession session,
+								Model model) {
+		log.info("키워드 : {}", keyword);
+		int searchCount = productService.productSearchCount(keyword);
+		log.info("검색 수 : {}개", searchCount);
+		int currentPage = page;
+		int pageLimit = 5;
+		int boardLimit = 1;
+		
+		PageInfo pageInfo = PageTemplate.getPageInfo(searchCount, currentPage, pageLimit, boardLimit);
+		
+		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
+		
+		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("keyword", keyword);
+		
+		if(session.getAttribute("loginUser") != null) {
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			map.put("loginUserId", loginUser.getMemId());
+		} else {
+			map.put("loginUserId", "");
+		}
+		
+		productList = productService.productSearchList(map, rowBounds);
+		
+		// 태그 목록 30개 불러오기
+		List<Tag> tags = productService.getTags();
+		
+		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("tags", tags);
+		model.addAttribute("productList", productList);
+		model.addAttribute("keyword", keyword);
 		
 		return "product/productList";
 	}
@@ -165,6 +248,10 @@ public class ProductController {
 		return mv;
 	}
 	
+	@GetMapping("productInsertForm")
+	public String productInsertForward() {
+		return "product/productInsert";
+	}
 	
 	// 상품 등록
 	@PostMapping
@@ -276,6 +363,16 @@ public class ProductController {
 		return changeName;
 	}
 	
+	
+	// 상품 삭제
+	@GetMapping("productDelete")
+	public String productDelete(int productNo, Model model) {
+		// 지워야하는거 product, product_detail, pay_option, detail_option, 
+		// 필요한거 파일패스, 
+		
+		
+		return "";
+	}
 }
 
 

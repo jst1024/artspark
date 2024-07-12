@@ -20,6 +20,7 @@
 		<typeAlias type="com.kh.artspark.product.model.vo.TagCheck" alias="tagCheck" />
 		<typeAlias type="com.kh.artspark.product.model.vo.ProductForm" alias="productForm" />
 		<typeAlias type="com.kh.artspark.product.model.vo.ProductFile" alias="productFile" />
+		<typeAlias type="com.kh.artspark.buy.model.vo.BuyOption" alias="buyOption" />
 	</typeAliases>
 	
 	<!-- 주의할 점! : 매퍼 파일을 등록하기 위해서는 반드시 해당 경로에 해당 파일이 존재해야하며 namespace 속성값도 존재해야함 -->
@@ -27,6 +28,7 @@
 		<mapper resource="/mapper/member-mapper.xml" />
 		<mapper resource="/mapper/notice-mapper.xml" />
 		<mapper resource="/mapper/product-mapper.xml" />
+		<mapper resource="/mapper/buy-mapper.xml" />
 	</mappers>
 	
 	<!-- 
