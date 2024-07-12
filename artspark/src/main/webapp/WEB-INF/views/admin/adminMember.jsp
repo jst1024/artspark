@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="path2" value="${pageContext.servletContext.contextPath }" />
 
 <!DOCTYPE html>
@@ -8,7 +9,7 @@
     <jsp:include page="../common/head.jsp" />
     <style>
         .content {
-            margin-left: 220px; 
+            margin-left: 220px; /* 사이드바의 너비보다 조금 더 넓게 설정합니다 */
             padding: 20px;
         }
         .dashboard-container {
@@ -20,6 +21,7 @@
             width: 48%;
             background-color: lightgray;
             margin-bottom: 20px;
+            margin-right:20px;
             padding: 20px;
             border-radius: 10px;
         }
@@ -32,29 +34,7 @@
             width: 100%;
             text-align: center;
         }
-        .sidebar a {
-            cursor: pointer;
-        }
     </style>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.sidebar a').on('click', function(e) {
-                e.preventDefault();
-                var page = $(this).data('page');
-                $.ajax({
-                    url: page,
-                    method: 'GET',
-                    success: function(data) {
-                        $('.content').html(data);
-                    },
-                    error: function() {
-                        alert('로딩에 실패했어요');
-                    }
-                });
-            });
-        });
-    </script>
 </head>
 <body>
     <jsp:include page="../common/header.jsp"/>

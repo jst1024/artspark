@@ -32,4 +32,10 @@ public interface MemberService {
 	
 	//회원탈퇴
 	int delete(Member memId);
+
+	//
+	List<Member> getActiveMembers(int startValue, int endValue);
+
+	//
+	int countActiveMembers();
 }

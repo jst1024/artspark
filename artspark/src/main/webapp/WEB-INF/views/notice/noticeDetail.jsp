@@ -88,7 +88,6 @@
             <div class="admin-actions">
                 <c:choose>
                     <c:when test="${sessionScope.loginUser.memId == 'admin'}">
-                        <button type="button" class="btn btn-secondary" onclick="location.href='managePage'">관리자페이지</button>
                         <button type="button" class="btn btn-primary" onclick="location.href='updateNotice?noticeNo=${notice.noticeNo}'">수정하기</button>
                             <form action="deleteNotice" method="post" style="display:inline;">
                                 <input type="hidden" name="noticeNo" value="${notice.noticeNo}">

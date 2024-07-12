@@ -49,6 +49,14 @@ public class MemberServiceImpl implements MemberService {
 	public int findPwd(Member member) {
 		return 0;
 	}
+	@Override
+	public List<Member> getActiveMembers(int startValue, int endValue) {
+		return null;
+	}
+	@Override
+	public int countActiveMembers() {
+		return 0;
+	}
 
 	
 }
