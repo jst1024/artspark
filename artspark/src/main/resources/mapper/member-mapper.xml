@@ -48,11 +48,13 @@
 			      MEM_ENROLL     memEnroll,
 				  MEM_CATEGORY   memCategory
 		  FROM
-		         MEMBER
+		         	MEMBER
 		 WHERE
 		         MEM_ID =#{memId}
 		  AND    
 		         MEM_CATEGORY IN ('A', 'B', 'C')
+		  AND
+		  		 STATUS ='Y'
     </select>
 
 	<!--아이디 중복체크 -->
@@ -94,10 +96,51 @@
     	  		MEM_CATEGORY ='B'
     </select>
 	<!-- 아이디 찾기 -->
+	<select id="findId" resultType="string" parameterType="map">
+        SELECT 
+        		MEM_ID
+          FROM
+                MEMBER
+         WHERE
+                MEM_NICKNAME= #{memNickname}
+           AND   
+           		MEM_EMAIL= #{memEmail}
+    </select>
 	
-	<!--비밀번호 찾기 -->
-	
+
 	<!--회원 탈퇴 -->
+	<update id="delete" parameterType="member">
+		UPDATE
+				MEMBER
+		   SET
+		   		STATUS ='N',
+		   		MEM_ENROLL = SYSDATE
+		 WHERE
+		 		MEM_ID=#{memId}
+	</update>
+	<!--비밀번호 찾기 -->
+	<select id="findPwd" parameterType="member">
+		SELECT
+		        MEM_PWD
+		  FROM
+		        MEMBER
+		 WHERE
+		        MEM_ID=#{memId}
+		   AND
+		        MEM_NICKNAME=#{memNickname}
+		   AND
+		        MEM_EMAIL=#{memEmail}
+	</select>
+	
+	<!-- 비밀번호 수정 -->
+	<update id="updatePwd" parameterType="member">
+		UPDATE
+				MEMBER
+		   SET
+		   		MEM_PWD = #{memPwd}
+		 WHERE
+		 		MEM_ID= #{memId}
+	</update>
 </mapper>
 
 

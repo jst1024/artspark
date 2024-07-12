@@ -1,6 +1,7 @@
 package com.kh.artspark.member.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.kh.artspark.member.model.vo.Member;
 
@@ -25,11 +26,17 @@ public interface MemberService {
 	
 	
 	//아이디찾기
-	int findId(Member member);
-	
+
+	String findId(Map<String,String>params);
+
 	//비밀번호 찾기
 	int findPwd(Member member);
 	
+	//비밀번호 수정
+	boolean updatePwd(String memPwd);
+	
 	//회원탈퇴
-	int delete(Member memId);
+	int delete(String  memId);
+	
+
 }

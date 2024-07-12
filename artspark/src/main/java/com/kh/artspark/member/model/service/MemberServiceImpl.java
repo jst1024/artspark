@@ -1,6 +1,7 @@
 package com.kh.artspark.member.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,6 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.login(sqlSession,member);
 	}
 	@Override
-	public int delete(Member memId) {
-		return memberRepository.delete(sqlSession,memId);
-	}
-	@Override
 	public int insert(Member member) {
 		return memberRepository.insert(sqlSession,member);
 	}
@@ -42,12 +39,21 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.update(sqlSession,member);
 	}
 	@Override
-	public int findId(Member member) {
-		return 0;
-	}
+	public String findId(Map<String,String>params) {
+		return memberRepository.findId(sqlSession,params);
+	}	
+
 	@Override
 	public int findPwd(Member member) {
-		return 0;
+		return memberRepository.findPwd(sqlSession,member);
+	}
+	@Override
+	public int delete(String memId) {
+		return memberRepository.delete(sqlSession,memId);
+	}
+	@Override
+	public boolean updatePwd(String memPwd) {
+		return memberRepository.update(sqlSession, memPwd);
 	}
 
 	
