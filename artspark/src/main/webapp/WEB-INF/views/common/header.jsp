@@ -42,15 +42,15 @@
                         <ul class="navbar-nav auth-links">
                             <c:choose>
                                 <c:when test="${ sessionScope.loginUser.memId eq 'admin' }">
-                                    <li class="nav-item"><a class="nav-link" href="logout">로그아웃</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="${ path2 }/logout">로그아웃</a></li>
                                     <li class="nav-item"><a class="nav-link" href="">관리자게시판</a></li>
                                 </c:when>
                                 <c:when test="${ sessionScope.loginUser eq null }">
-                                    <li class="nav-item"><a class="nav-link" href="loginPage" >로그인</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="join">회원가입</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="${ path2 }/loginPage" >로그인</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="${ path2 }/join">회원가입</a></li>
                                 </c:when>
                                 <c:otherwise>
-                                    <li class="nav-item"><a class="nav-link" href="logout">로그아웃</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="${ path2 }/logout">로그아웃</a></li>
                                     <li class="nav-item"><a class="nav-link" href="">회원정보</a></li>
                                 </c:otherwise>
                             </c:choose>

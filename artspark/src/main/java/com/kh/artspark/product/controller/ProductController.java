@@ -248,6 +248,10 @@ public class ProductController {
 		return mv;
 	}
 	
+	@GetMapping("productInsertForm")
+	public String productInsertForward() {
+		return "product/productInsert";
+	}
 	
 	// 상품 등록
 	@PostMapping
@@ -360,6 +364,15 @@ public class ProductController {
 	}
 	
 	
+	// 상품 삭제
+	@GetMapping("productDelete")
+	public String productDelete(int productNo, Model model) {
+		// 지워야하는거 product, product_detail, pay_option, detail_option, 
+		// 필요한거 파일패스, 
+		
+		
+		return "";
+	}
 }
 
 

@@ -141,6 +141,8 @@
 		  					 	BY
 		  					 		PRODUCT_NO
 		  				) PF_MIN ON PF.FILE_NO = PF_MIN.FIRST_NO
+		 WHERE
+		 		P.STATUS = 'Y'
 		 GROUP
 		 	BY
 		 		P.PRODUCT_NO,
@@ -208,6 +210,8 @@
 		  				) PF_MIN ON PF.FILE_NO = PF_MIN.FIRST_NO
 		 WHERE
 		 		P.PRODUCT_CATEGORY = #{category}
+		   AND
+		   		P.STATUS = 'Y'
 		 GROUP
 		 	BY
 		 		P.PRODUCT_NO,
@@ -283,6 +287,8 @@
                                 JOIN TAG_CHECK TC ON T.TAG_NO = TC.TAG_NO
                      ) TN ON P.PRODUCT_NO = TN.PRODUCT_NO
           WHERE
+          		P.STATUS = 'Y'
+           AND
                 PRODUCT_TITLE LIKE '%' || #{keyword} || '%'
             OR
                 M.MEM_NICKNAME LIKE '%' || #{keyword} || '%'

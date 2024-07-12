@@ -86,6 +86,7 @@
         #review-btn:hover {
         	background-image: linear-gradient(rgba(255,255,255,0.2),rgba(255,255,255,0.2));	
         }
+        #
         
         .table-head {
         	border-top: 1px solid #e6e6e6; 
@@ -142,8 +143,21 @@
 	<jsp:include page="../common/header.jsp" />
     <div class="container container-custom mt-5">
     	<span>${ product.productPurpose } 제작 </span>&nbsp;&nbsp;&nbsp;
-    	<small style="color: #999;">${ product.productCategory } / 작품번호 : ${ product.productNo }</small><br>
-        <h2 style="margin-top:10px;">${ product.memNickname } 작가 · ${ product.productTitle }</h2><br>
+    	<small style="color: #999;">${ product.productCategory } / 작품번호 : ${ product.productNo }</small>
+    	<p class="d-flex justify-content-between" style="margin-top: 10px;">
+	        <span style="font-size:28px;">${ product.memNickname } 작가 · ${ product.productTitle }</span>
+	        <span>
+	        	<c:if test="${ sessionScope.loginUser.memId.equals(product.memId) }">
+		        	<a href="${path1 }/product/productUpdateForm">
+		        		<button type="button" class="btn btn-primary">작품수정</button>&nbsp;&nbsp;
+		        	</a>
+		        	<button type="button" id="deleteBtn" class="btn btn-danger">작품삭제</button>&nbsp;&nbsp;
+	        	</c:if>
+	        	<a href="${path1 }/product">
+	        		<button type="button" class="btn btn-secondary">목록</button>
+	        	</a>
+	        </span>
+	    </p><br>
         
 	    <div class="row" style="margin-bottom:150px;">
 	        <!-- 이미지 섹션 -->
@@ -243,9 +257,8 @@
 	                	option text : 옵션 상세 목록 
 	                	option value : 가격
 	                -->
-	                <form action="${ path1 }/buy" method="post">
-		                <div id="select-options">
-		                </div>
+	                <form action="${ path1 }/buy" id="buy-form" method="post">
+		                <div id="select-options"></div>
 		                
 		                <!--
 		                	총 결제 금액
@@ -256,6 +269,7 @@
 						        <span>결제 금액</span>
 						        <span id="total-price">0원</span>
 						        <input type="hidden" name="productNo" value="${ product.productNo }">
+						        <input type="hidden" name="productTitle" value="${ product.productTitle }">
 						        <input type="hidden" name="memNickname" value="${ product.memNickname }">
 						        <input type="hidden" name="memId" value="${ product.memId }">
 						        <c:if test="${ not empty loginUser }">
@@ -278,14 +292,17 @@
 		                		
 		                		$('.price-option-select').on('change', function() {
 		                			const selectPrice = parseInt($(this).val()).toLocaleString();
-		                			const selectDetailOption = $(this).find('option:selected').text();
+		                			let selectDetailOption = $(this).find('option:selected').text();
+		                			selectDetailOption = selectDetailOption.replace(/\s*\(.*?\)\s*/g, "");
 		                			const selectOption = $(this).closest('p').find('.option-name').text();
 		                			const optionKey = selectOption + ' / ' + selectDetailOption;
 		                			// console.log(optionKey);
 		                			
 		                			// 이미 선택된 옵션인지 확인
 		                			if(selectedOptions.has(optionKey)) {
-		                				alert('이미 선택된 옵션입니다.');
+		                				alertify.alert('ㅇ? 이미선택한거임').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+		                				// 다시 드롭다운 옵션을 '선택하세요'로 바꿔주기
+			                			$('.price-option-select option[value=""]').prop('selected', true);
 										return;	                				
 		                			}
 		                			
@@ -305,10 +322,10 @@
 		                					   + '</div>'
 		                					   + '<div class="number-and-remove">'
 		                					   + '<span id="option-price' + i + '">' + selectPrice + '원</span>'
-		                					   + '<input hidden="text" id="selectedOption' + i + '" name="selectedOption" value="' + selectOption +'">'
-		                					   + '<input hidden="text" id="selectedDetailOption' + i + '" name="selectedDetailOption" value="' + selectDetailOption +'">'
-		                					   + '<input hidden="text" id="selectedPrice' + i + '" name="selectedPrice" value="' + parseInt($(this).val()) +'">'
-		                					   + '<input hidden="text" id="selectedCount' + i + '" name="selectedCount" value="' + 1 + '">'
+		                					   + '<input hidden="text" id="selectedOption' + i + '" name="buyOptionName" value="' + selectOption +'">'
+		                					   + '<input hidden="text" id="selectedDetailOption' + i + '" name="buyDetailOptionName" value="' + selectDetailOption +'">'
+		                					   + '<input hidden="text" id="selectedPrice' + i + '" name="buyOptionPrice" value="' + parseInt($(this).val()) +'">'
+		                					   + '<input hidden="text" id="selectedCount' + i + '" name="buyOptionAmount" value="' + 1 + '">'
 		                					   + '<button type="button" class="btn btn-outline-secondary" id="deletebtn' + i + '">×</button>'
 		                					   + '</div></div></div>';
 		                			
@@ -318,6 +335,9 @@
 		                			$('#total-price').text(totalText);
 		                			$('#select-options').append(resultStr);
 		                			$('#totalPrice').val(total);
+		                			
+		                			// 다시 드롭다운 옵션을 '선택하세요'로 바꿔주기
+		                			$('.price-option-select option[value=""]').prop('selected', true);
 		                		});
 		                		
 		                		// '+' 버튼 누르면 수량과 가격 증가
@@ -401,7 +421,7 @@
 		                			$('#plus-option' + optionId).remove();
 		                		});
 		                		
-		                		// 선택한 가격옵션이 없으면 alert 띄워주기
+		                		// 로그인 안했을때 / 선택한 가격옵션이 없으면 alert 띄워주기
 			                	$('.product-details').on('click', '#buy-btn', function(e) {
 			                		
 									if($('#loginUser').val() === '') {
@@ -409,12 +429,14 @@
 										return;
 									}			                		
 			                		
+									// console.log($('#select-options').html());
 			                		if($('#select-options').html() === '') {
-			                			alertify.alert('옵션 하나이상 넣으셈').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+			                	 		alertify.alert('옵션 하나이상 넣으셈').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
 			                			return;
-			                		} 
+			                		}
 			                		
-			                		$('#buy-btn').submit();
+			                		// console.log("하잉");
+			                		$('#buy-form').submit();
 			                	})
 		                	});
 		                	
@@ -430,7 +452,7 @@
 		        			        
 		        			        // 찜테이블에 등록
 		        			        $.ajax({
-		        	        			url : 'jjim/' + productNo,
+		        	        			url : '${path1}/product/jjim/' + productNo,
 		        	        			type : 'post',
 		        	        			success : result => {
 		        	        				alertify.alert(result.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
@@ -441,7 +463,7 @@
 		        			    	
 		        			        // 찜테이블에서 삭제
 		        			        $.ajax({
-		        	        			url : 'jjim/' + productNo,
+		        	        			url : '${path1}/product/jjim/' + productNo,
 		        	        			type : 'delete',
 		        	        			success : result => {
 		        	        				alertify.alert(result.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
@@ -459,6 +481,16 @@
 		                	function productQnaForward() {
 		                		location.href = '${path1}/productQna';
 		                	}
+		                	
+		                	// 작품삭제 버튼 클릭 시
+		                	$('#deleteBtn').on('click', function(e) {
+		                		// const deleteCheck = confirm('진짜 삭제할거임?;');
+		                		const deleteCheck = alertify.confirm('ArtSpark', 
+		                											'진짜 삭제할거임?', 
+		                											function() { location.href='${path1}/product/productDelete?productNo=' + ${product.productNo}; },
+		                											function() {})
+		                											.set({'movable':true, 'moveBounded': true});
+		                	});
 		                	
 		                </script>
 		                

@@ -131,12 +131,12 @@
             </div>
             <div class="col-md-6 text-right">
             	<c:if test="${ sessionScope.loginUser != null }">
-	            	<a href="productInsertForm">
-	                	<button class="btn btn-primary">작품 등록 / 수정</button>
+	            	<a href="${path2 }/product/productInsertForm">
+	                	<button class="btn btn-primary">작품 등록</button>
 	                </a>
                 </c:if>
                 <c:if test="${ sessionScope.loginUser eq null }">
-                	<button class="btn btn-primary" onclick="loginAlert();">작품 등록 / 수정</button>
+                	<button class="btn btn-primary" onclick="loginAlert();">작품 등록</button>
                 </c:if>
             </div>
         </div>
@@ -221,7 +221,7 @@
 			        
 			        // 찜테이블에 등록
 			        $.ajax({
-	        			url : 'product/jjim/' + productNo,
+	        			url : '${path2}/product/jjim/' + productNo,
 	        			type : 'post',
 	        			success : result => {
 	        				alertify.alert(result.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
@@ -232,7 +232,7 @@
 			    	
 			        // 찜테이블에서 삭제
 			        $.ajax({
-	        			url : 'product/jjim/' + productNo,
+	        			url : '${path2}/product/jjim/' + productNo,
 	        			type : 'delete',
 	        			success : result => {
 	        				alertify.alert(result.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
