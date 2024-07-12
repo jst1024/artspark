@@ -29,10 +29,14 @@ public interface MemberService {
 
 	String findId(Map<String,String>params);
 
-	
 	//비밀번호 찾기
 	int findPwd(Member member);
 	
+	//비밀번호 수정
+	boolean updatePwd(String memPwd);
+	
 	//회원탈퇴
-	int delete(Member memId);
+	int delete(String  memId);
+	
+
 }

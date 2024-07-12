@@ -19,10 +19,6 @@ public class MemberRepository {
 		return sqlSession.selectOne("memberMapper.login",member);
 	}
 
-	public int delete(SqlSessionTemplate sqlSession, Member memId) {
-		return sqlSession.update("memberMapper.delete",memId);
-	}
-
 	public int insert(SqlSessionTemplate sqlSession, Member member) {
 		return sqlSession.insert("memberMapper.insert",member);
 	}
@@ -37,6 +33,18 @@ public class MemberRepository {
 	
 	public String findId(SqlSessionTemplate sqlSession, Map<String,String>params) {
 	    return sqlSession.selectOne("memberMapper.findId", params);
+	}
+
+	public int delete(SqlSessionTemplate sqlSession, String memId) {
+		return sqlSession.update("memberMapper.delete",memId);
+	}
+
+	public int findPwd(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.selectOne("memberMapper.findPwd",member);
+	}
+
+	public boolean update(SqlSessionTemplate sqlSession, String memPwd) {
+		return sqlSession.selectOne("memberMapper.update",memPwd);
 	}
 
 }
