@@ -25,4 +25,6 @@ public class Member {
 	private Date memEnroll;
 	private String memCategory;
 	private Date memSuspension;
+  private Date memDeldate;
+  
 }

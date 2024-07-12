@@ -18,6 +18,7 @@ public class Product {
 	private String productTitle;
 	private String productContent;
 	private Date productDate;
+	private Date productDeldate;
 	private String memId;
 	
 }
