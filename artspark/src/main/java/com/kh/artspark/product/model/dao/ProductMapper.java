@@ -21,7 +21,13 @@ public interface ProductMapper {
 
 	int productCategoryCount(String category);
 	
+	int productSearchCount(String keyword);
+
 	List<Map<String, Object>> findAllProductList(String loginUserId, RowBounds rowBounds);
+	
+	List<Map<String, Object>> findAllCategoryList(Map<String, String> map, RowBounds rowBounds);
+	
+	List<Map<String, Object>> productSearchList(Map<String, String> map, RowBounds rowBounds);
 
 	int insertJjim(Map<String, Object> map);
 
@@ -48,5 +54,7 @@ public interface ProductMapper {
 	List<ProductFile> findByIdFile(int productNo);
 
 	List<Tag> findByIdTag(int productNo);
+
+	List<Tag> getTags();
 
 }

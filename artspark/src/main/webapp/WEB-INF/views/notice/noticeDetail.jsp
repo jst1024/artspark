@@ -88,12 +88,25 @@
             <div class="admin-actions">
                 <c:choose>
                     <c:when test="${sessionScope.loginUser.memId == 'admin'}">
+
                         <button type="button" class="btn btn-primary" onclick="location.href='updateNotice?noticeNo=${notice.noticeNo}'">수정하기</button>
                             <form action="deleteNotice" method="post" style="display:inline;">
                                 <input type="hidden" name="noticeNo" value="${notice.noticeNo}">
                                 <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
                                 <button type="submit" class="btn btn-danger">삭제하기</button>
                             </form>
+
+                        <button type="button" class="btn btn-secondary" onclick="location.href='managePage'">관리자페이지</button>
+                        <form action="updateNotice" method="post" style="display: inline;">
+    						<input type="hidden" name="noticeNo" value="${notice.noticeNo}">
+    						<button type="submit" class="btn btn-primary">수정하기</button>
+						</form>
+                       	<form action="deleteNotice" method="post" style="display:inline;">
+                             <input type="hidden" name="noticeNo" value="${notice.noticeNo}">
+                             <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
+                             <button type="submit" class="btn btn-danger">삭제하기</button>
+                       	</form>
+
                     </c:when>
                     <c:otherwise>
                         <button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>

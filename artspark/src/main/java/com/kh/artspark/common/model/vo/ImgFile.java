@@ -10,10 +10,10 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor // 기본생성자보단 모든 것이 다 있어야 하므로.
+@NoArgsConstructor // 기본생성자
 @ToString
 public class ImgFile {
-	private String imgFileNo;
+	private int imgFileNo;
 	private String boardType;
 	private int boardNo;
 	private String originName;

@@ -223,7 +223,7 @@ public class NoticeController {
 		// int abc = Integer.parseInt("123"); // '파싱한다'라고 표현함. 형변환과는 다른개념임. 기본형->참조형(o). 참조형->기본형(x)
 		Notice notice = noticeService.noticeFindById(noticeNo);
 		ImgFile imgFile = noticeService.findImgFileByNoticeNo(noticeNo);
-		log.info("{}", imgFile);
+		
 		if(notice != null) {
 		mv.addObject("notice",notice);
 		mv.addObject("imgFile", imgFile);
@@ -252,40 +252,41 @@ public class NoticeController {
 	        return "common/errorPage";
 	    }
 	}
-	@PostMapping("noticeUpdate")
-	public ModelAndView noticeUpdate(ModelAndView mv, int noticeNo) {
+	@PostMapping("updateNotice")
+	public ModelAndView updateNotice(ModelAndView mv, int noticeNo) {
+		mv.addObject("imgFile", noticeService.findImgFileByNoticeNo(noticeNo));
 		mv.addObject("notice", noticeService.noticeFindById(noticeNo)).setViewName("notice/noticeUpdate");
 		return mv;
 	}
-	/*
+	
 	@PostMapping("noticeUpdate")
-	public String update(Notice notice, HttpSession session, MultipartFile reUpFile) {
-		
-		
-		 * -> boardTitle, boardContent
-		 * + reUpfile
-		 * 
-		 * 1. 기존 첨부파일X, 새로운 첨부파일x => 그렇구나~ 더 할게 없음.
-		 * 2. 기존 첨부파일O, 새로운 첨부파일x => ORIGIN : 기존 첨부파일 이름, CHANGE : 기존 첨부파일 경로 (기존 파일이 날라갈 수 있음.)
-		 * 3. 기존 첨부파일X, 새로운 첨부파일O => ORIGIN : 새로운 첨부파일 이름, CHANGE : 새로운 첨부파일 경로
-		 * 4. 기존 첨부파일O, 새로운 첨부파일O => ORIGIN : 새로운 첨부파일 이름, CHANGE : 새로운 첨부파일 경로 
-		 * 
-		 
-		if(!reUpFile.getOriginalFilename().equals("")) { // 빈문자열과 같지 않으면 (새로운 첨부파일이 있다.)
-			board.setOriginName(reUpFile.getOriginalFilename());
-			board.setChangeName(saveFile(reUpFile, session));
-		}
-		// 담은 값을 notice까지
-		if(noticeService.update(board)>0) {
-			session.setAttribute("alertMsg", "수정완료");
-			return "redirect:noticeDetail?noticeNo=" + notice.getnoticeNo();
-		}else {
-			session.setAttribute("errorMsg", "정보수정 실패");
-			return "common/errorPage";
-		}
-	}	
-	*/
+	public String update(Notice notice, HttpSession session, MultipartFile reUpFile, Model model) {
+	    ImgFile imgFile = new ImgFile();
+	    
+	    // 새로운 첨부파일이 존재하는 경우
+	    if(!reUpFile.getOriginalFilename().equals("")) { // 빈문자열과 같지 않으면 (새로운 첨부파일이 있다.)
+	        // 새로운 파일 저장
+	        String changeName = saveFile(reUpFile, session);
+	        imgFile.setOriginName(reUpFile.getOriginalFilename());
+	        imgFile.setChangeName(changeName);
+	        imgFile.setImgFilePath("resources/uploadFiles/" + changeName);
+	        imgFile.setBoardNo(notice.getNoticeNo());
+	        imgFile.setBoardType("공지");
+	        
+	        log.info("{}", notice);
+	        log.info("{}", imgFile);
+	       
+	        model.addAttribute("imgFile", imgFile);
+	    }
+
+	    if (noticeService.updateNotice(notice, imgFile) > 0) {
+	        session.setAttribute("alertMsg", "수정 완료");
+	        return "redirect:noticeDetail?noticeNo=" + notice.getNoticeNo();
+	    } else {
+	        session.setAttribute("errorMsg", "정보 수정 실패");
+	        return "common/errorPage";
+	    }
+	}
 		
 }
-	
 
