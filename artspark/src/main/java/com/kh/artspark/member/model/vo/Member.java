@@ -22,6 +22,9 @@ public class Member {
 	private String memNickname;
 	private String status;
 	private String memEmail;
-	private Date memEnroll; 
+	private Date memEnroll;
 	private String memCategory;
+	private Date memSuspension;
+  private Date memDeldate;
+  
 }

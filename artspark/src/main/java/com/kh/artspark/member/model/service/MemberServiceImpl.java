@@ -55,6 +55,14 @@ public class MemberServiceImpl implements MemberService {
 	public boolean updatePwd(String memPwd) {
 		return memberRepository.update(sqlSession, memPwd);
 	}
+	@Override
+	public List<Member> getActiveMembers(int startValue, int endValue) {
+		return null;
+	}
+	@Override
+	public int countActiveMembers() {
+		return 0;
+	}
 
 	
 }

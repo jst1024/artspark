@@ -182,7 +182,7 @@
 		        <div class="col-md-6">
 		            <div class="section-title">공지사항</div>
 		            <div class="board-title">
-		                <a href="${path2}/notice/more">more</a>
+		                <a href="${path2}/noticelist">more</a>
 		            </div>
 		            <ul class="list-group">
 		                <c:forEach var="notice" items="${notices}">
@@ -196,7 +196,7 @@
 		        <div class="col-md-6">
 		            <div class="section-title">의뢰게시판</div>
 		            <div class="board-title">
-		                <a href="${path2}/request/more">more</a>
+		                <a href="${path2}/requestlist">more</a>
 		            </div>
 		            <ul class="list-group">
 		                <c:forEach var="request" items="${requests}">

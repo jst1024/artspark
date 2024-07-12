@@ -36,7 +36,17 @@ public interface MemberService {
 	boolean updatePwd(String memPwd);
 	
 	//회원탈퇴
-	int delete(String  memId);
+  int delete(String  memId);
 	
+
+	//
+	List<Member> getActiveMembers(int startValue, int endValue);
+
+	//
+	int countActiveMembers();
+
+	
+	
+
 
 }
