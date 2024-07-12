@@ -1,39 +1,296 @@
 package com.kh.artspark.product.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.ibatis.session.RowBounds;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.artspark.common.model.vo.Message;
+import com.kh.artspark.common.model.vo.PageInfo;
+import com.kh.artspark.common.template.PageTemplate;
+import com.kh.artspark.member.model.vo.Member;
+import com.kh.artspark.product.model.service.ProductService;
+import com.kh.artspark.product.model.vo.Product;
+import com.kh.artspark.product.model.vo.ProductDetail;
+import com.kh.artspark.product.model.vo.ProductFile;
+import com.kh.artspark.product.model.vo.ProductForm;
+import com.kh.artspark.product.model.vo.Tag;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
+@RequiredArgsConstructor
+@RequestMapping("/product")
 public class ProductController {
+	
+	private final ProductService productService;
+	
+	// 상품 목록 전체 조회
+	@GetMapping
+	public String findAllProductList(@RequestParam(value="page", defaultValue = "1") int page,
+									@RequestParam(value="category", defaultValue = "") String category,
+									HttpSession session, Model model) {
+		
+		int listCount;
+		if(category.equals("")) {
+			listCount = productService.productAllCount();
+		} else {
+			listCount = productService.productCategoryCount(category);
+		}
+		int currentPage = page;
+		int pageLimit = 5;
+		int boardLimit = 1;
+		
+		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
 
-	@GetMapping("productList")
-	public String productList() {
+		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
+		
+		// 찜테이블에 있는 멤버아이디와 로그인유저의 아이디를 비교하기위함 
+		if(session.getAttribute("loginUser") != null) {
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			productList = productService.findAllProductList(loginUser.getMemId(), rowBounds);
+		} else {
+			productList = productService.findAllProductList("", rowBounds);
+		}
+		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("productList", productList);
+		
 		return "product/productList";
 	}
-	
-	@GetMapping("productInsertForm")
-	public String productInsertForward() {
-		return "product/productInsert";
+
+	// 찜 등록
+	@ResponseBody
+	@PostMapping(value="jjim/{pno}", produces = "application/json; charset=UTF-8")
+	public ResponseEntity<Message> insertHeart(@PathVariable String pno, HttpSession session) {
+		
+		int productNo = Integer.parseInt(pno);
+		Member loginUser = (Member) session.getAttribute("loginUser");
+		String loginId = loginUser.getMemId();
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("loginId", loginId);
+		map.put("productNo", productNo);
+		
+		if(productService.insertJjim(map) == 0) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+																			 .message("찜 등록 요청 실패")
+																			 .build()); 
+		}
+		
+		Message responseMsg = Message.builder().message("찜 목록에 추가되었습니다.")
+											   .build();
+		
+		return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
 	}
 	
-	@GetMapping("productDetail")
-	public String productDetail() {
-		return "product/productDetail";
+	// 찜 삭제
+	@ResponseBody
+	@DeleteMapping(value="jjim/{pno}", produces = "application/json; charset=UTF-8")
+	public ResponseEntity<Message> deleteHeart(@PathVariable String pno, HttpSession session) {
+		
+		int productNo = Integer.parseInt(pno);
+		Member loginUser = (Member) session.getAttribute("loginUser");
+		String loginId = loginUser.getMemId();
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("loginId", loginId);
+		map.put("productNo", productNo);
+		
+		if(productService.deleteJjim(map) == 0) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+																			 .message("찜 삭제 요청 실패")
+																			 .build()); 
+		}
+		
+		Message responseMsg = Message.builder().message("찜 목록에서 삭제되었습니다.")
+											   .build();
+		
+		return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
 	}
 	
-	@GetMapping("productQna")
-	public String productQna() {
-		return "product/productQna";
+	// 상품 상세 페이지
+	@GetMapping("/{pno}")
+	public ModelAndView detail(@PathVariable String pno, HttpSession session , ModelAndView mv) {
+		
+		int productNo = Integer.parseInt(pno);
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		if(session.getAttribute("loginUser") != null) {
+			Member member = (Member) session.getAttribute("loginUser");
+			String loginId = member.getMemId();
+			map.put("loginId", loginId);
+			map.put("productNo", productNo);
+		} else {
+			map.put("loginId", "");
+			map.put("productNo", productNo);
+		}
+		
+		Map<String, Object> product = productService.findById(map);
+		List<ProductFile> productFiles = productService.findByIdFile(productNo);
+		List<Tag> productTags = productService.findByIdTag(productNo);
+		
+//		log.info("PayOption: {}", product.get("payOptionList"));
+		
+		mv.addObject("productFiles", productFiles);
+		mv.addObject("productTags", productTags);
+		mv.addObject("product", product).setViewName("product/productDetail");
+		
+		return mv;
 	}
 	
-	@GetMapping("productBuy")
-	public String productBuy() {
-		return "product/productBuy";
+	
+	// 상품 등록
+	@PostMapping
+	public String insertProduct(Product product,
+								ProductDetail productDetail,
+								ProductForm productForm,
+								String productPurpose1,
+								String productPurpose2,
+								String tags,
+								MultipartFile[] mainImage,
+								HttpSession session,
+								Model model) {
+		
+//		log.info("입력 정보 : {}", product);
+//		log.info("입력 정보 : {}", productDetail);
+//		log.info("입력 정보 : {}", productForm);
+//		log.info("입력 정보 : {}", tags);
+//		log.info("입력 정보 : {}", productPurpose1);
+//		log.info("입력 정보 : {}", productPurpose2);
+//		log.info("사진들 : {}", mainImage[0]);
+//		log.info("사진들 : {}", mainImage[1]);
+//		log.info("사진들 : {}", mainImage[2]);
+		
+		String productPurpose = "";
+		if(productPurpose1 != null && productPurpose2 != null) {
+			productPurpose = productPurpose1 + " / " + productPurpose2;
+		} else if(productPurpose1 != null && productPurpose2 == null) {
+			productPurpose = productPurpose1;
+		} else {
+			productPurpose = productPurpose2;
+		}
+		
+		productDetail.setProductPurpose(productPurpose);
+		
+		String[] tagArray = tags.split("#");
+		List<Tag> tagList = new ArrayList<>();
+		
+		for(String s : tagArray) {
+			if(!s.trim().isEmpty()) {
+				Tag tag = new Tag();
+				tag.setTagName(s.trim());
+				tagList.add(tag);
+			}
+		}
+		
+//		log.info("태그 : {}", tagList);
+		
+		// 파일 처리
+		List<ProductFile> productFiles = new ArrayList<>();
+		
+		for(int i=0; i<mainImage.length; i++) {
+			if(!mainImage[i].getOriginalFilename().equals("")) {
+				ProductFile productFile = new ProductFile();
+				String changeName = saveFile(mainImage[i], session);
+				
+				productFile.setOriginName(mainImage[i].getOriginalFilename());
+				productFile.setChangeName(changeName);
+				productFile.setFilePath("resources/uploadFiles/" + changeName);
+				
+				productFiles.add(productFile);
+			}
+		}
+		
+		
+		// 중복 제거를 위해 HashSet에 리스트를 넣어 중복을 제거한 뒤 다시 ArrayList로 변환
+		List<String> optionNameList = productForm.getOptionName();
+		List<String> changeList = new ArrayList<String>(new HashSet<String>(optionNameList));
+		
+//		log.info("changeList : {}", changeList);
+		
+		int result = productService.insertProduct(product, productDetail, changeList, 
+				productForm, tagList, productFiles);
+		
+		if(result > 0) {
+			session.setAttribute("alertMsg", "상품 등록 성공!");
+			return "redirect:/product";
+		}
+		
+		model.addAttribute("errorMsg", "상품 등록 실패..ㅠ");
+		return "error/errorPage";
 	}
 	
-	@GetMapping("productComplete")
-	public String productComplete() {
-		return "product/productComplete";
+	// 파일 이름 바꾸고 저장하는 메서드
+	public String saveFile(MultipartFile upfile, HttpSession session) {
+		
+		String originName = upfile.getOriginalFilename();
+		String ext = originName.substring(originName.lastIndexOf('.')+1, originName.length());
+		
+		int num = (int) (Math.random() * 900) + 100;
+		// 곱하는 값 : 값의 범위
+		// 더하는 값 : 시작값
+		// ex) 100 ~ 999
+		
+		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		
+		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+		
+		String changeName = "ARTSPARK_" + currentTime + "_" + num + "." + ext;
+		
+		
+		try {
+			upfile.transferTo(new File(savePath + changeName));
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return changeName;
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

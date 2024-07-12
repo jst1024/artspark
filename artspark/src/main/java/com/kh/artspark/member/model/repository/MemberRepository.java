@@ -13,4 +13,24 @@ public class MemberRepository {
 	public List<Member> memberList(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectList("memberMapper.memberList");
 	}
+
+	public Member login(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.selectOne("memberMapper.login",member);
+	}
+
+	public int delete(SqlSessionTemplate sqlSession, Member memId) {
+		return sqlSession.update("memberMapper.delete",memId);
+	}
+
+	public int insert(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.insert("memberMapper.insert",member);
+	}
+
+	public int idcheck(SqlSessionTemplate sqlSession, String memId) {
+		return sqlSession.selectOne("memberMapper.idCheck",memId);
+	}
+
+	public int update(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.update("memberMapper.update",member);
+	}
 }
