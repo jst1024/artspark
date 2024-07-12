@@ -164,20 +164,34 @@ public class MemberController {
 	}
 	
 	
-	@GetMapping("findId")
-    public Map<String, Object> findId(@RequestParam String memEmail) {
-        Map<String, Object> response = new HashMap<>();
-        
-        String foundId = memberService.findId(memEmail);
-        
+	@GetMapping("lostId")
+	public String lostId() {
+		return "member/lostId";
+	}
+	
+	//아이디 찾기
+	@PostMapping("findId")
+    public String findId(@RequestParam("memNickname") String memNickname,@RequestParam("memEmail") String memEmail,Model model) {
+  
+        Map<String, String> params = new HashMap<>();
+        params.put("memNickname", memNickname);
+	    params.put("memEmail", memEmail);
+	    String foundId = memberService.findId(params);
         if (foundId != null) {
-            response.put("success", true);
-            response.put("id", foundId);
+        	log.info("아이디 : {}",foundId);
+            model.addAttribute("foundId", foundId);
+            log.info("아이디2: {}",foundId);
         } else {
-            response.put("success", false);
-            response.put("errorMsg", "해당 이메일로 등록된 아이디가 없습니다.");
+        	log.info("오류 : {}",foundId);
+            model.addAttribute("errorMessage", "찾는 아이디가 없습니다.");
         }
-        return response;
+        
+        return "member/findId";
     }
+	
+	//회원탈퇴
+	
+	
+
 	
 }

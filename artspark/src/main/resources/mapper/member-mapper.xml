@@ -94,10 +94,15 @@
     	  		MEM_CATEGORY ='B'
     </select>
 	<!-- 아이디 찾기 -->
-	<select id="findId" resultType="int">
-        SELECT COUNT(*)
-        FROM MEMBER
-        WHERE MEM_ID = #{memId}
+	<select id="findId" resultType="string" parameterType="map">
+        SELECT 
+        		MEM_ID
+          FROM
+                MEMBER
+         WHERE
+                MEM_NICKNAME= #{memNickname}
+           AND   
+           		MEM_EMAIL= #{memEmail}
     </select>
 	<!--비밀번호 찾기 -->
 	

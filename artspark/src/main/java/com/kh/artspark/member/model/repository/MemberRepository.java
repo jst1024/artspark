@@ -1,6 +1,8 @@
 package com.kh.artspark.member.model.repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
@@ -33,8 +35,9 @@ public class MemberRepository {
 	public int update(SqlSessionTemplate sqlSession, Member member) {
 		return sqlSession.update("memberMapper.update",member);
 	}
-
-	public String findId(SqlSessionTemplate sqlSession, String memEmail) {
-		return sqlSession.selectOne("memberMapper.findId",memEmail);
+	
+	public String findId(SqlSessionTemplate sqlSession, Map<String,String>params) {
+	    return sqlSession.selectOne("memberMapper.findId", params);
 	}
+
 }
