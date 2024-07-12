@@ -64,7 +64,7 @@
 
 	    <div class="container-main">
 	        <div class="search-form">
-	            <form class="form-inline" action="noticeSearchCount" method="get">
+	            <form class="form-inline" action="noticeSearchCount">
 	                <select class="custom-select mr-2" name="condition">
 	                    <option selected value="title">제목</option>
 	                    <option value="content">내용</option>

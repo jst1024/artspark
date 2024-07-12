@@ -98,7 +98,9 @@
 	  -->
 	  <mybatis-spring:scan base-package="com.kh.artspark.product.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.notice.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.request.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.buy.model.dao"/>
+
 	  
 </beans>
 
