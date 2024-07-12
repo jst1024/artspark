@@ -46,6 +46,7 @@ public class MemberServiceImpl implements MemberService {
 	public String findId(Map<String,String>params) {
 		return memberRepository.findId(sqlSession,params);
 	}	
+
 	@Override
 	public int findPwd(Member member) {
 		return 0;

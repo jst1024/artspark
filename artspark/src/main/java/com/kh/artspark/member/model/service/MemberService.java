@@ -26,7 +26,9 @@ public interface MemberService {
 	
 	
 	//아이디찾기
+
 	String findId(Map<String,String>params);
+
 	
 	//비밀번호 찾기
 	int findPwd(Member member);

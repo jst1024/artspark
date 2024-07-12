@@ -164,6 +164,7 @@ public class MemberController {
 	}
 	
 	
+
 	@GetMapping("lostId")
 	public String lostId() {
 		return "member/lostId";
@@ -172,7 +173,7 @@ public class MemberController {
 	//아이디 찾기
 	@PostMapping("findId")
     public String findId(@RequestParam("memNickname") String memNickname,@RequestParam("memEmail") String memEmail,Model model) {
-  
+		//닉네임,이메일 값을 받아서 비교 후 맞으면 아이디 찾기를 모달 창으로 띄운다.
         Map<String, String> params = new HashMap<>();
         params.put("memNickname", memNickname);
 	    params.put("memEmail", memEmail);
@@ -180,7 +181,6 @@ public class MemberController {
         if (foundId != null) {
         	log.info("아이디 : {}",foundId);
             model.addAttribute("foundId", foundId);
-            log.info("아이디2: {}",foundId);
         } else {
         	log.info("오류 : {}",foundId);
             model.addAttribute("errorMessage", "찾는 아이디가 없습니다.");
@@ -194,4 +194,5 @@ public class MemberController {
 	
 
 	
+
 }
