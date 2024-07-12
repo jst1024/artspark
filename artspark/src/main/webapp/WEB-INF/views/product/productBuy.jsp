@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path1" value="${pageContext.servletContext.contextPath }" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -137,23 +138,23 @@
                 	<div class="col-sm-5">
 	                    <p class="d-flex justify-content-between" style="margin-top: 20px;">
 					        <span><strong>제출 파일 유형</strong></span>
-					        <span>png</span>
+					        <span>${ productDetail.detailType }</span>
 					    </p>
 					    <p class="d-flex justify-content-between">
 					        <span><strong>해상도</strong></span>
-					        <span>300dpi</span>
+					        <span>${ productDetail.detailPixel }dpi</span>
 					    </p>
 					    <p class="d-flex justify-content-between">
 					        <span><strong>기본 사이즈</strong></span>
-					        <span>2000이상</span>
+					        <span>${ productDetail.detailSize }</span>
 					    </p>
 					    <p class="d-flex justify-content-between">
 					        <span><strong>수정 횟수</strong></span>
-					        <span>2회</span>
+					        <span>${ productDetail.updateCount }회</span>
 					    </p>
 					    <p class="d-flex justify-content-between" style="margin-bottom: 20px;">
 					        <span><strong>작업 기간</strong></span>
-					        <span>결제일로부터 7일</span>
+					        <span>${ productDetail.detailWorkdate }</span>
 					    </p>
 					</div>
                 </div>
@@ -171,23 +172,19 @@
 					</div>
                 	
                 	<div class="col-sm-7">
-                		<p style="font-size:28px;">[작가 이름]</p>
-                		<p>[작품 제목]</p><br>
-	                    <p class="d-flex justify-content-between" style="margin-top: 20px;">
-					        <span><strong>[옵션명1] / [옵션선택항목1] / n개</strong></span>
-					        <span>25,000원</span>
-					    </p>
-					    <p class="d-flex justify-content-between">
-					        <span><strong>[옵션명2] / [옵션선택항목2] / n개</strong></span>
-					        <span>110,000원</span>
-					    </p>
-					    <p class="d-flex justify-content-between">
-					        <span><strong>[옵션명3] / [옵션선택항목3] / n개</strong></span>
-					        <span>5,000원</span>
-					    </p>
+                		<p style="font-size:28px;">${ memNickname }</p>
+                		<p>${ productTitle }</p><br>
+                		<c:forEach items="${ buyOption.buyOptionName }" varStatus="i">
+		                    <p class="d-flex justify-content-between buy-option" style="margin-top: 20px;">
+		                    	<input type="hidden" id="buyOptionPrice${i.index + 1}" name="buyOptionPrice" value="${ buyOption.buyOptionPrice[i.index] }">
+		                    	<input type="hidden" id="buyOptionAmount${i.index + 1}" name="buyOptionAmount" value="${ buyOption.buyOptionAmount[i.index] }">
+						        <span><strong>${ buyOption.buyOptionName[i.index] } / ${ buyOption.buyDetailOptionName[i.index] } / ${ buyOption.buyOptionAmount[i.index] }개</strong></span>
+						        <span>${ buyOption.buyOptionPrice[i.index] }원</span>
+						    </p>
+					    </c:forEach>
 					    <p class="d-flex justify-content-between">
 					        <span style="font-size:28px;"><strong>총 결제 금액</strong></span>
-					        <span style="color: red; font-size:28px; font-weight:bold;">115,000</span>
+					        <span id="total-price" style="color: #ff5200; font-size:28px; font-weight:bold;">${ totalPrice }원</span>
 					    </p>
 					</div>
                 </div>
@@ -196,17 +193,42 @@
 	</div>
 	
 	<div class="btn-group">
-        <button type="submit" class="big-btn" id="buy-btn" onclick="productCompleteForward();">주문 / 결제하기</button>
+        <button type="button" class="big-btn" id="buy-btn" onclick="productCompleteForward();">주문 / 결제하기</button>
         <button type="button" class="big-btn" id="cancle-btn" onclick="backpage();">취소</button>
 	</div>
 	
 	<script>
+		$(() => {
+			// 구매 옵션별 가격과 수량 곱하고 localeString으로 바꾸기
+			$('.buy-option').each(function() {
+				const buyOptionPrice = $(this).find('input').eq(0).val();
+				// console.log(buyOptionPrice);
+				const buyOptionAmount = $(this).find('input').eq(1).val();
+				// console.log(buyOptionAmount);
+				
+				const price = buyOptionPrice * buyOptionAmount;
+				// console.log(price);
+				
+				const localePrice = price.toLocaleString() + '원';
+				// console.log(localePrice);
+				
+				$(this).find('span').eq(1).text(localePrice);
+			});
+			
+			// 총 가격 localeString으로 바꾸기
+			let totalPrice = $('#total-price').text().replace('원', '');
+			totalPrice = (parseInt(totalPrice)).toLocaleString();
+			$('#total-price').text(totalPrice + '원');
+		});
+		
+		// 결제 완료 페이지 포워딩
 		function productCompleteForward() {
-			location.href = "productComplete";
+			location.href = "${path1}/productComplete";
 		}
 	
+		// 이전 페이지 포워딩
 		function backpage() {
-			location.href = "productDetail";
+			location.href = "${path1}/productDetail";
 		}
 	</script>
 

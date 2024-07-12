@@ -34,21 +34,21 @@
                     <h2 class="text-center mb-4">비밀번호 찾기</h2>
                     <form>
                         <div class="mb-3">
-                            <label for="username" class="form-label">아이디</label>
-                            <input type="text" class="form-control" id="username" placeholder="내용을 입력해주세요">
+                            <label for="memId" class="form-label">아이디</label>
+                            <input type="text" class="form-control" id="memId" name="memId" placeholder="아이디를 입력해주세요">
                         </div>
                         <div class="mb-3">
-                            <label for="name" class="form-label">이름</label>
-                            <input type="text" class="form-control" id="name" placeholder="내용을 입력해주세요">
+                            <label for="memNickname" class="form-label">닉네임</label>
+                            <input type="text" class="form-control" id="memNickname" name="memNickname" placeholder="닉네임을 입력해주세요">
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">이메일</label>
-                            <input type="email" class="form-control" id="email" placeholder="내용을 입력해주세요">
+                            <label for="memEmail" class="form-label">이메일</label>
+                            <input type="email" class="form-control" id="memEmail" placeholder="이메일을 입력해주세요">
                         </div>
                         <button type="submit" class="btn btn-primary w-100 mb-3">비밀번호 찾기</button>
                         <div class="d-flex justify-content-between">
-                            <a href="#" class="btn btn-link">회원가입</a>
-                            <a href="#" class="btn btn-link">로그인 하기</a>
+                            <a href="joinPage" class="btn btn-link">회원가입</a>
+                            <a href="loginPage" class="btn btn-link">로그인 하기</a>
                         </div>
                     </form>
                 </div>

@@ -16,7 +16,7 @@
       <div class="col-12">
         <div class="mb-5">
           <h2 class="display-5 fw-bold text-center">로그인</h2>
-          <p class="text-center m-0">아직 회원이 아니신가요? <a href="#!">회원가입</a></p>
+          <p class="text-center m-0">아직 회원이 아니신가요? <a href="join">회원가입</a></p>
         </div>
       </div>
     </div>
@@ -42,12 +42,12 @@
                   <div class="row justify-content-between">
                     <div class="col-6">
                       <div class="form-check">
-                        <a href="#!" class="link-secondary text-decoration-none" style="font-size:0.8rem;">아이디 찾기</a>
+                        <a href="lostId" class="link-secondary text-decoration-none" style="font-size:0.8rem;">아이디 찾기</a>
                       </div>
                     </div>
                     <div class="col-6">
                       <div class="text-center">
-                        <a href="#!" class="link-secondary text-decoration-none" style="font-size:0.8rem;">비밀번호 찾기</a>
+                        <a href="lostPwd" class="link-secondary text-decoration-none" style="font-size:0.8rem;">비밀번호 찾기</a>
                       </div>
                     </div>
                   </div>

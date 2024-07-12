@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.artspark.buy.model.dao.BuyMapper">
+	
+	<!-- 상품 상세옵션 가져오기 -->
+	<select id="getProductDetail" parameterType="_int" resultType="productDetail">
+		SELECT
+				PRODUCT_NO productNo,
+				PRODUCT_PURPOSE productPurpose,
+				DETAIL_TYPE detailType,
+				DETAIL_SIZE detailSize,
+				DETAIL_PIXEL detailPixel,
+				UPDATE_COUNT updateCount,
+				DETAIL_WORKDATE detailWorkdate
+		  FROM
+		  		PRODUCT_DETAIL
+		 WHERE
+		 		PRODUCT_NO = #{productNo} 	
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+

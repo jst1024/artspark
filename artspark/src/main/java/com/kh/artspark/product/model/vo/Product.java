@@ -1,5 +1,7 @@
 package com.kh.artspark.product.model.vo;
 
+import java.sql.Date;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +17,8 @@ public class Product {
 	private String productCategory;
 	private String productTitle;
 	private String productContent;
-	private String productDate;
+	private Date productDate;
+	private Date productDeldate;
 	private String memId;
 	
 }
