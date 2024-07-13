@@ -366,12 +366,19 @@ public class ProductController {
 	
 	// 상품 삭제
 	@GetMapping("productDelete")
-	public String productDelete(int productNo, Model model) {
-		// 지워야하는거 product, product_detail, pay_option, detail_option, 
-		// 필요한거 파일패스, d
+	public String productDelete(int productNo, HttpSession session, Model model) {
+		// product 테이블의 status를 N으로 바꾸고, product_deldate를 현재시간으로 업데이트
+		// 찜 테이블에서 해당 상품번호를 가진 레코드 제거
 		
+		int result = productService.deleteProduct(productNo);
 		
-		return "";
+		if(result > 0) {
+			session.setAttribute("alertMsg", "상품이 삭제되었습니다.");
+			return "redirect:/product";
+		}
+		
+		session.setAttribute("alertMsg", "상품 삭제에 실패했습니다.");
+		return "redirect:/product/" + productNo;
 	}
 }
 

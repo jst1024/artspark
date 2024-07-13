@@ -653,6 +653,26 @@
 				)		  
 	</insert>
 	
+	<!-- 상품 삭제 -->
+	<update id="deleteProduct" parameterType="_int">
+		UPDATE
+				PRODUCT
+		   SET
+				STATUS = 'N',
+				PRODUCT_DELDATE = SYSDATE
+		 WHERE
+		 		PRODUCT_NO = #{productNo}		      		   
+	</update>
+	
+	<!-- 삭제된 상품의 찜 목록 삭제 -->
+	<delete id="deleteProductJjim" parameterType="_int">
+		DELETE
+		  FROM
+		  		JJIM
+		 WHERE
+		 		PRODUCT_NO = #{productNo}	  
+	</delete>
+	
 </mapper>
 
 

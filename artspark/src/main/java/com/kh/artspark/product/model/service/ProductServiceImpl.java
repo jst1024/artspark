@@ -158,6 +158,20 @@ private final ProductMapper productMapper;
 		return 1;
 	}
 
+	@Transactional
+	@Override
+	public int deleteProduct(int productNo) {
+		
+		// 상품 삭제(status 'N'으로 업데이트)
+		int result1 = productMapper.deleteProduct(productNo);
+		
+		// 찜 테이블에서 삭제
+		int result2 = 1;
+		result2 = productMapper.deleteProductJjim(productNo);
+		
+		return result1 * result2;
+	}
+
 }
 
 

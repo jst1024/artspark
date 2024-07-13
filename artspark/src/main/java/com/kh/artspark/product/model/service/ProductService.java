@@ -53,4 +53,7 @@ public interface ProductService {
 	int insertProduct(Product product, ProductDetail productDetail, List<String> changeList, ProductForm productForm,
 			List<Tag> tagList, List<ProductFile> productFiles);
 
+	// 상품 삭제
+	int deleteProduct(int productNo);
+
 }

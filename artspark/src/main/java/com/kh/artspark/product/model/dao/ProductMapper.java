@@ -57,4 +57,8 @@ public interface ProductMapper {
 
 	List<Tag> getTags();
 
+	int deleteProduct(int productNo);
+
+	int deleteProductJjim(int productNo);
+
 }
