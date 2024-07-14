@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path1" value="${pageContext.servletContext.contextPath }" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,7 +53,7 @@
         <h2>작품 등록</h2><br>
         <p style="font-size: 14px;">✪ 스타일 또는 분야별로 나누어 등록해주세요.<br>
         ✪ 샘플 이미지는 최소 세장 이상 올려주시기 바랍니다.</p><br><br>
-        <form action="product" method="post" enctype="multipart/form-data">
+        <form action="${path1 }/product" method="post" enctype="multipart/form-data">
             <div class="form-group row">
                 <label for="category" class="col-sm-2 col-form-label">카테고리</label>
                 <input type="hidden" name="memId" value="${ sessionScope.loginUser.memId }">
@@ -62,7 +63,6 @@
                         <option value="디자인">디자인</option>
                         <option value="영상 · 음향">영상 · 음향</option>
                         <option value="웹툰 · 만화">웹툰 · 만화</option>
-                        <!-- Add more options here -->
                     </select>
                 </div>
             </div>
@@ -86,6 +86,8 @@
                 <div class="col-sm-3">
                     <input type="file" class="form-control-file" id="mainImage3" name="mainImage" onchange="loadImg(this)">
                 </div>
+                
+                
                 
                 <!-- 업로드 파일 미리보기 -->
                 <script>
@@ -239,7 +241,7 @@
                                 <td id="optionList_num1" style="text-align:center; line-height:40px;"><input type="checkbox" name="optionCheck" value="1" style="display: inline;"></td>
                                 <td><input type="text" class="form-control" id="optionName1" name="optionName" placeholder="옵션명" required></td>
                                 <td><input type="text" class="form-control" id="optionSelect1" name="detailOptionName" placeholder="옵션 선택 항목" required></td>
-                                <td><input type="text" class="form-control option-price" id="detailOptionPrice" name="detailOptionPrice" placeholder="0" style="text-align:right;" required></td>
+                                <td><input type="text" class="form-control option-price" id="detailOptionPrice1" name="detailOptionPrice" placeholder="0" style="text-align:right;" required></td>
                             </tr>
                             
                         </tbody>
@@ -334,9 +336,7 @@
             <!-- 본문 -->
             <div class="smarteditor">
             	<textarea name="productContent" id="content" rows="20" cols="10" 
-            	style="width: 100%;" placeholder="내용을 입력해 주세요.">
-            		
-            	</textarea>
+            	style="width: 100%;" placeholder="내용을 입력해 주세요."></textarea>
             </div>
             
             <script type="text/javascript">
@@ -352,6 +352,50 @@
 		
 		        // 폼 전송 버튼 클릭 시 스마트에디터의 내용을 텍스트에어리어로 동기화
 		        function submitContents(e) {
+		        	
+		        	let valid = true;
+		        	
+		        	// 제목 입력 여부 판단
+		        	if($('#title').val().trim() === '') {
+		        		alertify.alert('제목을 입력해주세요.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+		        		return;
+		        	}
+		        	
+		        	// 대표이미지 입력 여부 판단
+					if($('.pre-image').css('display') === 'none') {
+						alertify.alert('대표 이미지를 선택해주세요.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+						return;
+					}
+		        	
+					// 옵션명 입력 여부 판단
+		        	$('input[name="optionName"]').each(function() {
+		        		if($(this).val().trim() === '') {
+		        			alertify.alert('옵션명을 입력해주세요.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+		        			valid = false;
+		        			return false;
+		        		}
+		        	})
+		        	if(!valid) return;
+		        	
+		        	// 옵션선택항목 입력 여부 판단
+		        	$('input[name="detailOptionName"]').each(function() {
+		        		if($(this).val().trim() === '') {
+		        			alertify.alert('옵션 선택 항목을 입력해주세요.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+		        			valid = false;
+		        			return;
+		        		}
+		        	})
+		        	if(!valid) return;
+		        	
+		        	// 제작금액 입력 여부 판단
+		        	$('input[name="detailOptionPrice"]').each(function() {
+		        		if($(this).val().trim() === '') {
+		        			alertify.alert('제작 금액을 입력해주세요.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+		        			valid = false;
+		        			return;
+		        		}
+		        	})
+		        	if(!valid) return;
 		        	
 		        	// option-price의 값에서 ','를 빼고 number타입으로 변환
 		        	$('.option-price').each(function() {
@@ -415,7 +459,7 @@
             
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
 				<button type="button" class="btn-lg btn-primary me-md-2" onclick="submitContents(this);">작품 등록</button>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="productList" class="btn-lg btn-danger" type="button">취소</a>
+				<a href="${ path1 }/product" class="btn-lg btn-danger" type="button">취소</a>
 			</div>
         </form>
     </div>

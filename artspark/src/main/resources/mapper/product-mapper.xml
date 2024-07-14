@@ -10,6 +10,8 @@
 				COUNT(*)
 		  FROM
 		  		PRODUCT
+		 WHERE
+		 		STATUS = 'Y'
 	</select>
 	
 	<!-- 카테고리별 상품 개수 조회 -->
@@ -20,6 +22,8 @@
 		  		PRODUCT
 		 WHERE
 		 		PRODUCT_CATEGORY = #{category}
+		   AND
+		   		STATUS = 'Y'
 	</select>
 	
 	<!-- 검색 상품 개수 조회 -->
@@ -44,6 +48,8 @@
 				                        JOIN TAG_CHECK TC ON T.TAG_NO = TC.TAG_NO
 				             ) TN ON P.PRODUCT_NO = TN.PRODUCT_NO
 				 WHERE
+				 		P.STATUS = 'Y'
+				   AND
 				        PRODUCT_TITLE LIKE '%' || #{keyword} || '%'
 				    OR
 				        M.MEM_NICKNAME LIKE '%' || #{keyword} || '%'
@@ -428,7 +434,7 @@
 		      				  		JOIN PAY_OPTION PO ON PO.PAY_OPTION_NO = DO.PAY_OPTION_NO
 		      				 ORDER
 		      				 	BY
-		      				 		DO.DETAIL_OPTION_NO DESC
+		      				 		DO.DETAIL_OPTION_NO
 		      			) PDO ON P.PRODUCT_NO = PDO.PRODUCT_NO
 		      	JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
 		 WHERE
@@ -673,6 +679,59 @@
 		 		PRODUCT_NO = #{productNo}	  
 	</delete>
 	
+	<!-- 상품 업데이트시 중폭 파일 삭제 -->
+	<delete id="deleteOriginFile" parameterType="String">
+		DELETE
+		  FROM
+		  		PRODUCTFILE
+		 WHERE
+		 		CHANGE_NAME = #{changeName}
+	</delete>
+	
+	<!-- 상품 업데이트 -->
+	<update id="updateProduct" parameterType="product">
+		UPDATE
+				PRODUCT
+		   SET
+		   		PRODUCT_CATEGORY = #{productCategory},
+		   		PRODUCT_TITLE = #{productTitle},
+		   		PRODUCT_CONTENT = #{productContent}
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</update>
+	
+	<!-- 상품 상세 업데이트 -->
+	<update id="updateProductDetail" parameterType="productDetail">
+		UPDATE
+				PRODUCT_DETAIL
+		   SET
+		   		PRODUCT_PURPOSE = #{productPurpose},
+		   		DETAIL_TYPE = #{detailType},
+		   		DETAIL_SIZE = #{detailSize},
+		   		DETAIL_PIXEL = #{detailPixel},
+		   		UPDATE_COUNT = #{updateCount},
+		   		DETAIL_WORKDATE = #{detailWorkdate}
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</update>
+	
+	<!-- 기존 태그 삭제 -->
+	<delete id="deleteTag" parameterType="_int">
+		DELETE
+		  FROM
+		  		TAG_CHECK
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<!-- 기존 가격 옵션 삭제 -->
+	<delete id="deleteOptions" parameterType="_int">
+		DELETE
+		  FROM
+		  		PAY_OPTION
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</delete>
 </mapper>
 
 

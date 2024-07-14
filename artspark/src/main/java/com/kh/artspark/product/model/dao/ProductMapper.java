@@ -61,4 +61,14 @@ public interface ProductMapper {
 
 	int deleteProductJjim(int productNo);
 
+	int deleteOriginFile(String changeName);
+
+	int updateProduct(Product product);
+
+	int updateProductDetail(ProductDetail productDetail);
+
+	int deleteTag(int productNo);
+
+	int deleteOptions(int productNo);
+
 }

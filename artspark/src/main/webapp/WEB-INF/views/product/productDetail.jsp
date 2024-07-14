@@ -148,7 +148,7 @@
 	        <span style="font-size:28px;">${ product.memNickname } 작가 · ${ product.productTitle }</span>
 	        <span>
 	        	<c:if test="${ sessionScope.loginUser.memId.equals(product.memId) }">
-		        	<a href="${path1 }/product/productUpdateForm">
+		        	<a href="${path1 }/product/productUpdateForward?pno=${product.productNo}">
 		        		<button type="button" class="btn btn-primary">작품수정</button>&nbsp;&nbsp;
 		        	</a>
 		        	<button type="button" id="deleteBtn" class="btn btn-danger">작품삭제</button>&nbsp;&nbsp;
