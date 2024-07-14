@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>작품 구매</title>
     <jsp:include page="../common/head.jsp"></jsp:include>
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
     <style>
     	#profileImg {
     		width:160px;
@@ -86,19 +87,19 @@
                 <div class="form-group row payment-methods">
                 	<label for="payerName" class="col-sm-2 col-form-label">결제방법</label>&nbsp;&nbsp;&nbsp;&nbsp;
                     <div class="form-check form-check-inline col-sm-2">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="domesticPayment" value="domestic" checked>
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="domesticPayment" value="card" checked>
                         <label class="form-check-label" for="domesticPayment">카드결제</label>
                     </div>
                     <div class="form-check form-check-inline col-sm-2">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="internationalPayment" value="international">
-                        <label class="form-check-label" for="internationalPayment">계좌이체</label>
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="internationalPayment" value="vbank">
+                        <label class="form-check-label" for="internationalPayment">가상계좌</label>
                     </div>
                 </div>
                 
                 <div class="form-group row">
                     <label for="payerName" class="col-sm-2 col-form-label">입금자명</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="payerName" style="width:300px;" placeholder="입금자명">
+                        <input type="text" class="form-control" id="buyerName" name="buyerName" style="width:300px;" placeholder="입금자명">
                     </div>
                     <div class="col-sm-6">
                         <small class="form-text text-danger">* 작가에게 공개되지 않습니다.<br></small>
@@ -108,21 +109,21 @@
                 <div class="form-group row">
                     <label for="contact" class="col-sm-2 col-form-label">연락처</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="contact" style="width:350px;" placeholder="연락처 입력">
+                        <input type="text" class="form-control" id="buyerPhone" name="buyerPhone" style="width:350px;" placeholder="연락처 입력">
                     </div>
                 </div>
                 
                 <div class="form-group row">
                     <label for="email" class="col-sm-2 col-form-label" >이메일</label>
                     <div class="col-sm-10">
-                    	<input type="text" class="form-control" id="email" style="width:350px;" placeholder="이메일 입력">
+                    	<input type="text" class="form-control" id="buyerEmail" name="buyerEmail" style="width:350px;" placeholder="이메일 입력">
                     </div>
                 </div>
                 
                 <div class="form-group row">
                     <label for="requests" class="col-sm-2 col-form-label">요청사항</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="requests" placeholder="요청사항 입력"></textarea>
+                        <textarea class="form-control" id="buyerRequest" name="buyerRequest" placeholder="요청사항 입력"></textarea>
                     </div>
                 </div>
                 
@@ -193,9 +194,58 @@
 	</div>
 	
 	<div class="btn-group">
-        <button type="button" class="big-btn" id="buy-btn" onclick="productCompleteForward();">주문 / 결제하기</button>
+        <button type="button" class="big-btn" id="buy-btn" onclick="buyProduct()">주문 / 결제하기</button>
         <button type="button" class="big-btn" id="cancle-btn" onclick="backpage();">취소</button>
 	</div>
+
+	<!-- 
+		결제 API 사용
+		
+		결제 동작 과정
+		1. 유저가 브라우저에서 결제
+		2. 브라우저에서 백엔드로 결제를 확인하는 함수를 트리거
+		3. 백엔드에서 포드원으로부터 엑세스토큰을 받음
+		4. 방금 발생한 결제에 대한 정보를 요청
+		5. 해당 정보를 통해 유저가 결제한 금액이 정확한지 여부 확인
+	 -->	
+	<script>
+		function buyProduct() {
+			const payMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+			const productTitle = '${productTitle}';
+			const price = parseInt('${totalPrice}');
+			const buyerName = $('input[name="buyerName"]').val();
+			const buyerPhone = $('input[name="buyerPhone"]').val();
+			const buyerEmail = $('input[name="buyerEmail"]').val();
+			const buyerRequest = $('#buyerRequest').val();
+			
+			IMP.init("imp60481580");
+			
+			IMP.request_pay({
+				pg: "tosspayments", // 결제 대행사를 토스페이먼츠로 지정
+			    merchant_uid: "order_id_" + new Date().getTime(), // 고유 주문번호 생성
+			    name: productTitle, // 상품명 설정
+			    pay_method: payMethod, // 결제 수단 지정
+			    escrow: false, // 에스크로 사용 여부 (기본값은 false)
+			    amount: price, // 결제 금액 설정
+			    buyer_name: buyerName, // 구매자 이름
+			    buyer_email: buyerEmail, // 구매자 이메일
+			    buyer_tel: buyerPhone, // 구매자 전화번호
+			    notice_url: "https://helloworld.com/api/v1/payments/notice", // 결제 완료 후 서버에 알릴 URL
+			    confirm_url: "https://helloworld.com/api/v1/payments/confirm", // 결제 승인 완료 후 서버에 알릴 URL
+			    currency: "KRW", // 통화 설정 (기본값은 KRW)
+			    locale: "ko", // 언어 설정 (기본값은 ko, 한국어)
+			    custom_data: { buyerRequest: buyerRequest }, // 결제 고유 데이터 설정
+			    appCard: false // 앱카드 사용 여부 (기본값은 false)
+			    
+			}, (response) => { // 결제 성공 시 실행될 함수
+				if(response.success) {
+					console.log('success!');
+				} else {
+					console.log('fail..');
+				}
+			});
+		}
+	</script>
 	
 	<script>
 		$(() => {
@@ -221,14 +271,10 @@
 			$('#total-price').text(totalPrice + '원');
 		});
 		
-		// 결제 완료 페이지 포워딩
-		function productCompleteForward() {
-			location.href = "${path1}/productComplete";
-		}
-	
 		// 이전 페이지 포워딩
 		function backpage() {
-			location.href = "${path1}/productDetail";
+			const pno = parseInt('${productDetail.productNo}');
+			location.href = "${path1}/product/" + pno;
 		}
 	</script>
 

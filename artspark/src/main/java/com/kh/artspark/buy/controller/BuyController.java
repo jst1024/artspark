@@ -1,7 +1,5 @@
 package com.kh.artspark.buy.controller;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +20,9 @@ public class BuyController {
 	
 	private final BuyService buyService;
 	
+	// 상품 구매 페이지 포워딩
 	@PostMapping
-	public String productBuy(int productNo,
+	public String productBuyForward(int productNo,
 							 String productTitle,
 							 String memNickname, 
 							 String memId, 
@@ -42,6 +41,7 @@ public class BuyController {
 		log.info("상세옵션 : {}", productDetail);
 		
 		model.addAttribute("productDetail", productDetail);
+		model.addAttribute("productTitle", productTitle);
 		model.addAttribute("memId", memId);
 		model.addAttribute("memNickname", memNickname);
 		model.addAttribute("totalPrice", totalPrice);
@@ -49,6 +49,8 @@ public class BuyController {
 		
 		return "product/productBuy";
 	}
+	
+	// 상품 구매
 	
 }
 
