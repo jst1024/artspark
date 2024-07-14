@@ -1,11 +1,18 @@
 package com.kh.artspark.member.controller;
 
+import java.text.Format;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.member.model.service.MemberService;
+import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +36,7 @@ public class MemberController {
 	
 	private final MemberService memberService;
 	private final BCryptPasswordEncoder bcryptPasswordEncoder;
+	private final JavaMailSender sender;
 	
 	@GetMapping("memberList")
 	public void memberList() {
@@ -163,7 +172,6 @@ public class MemberController {
 		return memberService.idCheck(checkId) > 0 ? "ERROR" : "SUCCESS";
 	}
 	
-	
 
 	@GetMapping("lostId")
 	public String lostId() {
@@ -189,40 +197,41 @@ public class MemberController {
         return "member/findId";
     }
 	
-	//비밀번호 찾기 -- 수정중...
-    /*
-	@ResponseBody
-	@PostMapping(value = "findPwd", produces = "text/html; charset=UTF-8")
-    public String findPwd(Member member, String memPwd,Model model) {
-        Member loginUser = memberService.login(member);
+	@GetMapping("lostPwd")
+	public String lostPwd() {
+		return "member/lostPwd";
+	}
 
-        if (loginUser == null) {
+	//비밀번호 찾기 -- 수정중...
+	/*
+	@ResponseBody
+    @PostMapping(value = "findPwd", produces = "text/html; charset=UTF-8")
+    public String findPwd(String memId, String memEmail, String newPwd, Model model) {
+        Member member = memberService.findByMemIdAndEmail(memId, memEmail);
+
+        if (member == null) {
             return "USER_NOT_FOUND";
         }
 
-        if (bcryptPasswordEncoder.matches(member.getMemPwd(), loginUser.getMemPwd())) {
-            String encodedNewPwd = bcryptPasswordEncoder.encode(memPwd);
+        String encodedNewPwd = bcryptPasswordEncoder.encode(newPwd);
+        member.setMemPwd(encodedNewPwd);
 
-            
-            member.setMemPwd(encodedNewPwd);
-            
-            boolean updateResult = memberService.updatePwd(memPwd);
-            
-            if (updateResult) {
-            	model.addAttribute("alertMsg","비밀번호 변경에 성공했습니다.");
-                return memberService.updatePwd(encodedNewPwd) > 0 ? "SUCCESS" : "ERROR";
-            } else {
-            	model.addAttribute("alretMsg","비밀번호 변경에 실패했습니다.");
-                return "common/errorPage";
-            }
+        boolean updateResult = memberService.updatePwd(member);
+
+        if (updateResult) {
+            return "SUCCESS";
         } else {
-        	model.addAttribute("errorMsg","비밀번호를 다시 입력해주세요.");
-            return  "redirect:/";
+            return "UPDATE_FAILED";
         }
     }
-	
-	*/
+    */
 	//비밀번호 수정
+	@ResponseBody
+	@PostMapping(value = "changePwd", produces = "text/html; charset=UTF-8")
+	public String changePwd(Member member, String changePwd) {
+	    member.setMemPwd(bcryptPasswordEncoder.encode(changePwd));
+	    return memberService.changePwd(member) > 0 ? "SUCCESS" : "ERROR";
+	}
 	
 	//회원탈퇴
 	@PostMapping("delete")
@@ -244,6 +253,69 @@ public class MemberController {
 	        return "redirect:/updatePage";  // 회원 정보 수정 페이지로 리다이렉트
 	    }
 	}
+	
+	
+	//메일 전송
+	@GetMapping("mailInput")
+	public String forwardInputForm() {
+		return "mail/input";
+	}
+	
+	//메일로 비밀번호 받고 새롭게 로그인
+	@ResponseBody
+	@PostMapping("auth-mail")
+	public String authMailService(@RequestParam("memId") String memId, @RequestParam("memNickname") String memNickname, @RequestParam("memEmail") String memEmail, HttpServletRequest request) throws MessagingException {
+	    Member member = memberService.getMember(memId, memNickname, memEmail);
+	    
+	    if (member == null) {
+	        return "error";
+	    }
+	    
+	    String remoteAddr = request.getRemoteAddr();
+	    
+	    // 새로운 임시 비밀번호 생성
+	    String newPassword = createPwd();
+	    
+	    // 임시 비밀번호 암호화
+	    String encryptedPassword = bcryptPasswordEncoder.encode(newPassword);
+	    
+	    // 회원 정보 업데이트
+	    member.setMemPwd(encryptedPassword);
+	    memberService.updatePassword(member);
+	    
+	    Mail mail = Mail.builder().who(remoteAddr).code(newPassword).build();
+	    
+	    int result = memberService.sendMail(mail);
+	    
+	    MimeMessage message = sender.createMimeMessage();
+	    MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+	    
+	    helper.setTo(memEmail);
+	    helper.setSubject("[artSpark] 새로운 비밀번호가 발급되었습니다.");
+	    helper.setText("새로운 비밀번호: " + newPassword + "\n로그인 후 반드시 비밀번호를 변경해주세요.");
+	    
+	    sender.send(message);
+	    
+	    return "success";
+	}
+
+	private String createPwd() {
+	    // 임시 비밀번호를 원하는 방식으로 생성하는 코드 작성 (예: 난수 생성)
+	    // 여기서는 간단하게 랜덤한 8자리 숫자를 생성하는 예시를 보여줍니다.
+		String numbers = "0123456789";
+	    Random random = new Random();
+	    StringBuilder Pwd = new StringBuilder();
+	    
+	    for (int i = 0; i < 4; i++) {
+	        int index = random.nextInt(numbers.length());
+	        Pwd.append(numbers.charAt(index));
+	    }
+	    return Pwd.toString();
+	}
+
+
+
+
 }
 
 
