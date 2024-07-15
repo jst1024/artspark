@@ -48,7 +48,7 @@
 				</div>
                 <div class="button-group">
                     <div class="left-buttons">
-                        <a class="btn btn-success" href="changeProduct">판매자로 변경</a>
+                        <a class="btn btn-success" href="updateProduct">판매자로 변경</a>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#idCheckModal">회원탈퇴</button>
                     </div>
                     <button type="submit" class="btn btn-primary">저장</button>
@@ -68,7 +68,7 @@
                 <div class="modal-body">
                     <h4 class="text-center mb-4">회원탈퇴를 진행하겠습니다.</h4>
                     <form action="delete" method="post">
-                        <input type="hidden" value="${ sessionScope.loginUser.memPwd }" name="memId"/>
+                        <input type="hidden" value="${ sessionScope.loginUser.memPwd }" name="memPwd"/>
                         <div class="modal-body">
                             <div align="center">
                                 탈퇴 후 복구가 불가능합니다. <br>

@@ -7,7 +7,11 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
 import com.kh.artspark.member.model.repository.MemberRepository;
+
+import com.kh.artspark.member.model.vo.Artist;
+
 import com.kh.artspark.member.model.vo.Mail;
+
 import com.kh.artspark.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -61,6 +65,30 @@ public class MemberServiceImpl implements MemberService {
 		return 0;
 	}
 	@Override
+
+	public int insertArtist(Artist artist) {
+		return memberRepository.insertArtist(sqlSession, artist);
+	}
+	
+	@Override
+	public int updateMember(Member member) {
+	    return memberRepository.updateMember(sqlSession, member);
+	}
+
+	@Override
+	public int insertOrUpdateArtist(Artist artist) {
+	    return memberRepository.insertOrUpdateArtist(sqlSession, artist);
+	}
+
+	@Override
+	public Member getMemberById(String memId) {
+	    return memberRepository.getMemberById(sqlSession, memId);
+	}
+	@Override
+	public Artist getArtist(String memId) {
+		return memberRepository.getArtist(sqlSession,memId);
+	}
+  @Override
 	public int changePwd(Member member) {
 		return memberRepository.changePwd(sqlSession,member);
 	}
@@ -78,5 +106,6 @@ public class MemberServiceImpl implements MemberService {
     public Member getMember(String memId, String memNickname, String memEmail) {
         return memberRepository.getMember(sqlSession, memId, memNickname, memEmail);
     }
+
 	
 }

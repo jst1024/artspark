@@ -1,6 +1,8 @@
 package com.kh.artspark.member.model.vo;
 
+
 import java.sql.Date;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +27,6 @@ public class Member {
 	private Date memEnroll;
 	private String memCategory;
 	private Date memSuspension;
-  private Date memDeldate;
+	private Date memDeldate;
   
 }
