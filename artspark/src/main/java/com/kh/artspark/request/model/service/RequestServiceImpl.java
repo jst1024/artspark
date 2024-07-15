@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.artspark.common.model.vo.ImgFile;
+import com.kh.artspark.notice.model.vo.Notice;
 import com.kh.artspark.request.model.dao.RequestMapper;
 import com.kh.artspark.request.model.vo.Request;
 
@@ -51,6 +52,39 @@ public class RequestServiceImpl implements RequestService {
 		
 		
 		return result1 * result2;
+	}
+
+	@Override
+	public Request requestFindById(int reqNo) {
+		return requestMapper.requestFindById(reqNo);
+	}
+
+	@Override
+	public ImgFile findImgFileByReqNo(int reqNo) {
+		return requestMapper.findImgFileByReqNo(reqNo);
+	}
+
+	@Override
+	public int increaseCount(int reqNo) {
+		return requestMapper.increaseCount(reqNo);
+	}
+
+	@Override
+	public int deleteRequest(int reqNo) {
+		return requestMapper.deleteRequest(reqNo);
+	}
+
+	@Transactional
+	@Override
+	public int updateRequest(Request request, ImgFile imgFile) {
+		 int result1 = requestMapper.updateRequest(request);
+		 int result2 = 1;
+		 
+		 if(imgFile.getOriginName() != null) {
+			  result2 = requestMapper.updateImgFile(imgFile);
+		 }
+		 
+		 return result1 * result2;
 	}
 	
 }

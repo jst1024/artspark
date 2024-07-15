@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.common.model.vo.ImgFile;
 import com.kh.artspark.common.model.vo.PageInfo;
@@ -135,7 +136,7 @@ public class RequestController {
 		
 //		log.info("{}",upfile);
 		
-		if(!upfile.getOriginalFilename().equals("")) {
+		if(upfile.getOriginalFilename() != null) {
 			 saveFile(upfile, session); 
 			
 			imgFile.setOriginName(upfile.getOriginalFilename());
@@ -159,34 +160,100 @@ public class RequestController {
 	}
 	public String saveFile(MultipartFile upfile, HttpSession session) {
 			
-			String originName = upfile.getOriginalFilename();
-			
-			String ext = originName.substring(originName.lastIndexOf("."));
-			// "abc.ddd.txt" => 뒤에 . 기준
-			
-			int num = (int)(Math.random() * 900) + 100; // 값의 범위를 곱한다. 그런뒤에 시작값을 더해준다.
-			// Math.random() : 0.0 ~ 0.9999999....
-			
-			// 시간메서드
-			// log.info("currentTime : {}", new Date());
-			
-			String currentTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date(num)); // 작성일에도 영향을 미침
-			
-			String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/"); // /가 없으면 파일이 들어가지 않는다.
-			// 새로운 파일 명
-			String changeName = "ArtSpark" + currentTime + "_" + num + ext;
-			
-			try {
-				upfile.transferTo(new File(savePath + changeName)); // 파일경로 + 파일이름
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			return changeName;
+		String originName = upfile.getOriginalFilename();
+		
+		String ext = originName.substring(originName.lastIndexOf("."));
+		// "abc.ddd.txt" => 뒤에 . 기준
+		
+		int num = (int)(Math.random() * 900) + 100; // 값의 범위를 곱한다. 그런뒤에 시작값을 더해준다.
+		// Math.random() : 0.0 ~ 0.9999999....
+		
+		// 시간메서드
+		// log.info("currentTime : {}", new Date());
+		
+		String currentTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date(num)); // 작성일에도 영향을 미침
+		
+		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/"); // /가 없으면 파일이 들어가지 않는다.
+		// 새로운 파일 명
+		String changeName = "ArtSpark" + currentTime + "_" + num + ext;
+		
+		try {
+			upfile.transferTo(new File(savePath + changeName)); // 파일경로 + 파일이름
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		
+		return changeName;
+	}
+	@GetMapping("requestDetail")
+	public ModelAndView requestFindById(int reqNo, ModelAndView mv) {
+		Request request = requestService.requestFindById(reqNo);
+		ImgFile imgFile = requestService.findImgFileByReqNo(reqNo);
+		
+		if(requestService.increaseCount(reqNo) > 0) {
+		mv.addObject("request",request);
+		mv.addObject("imgFile", imgFile);
+		mv.setViewName("request/requestDetail");	
+		//응답화면 지정
+		} else {
+				mv.addObject("errorMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");
+		}
+		//get방식이기때문에 DML(CRUD)이 성공할 수도 있고 실패할 수도 있음. 카운트가 증가되면 상제조회가 되도록.
+		// 실패여부 확인
+
+		return mv;
+	}
+	@PostMapping("deleteRequest")
+	public String deleteRequest(int reqNo, String filePath, HttpSession session, Model model) {
+        if (filePath != null && !"".equals(filePath)) {
+            // 파일 경로가 존재하는 경우 해당 파일을 삭제
+            new File(session.getServletContext().getRealPath(filePath)).delete();
+        }
+		if (requestService.deleteRequest(reqNo) > 0) {
+	        session.setAttribute("alertMsg", "게시글 삭제 성공");
+	        return "redirect:/requestlist";
+	    } else {
+	        model.addAttribute("errorMsg", "게시글 삭제 실패");
+	        return "common/errorPage";
+	    }
+	}
 	
+	@PostMapping("updateRequest")
+	public ModelAndView updateRequest(ModelAndView mv, int reqNo) {
+		mv.addObject("imgFile", requestService.findImgFileByReqNo(reqNo));
+		mv.addObject("request", requestService.requestFindById(reqNo)).setViewName("request/requestUpdate");
+		return mv;
+	}
 	
+	@PostMapping("requestUpdate")
+	public String requestUpdate(Request request, HttpSession session, MultipartFile reUpFile, Model model) {
+	    ImgFile imgFile = new ImgFile();
+	    
+	    // 새로운 첨부파일이 존재하는 경우
+	    if(!reUpFile.getOriginalFilename().equals("")) { // 빈문자열과 같지 않으면 (새로운 첨부파일이 있다.)
+	        // 새로운 파일 저장
+	        String changeName = saveFile(reUpFile, session);
+	        imgFile.setOriginName(reUpFile.getOriginalFilename());
+	        imgFile.setChangeName(changeName);
+	        imgFile.setImgFilePath("resources/uploadFiles/" + changeName);
+	        imgFile.setBoardNo(request.getReqNo());
+	        imgFile.setBoardType("의뢰");
+	        
+	        log.info("{}", request);
+	        log.info("{}", imgFile);
+	       
+	        model.addAttribute("imgFile", imgFile);
+	    }
+
+	    if (requestService.updateRequest(request, imgFile) > 0) {
+	        session.setAttribute("alertMsg", "수정 완료");
+	        return "redirect:requestDetail?reqNo=" + request.getReqNo();
+	    } else {
+	        session.setAttribute("errorMsg", "정보 수정 실패");
+	        return "common/errorPage";
+	    }
+	}
 	
 }

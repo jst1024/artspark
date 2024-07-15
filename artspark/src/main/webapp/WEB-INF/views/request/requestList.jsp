@@ -105,7 +105,7 @@
                                     <td>${request.reqNo}</td>
                                     <td>${request.reqPurpose}</td>
                                     <td>${request.reqTitle}</td>
-                                    <td>${request.reqCategory}</td>
+                                    <td>${request.reqCategory}</td>                                
                                     <td>${request.memId}</td>
                                     <td>${request.reqDate}</td>
                                     <td>${request.reqCount}</td>
