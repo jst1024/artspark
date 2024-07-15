@@ -50,11 +50,13 @@
 				 WHERE
 				 		P.STATUS = 'Y'
 				   AND
+			   			(
 				        PRODUCT_TITLE LIKE '%' || #{keyword} || '%'
 				    OR
 				        M.MEM_NICKNAME LIKE '%' || #{keyword} || '%'
 				    OR
 				        TN.TAG_NAME LIKE '%' || #{keyword} || '%'
+				        )
 				 GROUP
 			        BY
 			            P.PRODUCT_TITLE,
@@ -295,11 +297,13 @@
           WHERE
           		P.STATUS = 'Y'
            AND
+           		(
                 PRODUCT_TITLE LIKE '%' || #{keyword} || '%'
             OR
                 M.MEM_NICKNAME LIKE '%' || #{keyword} || '%'
             OR
                 TN.TAG_NAME LIKE '%' || #{keyword} || '%'
+                )
 		 GROUP
 		 	BY
 		 		P.PRODUCT_NO,

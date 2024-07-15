@@ -99,7 +99,14 @@
                 <div class="form-group row">
                     <label for="payerName" class="col-sm-2 col-form-label">입금자명</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="buyerName" name="buyerName" style="width:300px;" placeholder="입금자명">
+	                    <form action="${ path1 }/buyComplete" id="buy-complete" method="post">
+	                    	<input type="hidden" name="productNo" value="${ productDetail.productNo }">
+	                    	<input type="hidden" name="merchant_uid" value="${ merchant_uid }">
+	                    	<input type="hidden" name="memNickname" value="${ memNickname }">
+	                    	<input type="hidden" name="productTitle" value="${ productTitle }">
+	                    	<input type="hidden" name="totalPrice" value="${ totalPrice }">
+	                        <input type="text" class="form-control" id="buyerName" name="buyerName" style="width:300px;" placeholder="입금자명">
+	                    </form>
                     </div>
                     <div class="col-sm-6">
                         <small class="form-text text-danger">* 작가에게 공개되지 않습니다.<br></small>
@@ -179,6 +186,8 @@
 		                    <p class="d-flex justify-content-between buy-option" style="margin-top: 20px;">
 		                    	<input type="hidden" id="buyOptionPrice${i.index + 1}" name="buyOptionPrice" value="${ buyOption.buyOptionPrice[i.index] }">
 		                    	<input type="hidden" id="buyOptionAmount${i.index + 1}" name="buyOptionAmount" value="${ buyOption.buyOptionAmount[i.index] }">
+		                    	<input type="hidden" id="buyOptionName${i.index + 1}" name="buyOptionName" value="${ buyOption.buyOptionName[i.index] }">
+			                    <input type="hidden" id="buyDetailOptionName${i.index + 1}" name="buyDetailOptionName" value="${ buyOption.buyDetailOptionName[i.index] }">
 						        <span><strong>${ buyOption.buyOptionName[i.index] } / ${ buyOption.buyDetailOptionName[i.index] } / ${ buyOption.buyOptionAmount[i.index] }개</strong></span>
 						        <span>${ buyOption.buyOptionPrice[i.index] }원</span>
 						    </p>
@@ -194,7 +203,7 @@
 	</div>
 	
 	<div class="btn-group">
-        <button type="button" class="big-btn" id="buy-btn" onclick="buyProduct()">주문 / 결제하기</button>
+        <button type="button" class="big-btn" id="buy-btn">주문 / 결제하기</button>
         <button type="button" class="big-btn" id="cancle-btn" onclick="backpage();">취소</button>
 	</div>
 
@@ -209,7 +218,9 @@
 		5. 해당 정보를 통해 유저가 결제한 금액이 정확한지 여부 확인
 	 -->	
 	<script>
-		function buyProduct() {
+		$('#buy-btn').on('click', function() {
+			const merchant_uid = $('input[name="merchant_uid"]').val();
+			const productNo = $('input[name="productNo"]').val();
 			const payMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
 			const productTitle = '${productTitle}';
 			const price = parseInt('${totalPrice}');
@@ -218,12 +229,36 @@
 			const buyerEmail = $('input[name="buyerEmail"]').val();
 			const buyerRequest = $('#buyerRequest').val();
 			
+			var buyOptionNames = document.querySelectorAll('input[name="buyOptionName"]');
+			var buyOptionName = [];
+			buyOptionNames.forEach(function(input) {
+				buyOptionName.push(input.value);
+			});
+			
+			var buyDetailOptionNames = document.querySelectorAll('input[name="buyDetailOptionName"]');
+			var buyDetailOptionName = [];
+			buyDetailOptionNames.forEach(function(input) {
+				buyDetailOptionName.push(input.value);
+			});
+			
+			var buyOptionAmounts = document.querySelectorAll('input[name="buyOptionAmount"]');
+			var buyOptionAmount = [];
+			buyOptionAmounts.forEach(function(input) {
+				buyOptionAmount.push(parseInt(input.value));
+			});
+			
+			var buyOptionPrices = document.querySelectorAll('input[name="buyOptionPrice"]');
+			var buyOptionPrice = [];
+			buyOptionPrices.forEach(function(input) {
+				buyOptionPrice.push(parseInt(input.value));
+			});
+			
 			IMP.init("imp60481580");
 			console.log("결제 모듈이 초기화되었습니다.");
 			
 			IMP.request_pay({
 				pg: "tosspayments", // 결제 대행사를 토스페이먼츠로 지정
-			    merchant_uid: "order_id_" + new Date().getTime(), // 고유 주문번호 생성
+			    merchant_uid: merchant_uid, // 고유 주문번호 생성
 			    name: productTitle, // 상품명 설정
 			    pay_method: payMethod, // 결제 수단 지정
 			    escrow: false, // 에스크로 사용 여부 (기본값은 false)
@@ -231,31 +266,43 @@
 			    buyer_name: buyerName, // 구매자 이름
 			    buyer_email: buyerEmail, // 구매자 이메일
 			    buyer_tel: buyerPhone, // 구매자 전화번호
-			    // notice_url: "https://helloworld.com/api/v1/payments/notice", // 결제 완료 후 서버에 알릴 URL
-			    // confirm_url: "https://helloworld.com/api/v1/payments/confirm", // 결제 승인 완료 후 서버에 알릴 URL
 			    currency: "KRW", // 통화 설정 (기본값은 KRW)
 			    locale: "ko", // 언어 설정 (기본값은 ko, 한국어)
 			    custom_data: { buyerRequest: buyerRequest }, // 결제 고유 데이터 설정
 			    appCard: false // 앱카드 사용 여부 (기본값은 false)
 			    
 			}, function(rsp) {
-				console.log(rsp);
-		    	//[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
-		    	$.ajax({
-		    		url: "${path1}/payments/complete", //cross-domain error가 발생하지 않도록 주의해주세요
-		    		type: 'POST',
-		    		dataType: 'json',
-		    		data: {
-			    		imp_uid : rsp.imp_uid,
-			    		merchant_uid : rsp.merchant_uid
-			    		//기타 필요한 데이터가 있으면 추가 전달
-		    		},
-		    		success: response => {
-		    			console.log(response);	
-		    		}
-		    	});
+				if(rsp.error_code === 'F400') {
+					alertify.alert("결제가 취소되었습니다.").setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+				} else {
+			    	//[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
+			    	$.ajax({
+			    		url: "${path1}/payments/complete", //cross-domain error가 발생하지 않도록 주의해주세요
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: {
+				    		imp_uid : rsp.imp_uid,
+				    		merchant_uid : rsp.merchant_uid,
+							productNo : productNo,
+							paymentRequest : buyerRequest,
+							buyOptionName : buyOptionName,
+							buyDetailOptionName : buyDetailOptionName,
+							buyOptionPrice : buyOptionPrice,
+							buyOptionAmount : buyOptionAmount
+			    		},
+			    		success: response => {
+			    			// console.log(response.message);
+			    			alertify.alert(response.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+			    			$('#buy-complete').submit();
+			    		},
+			    		error: e => {
+			    			console.log(e);
+			    			alertify.alert(e).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+			    		}
+			    	});
+				}
 			});
-		}
+		});
 	</script>
 	
 	<script>
@@ -263,15 +310,11 @@
 			// 구매 옵션별 가격과 수량 곱하고 localeString으로 바꾸기
 			$('.buy-option').each(function() {
 				const buyOptionPrice = $(this).find('input').eq(0).val();
-				// console.log(buyOptionPrice);
 				const buyOptionAmount = $(this).find('input').eq(1).val();
-				// console.log(buyOptionAmount);
 				
 				const price = buyOptionPrice * buyOptionAmount;
-				// console.log(price);
 				
 				const localePrice = price.toLocaleString() + '원';
-				// console.log(localePrice);
 				
 				$(this).find('span').eq(1).text(localePrice);
 			});

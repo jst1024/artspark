@@ -245,7 +245,7 @@
 						        <select class="price-option-select" id="price-option-select1">
 						        	<option value="" selected disabled>선택하세요.</option>
 						        	<c:forEach items="${ payOption.detailOptionList }" var="detailOption">
-							        	<option value="${ detailOption.detailOptionPrice }">${ detailOption.detailOptionName } ( ${ detailOption.detailOptionPrice }원 )</option>
+							        	<option value="${ detailOption.detailOptionPrice }">${ detailOption.detailOptionName } [ ${ detailOption.detailOptionPrice }원 ]</option>
 						        	</c:forEach>
 						        </select>
 						    </p>
@@ -293,7 +293,7 @@
 		                		$('.price-option-select').on('change', function() {
 		                			const selectPrice = parseInt($(this).val()).toLocaleString();
 		                			let selectDetailOption = $(this).find('option:selected').text();
-		                			selectDetailOption = selectDetailOption.replace(/\s*\(.*?\)\s*/g, "");
+		                			selectDetailOption = selectDetailOption.replace(/\s*\[.*?\]\s*/g, "");
 		                			const selectOption = $(this).closest('p').find('.option-name').text();
 		                			const optionKey = selectOption + ' / ' + selectDetailOption;
 		                			// console.log(optionKey);

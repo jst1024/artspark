@@ -18,6 +18,6 @@ public class BuyOption {
 	private List<String> buyDetailOptionName;
 	private List<Integer> buyOptionPrice;
 	private List<Integer> buyOptionAmount;
-	private int buyNo;
+	private String buyNo;
 	
 }

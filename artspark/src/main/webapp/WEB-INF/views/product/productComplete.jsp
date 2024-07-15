@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path1" value="${pageContext.servletContext.contextPath }" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,7 +89,7 @@
                         <p><strong>결제 방법</strong></p>
                     </div>
                     <div class="col-sm-10">
-                        <p>[결제 방법]</p>
+                        <p>${ payment.paymentMethod }</p>
                     </div>
                 </div>
                 
@@ -97,7 +98,7 @@
                         <p><strong>입금자명</strong></p>
                     </div>
                     <div class="col-sm-10">
-                        <p>[입금자명]</p>
+                        <p>${ payment.paymentName }</p>
                     </div>
                 </div>
                 
@@ -106,7 +107,7 @@
                         <p><strong>연락처</strong></p>
                     </div>
                     <div class="col-sm-10">
-                        <p>010-1234-5678</p>
+                        <p>${ payment.paymentPhone }</p>
                     </div>
                 </div>
                 
@@ -115,36 +116,19 @@
                         <p><strong>이메일</strong></p>
                     </div>
                     <div class="col-sm-10">
-                        <p>email@email.com</p>
+                        <p>${ payment.paymentEmail }</p>
                     </div>
                 </div>
                 
                 <div class="form-group row">
                     <div class="col-sm-2">
-                        <p><strong>주문자</strong></p>
+                        <p><strong>요청사항</strong></p>
                     </div>
                     <div class="col-sm-10">
-                        <p>[주문자명]</p>
+                        <p>${ payment.paymentRequest }</p>
                     </div>
                 </div>
                 
-                <div class="form-group row">
-                    <div class="col-sm-2">
-                        <p style="color:red;"><strong>입금 계좌</strong></p>
-                    </div>
-                    <div class="col-sm-10">
-                        <p style="color:red;">xx 은행 : 1111-11-1111 &nbsp;&nbsp;&nbsp;&nbsp; 예금주 : artSpark</p>
-                    </div>
-                </div>
-                
-                <div class="form-group row">
-                    <div class="col-sm-2">
-                        <p><strong>입금 기한</strong></p>
-                    </div>
-                    <div class="col-sm-10">
-                        <p>2일 이내 입금이 안될 경우 자동 취소됩니다.</p>
-                    </div>
-                </div>
 	        </div>
 	    </div>
 	</div>
@@ -157,23 +141,23 @@
                 	<div class="col-sm-5">
 	                    <p class="d-flex justify-content-between" style="margin-top: 20px;">
 					        <span><strong>제출 파일 유형</strong></span>
-					        <span>png</span>
+					        <span>${ productDetail.productPurpose }</span>
 					    </p>
 					    <p class="d-flex justify-content-between">
 					        <span><strong>해상도</strong></span>
-					        <span>300dpi</span>
+					        <span>${ productDetail.detailPixel }</span>
 					    </p>
 					    <p class="d-flex justify-content-between">
 					        <span><strong>기본 사이즈</strong></span>
-					        <span>2000이상</span>
+					        <span>${ productDetail.detailSize }</span>
 					    </p>
 					    <p class="d-flex justify-content-between">
 					        <span><strong>수정 횟수</strong></span>
-					        <span>2회</span>
+					        <span>${ productDetail.updateCount }회</span>
 					    </p>
 					    <p class="d-flex justify-content-between" style="margin-bottom: 20px;">
 					        <span><strong>작업 기간</strong></span>
-					        <span>결제일로부터 7일</span>
+					        <span>${ productDetail.detailWorkdate }</span>
 					    </p>
 					</div>
                 </div>
@@ -191,23 +175,21 @@
 					</div>
                 	
                 	<div class="col-sm-7">
-                		<p style="font-size:28px;">[작가 이름]</p>
-                		<p>[작품 제목]</p><br>
-	                    <p class="d-flex justify-content-between" style="margin-top: 20px;">
-					        <span><strong>[옵션명1] / [옵션선택항목1] / n개</strong></span>
-					        <span>25,000원</span>
-					    </p>
-					    <p class="d-flex justify-content-between">
-					        <span><strong>[옵션명2] / [옵션선택항목2] / n개</strong></span>
-					        <span>110,000원</span>
-					    </p>
-					    <p class="d-flex justify-content-between">
-					        <span><strong>[옵션명3] / [옵션선택항목3] / n개</strong></span>
-					        <span>5,000원</span>
-					    </p>
+                		<p style="font-size:28px;">${ memNickname }</p>
+                		<p>${ productTitle }</p><br>
+                		<c:forEach items="${ buyOptionList }" var="buyOption" varStatus="i">
+		                    <p class="d-flex justify-content-between buy-option" style="margin-top: 20px;">
+		                    	<input type="hidden" id="buyOptionPrice${i.index + 1}" name="buyOptionPrice" value="${ buyOption.buyOptionPrice }">
+		                    	<input type="hidden" id="buyOptionAmount${i.index + 1}" name="buyOptionAmount" value="${ buyOption.buyOptionAmount }">
+		                    	<input type="hidden" id="buyOptionName${i.index + 1}" name="buyOptionName" value="${ buyOption.buyOptionName }">
+			                    <input type="hidden" id="buyDetailOptionName${i.index + 1}" name="buyDetailOptionName" value="${ buyOption.buyDetailOptionName }">
+						        <span><strong>${ buyOption.buyOptionName } / ${ buyOption.buyDetailOptionName } / ${ buyOption.buyOptionAmount }개</strong></span>
+						        <span>${ buyOption.buyOptionPrice }원</span>
+						    </p>
+					    </c:forEach>
 					    <p class="d-flex justify-content-between">
 					        <span style="font-size:28px;"><strong>총 결제 금액</strong></span>
-					        <span style="color: red; font-size:28px; font-weight:bold;">115,000</span>
+					        <span id="total-price" style="color: #ff5200; font-size:28px; font-weight:bold;">${ totalPrice }원</span>
 					    </p>
 					</div>
                 </div>
@@ -221,12 +203,32 @@
 	</div>
 	
 	<script>
+		$(() => {
+			// 구매 옵션별 가격과 수량 곱하고 localeString으로 바꾸기
+			$('.buy-option').each(function() {
+				const buyOptionPrice = $(this).find('input').eq(0).val();
+				const buyOptionAmount = $(this).find('input').eq(1).val();
+				
+				const price = buyOptionPrice * buyOptionAmount;
+				
+				const localePrice = price.toLocaleString() + '원';
+				
+				$(this).find('span').eq(1).text(localePrice);
+			});
+			
+			// 총 가격 localeString으로 바꾸기
+			let totalPrice = $('#total-price').text().replace('원', '');
+			totalPrice = (parseInt(totalPrice)).toLocaleString();
+			$('#total-price').text(totalPrice + '원');
+		});
+	
 		function productCompleteForward() {
-			location.href = "productList";
+			const pno = parseInt('${productDetail.productNo}');
+			location.href = "${path1}/product/" + pno;
 		}
 	
 		function backpage() {
-			location.href = "productList";
+			location.href = "${path1}/product";
 		}
 	</script>
 
