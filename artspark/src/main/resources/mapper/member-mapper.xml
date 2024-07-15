@@ -129,12 +129,12 @@
 	</update>
 	<select id="getArtist" parameterType="string" resultType="artist">
 	    SELECT  
-	    		ARTIST_INTRO,
-	    		ARTIST_PHONE,
-	    		ARTIST_PATH,
-	    		ARTIST_ORIGIN_NAME,
-	    		ARTIST_CHANGE_NAME,
-	    		MEM_ID
+	    		ARTIST_INTRO        artistIntro,
+	    		ARTIST_PHONE        artistPhone,
+	    		ARTIST_PATH         artistPath,
+	    		ARTIST_ORIGIN_NAME  artistOriginName,
+	    		ARTIST_CHANGE_NAME  artistChangeName,
+	    		MEM_ID              memId
 	     FROM 
 	            ARTIST
 	    WHERE 

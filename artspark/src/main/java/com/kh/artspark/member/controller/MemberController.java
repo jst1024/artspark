@@ -125,8 +125,7 @@ public class MemberController {
 	                            HttpSession session,
 	                            Model model) {
 	    
-	    log.info("수정 요청 멤버: {}", member);
-	    log.info("판매자 요청 멤버: {}", artist);
+
 
 	    // 파일 업로드 처리
 	    if (!file.isEmpty()) {
@@ -149,7 +148,7 @@ public class MemberController {
 	            artist.setArtistChangeName(newFileName);
 	            artist.setArtistPath("/resources/uploadFiles/" + newFileName);
 	            
-	            log.info("artist: {}", artist);
+	            log.info("artist2: {}", artist);
 	            
 	            // model에 artist 추가 (JSP 페이지로 전달)
 	            model.addAttribute("artist", artist);
