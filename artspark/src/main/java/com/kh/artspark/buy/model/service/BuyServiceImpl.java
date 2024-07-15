@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BuyServiceImpl implements BuyService {
 	
-	private final BuyMapper buyMapper;	
-
+	private final BuyMapper buyMapper;
+	
 	@Override
 	public ProductDetail getProductDetail(int productNo) {
 		return buyMapper.getProductDetail(productNo);

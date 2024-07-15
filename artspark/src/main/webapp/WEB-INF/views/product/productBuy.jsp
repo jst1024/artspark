@@ -219,6 +219,7 @@
 			const buyerRequest = $('#buyerRequest').val();
 			
 			IMP.init("imp60481580");
+			console.log("결제 모듈이 초기화되었습니다.");
 			
 			IMP.request_pay({
 				pg: "tosspayments", // 결제 대행사를 토스페이먼츠로 지정
@@ -230,19 +231,29 @@
 			    buyer_name: buyerName, // 구매자 이름
 			    buyer_email: buyerEmail, // 구매자 이메일
 			    buyer_tel: buyerPhone, // 구매자 전화번호
-			    notice_url: "https://helloworld.com/api/v1/payments/notice", // 결제 완료 후 서버에 알릴 URL
-			    confirm_url: "https://helloworld.com/api/v1/payments/confirm", // 결제 승인 완료 후 서버에 알릴 URL
+			    // notice_url: "https://helloworld.com/api/v1/payments/notice", // 결제 완료 후 서버에 알릴 URL
+			    // confirm_url: "https://helloworld.com/api/v1/payments/confirm", // 결제 승인 완료 후 서버에 알릴 URL
 			    currency: "KRW", // 통화 설정 (기본값은 KRW)
 			    locale: "ko", // 언어 설정 (기본값은 ko, 한국어)
 			    custom_data: { buyerRequest: buyerRequest }, // 결제 고유 데이터 설정
 			    appCard: false // 앱카드 사용 여부 (기본값은 false)
 			    
-			}, (response) => { // 결제 성공 시 실행될 함수
-				if(response.success) {
-					console.log('success!');
-				} else {
-					console.log('fail..');
-				}
+			}, function(rsp) {
+				console.log(rsp);
+		    	//[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
+		    	$.ajax({
+		    		url: "${path1}/payments/complete", //cross-domain error가 발생하지 않도록 주의해주세요
+		    		type: 'POST',
+		    		dataType: 'json',
+		    		data: {
+			    		imp_uid : rsp.imp_uid,
+			    		merchant_uid : rsp.merchant_uid
+			    		//기타 필요한 데이터가 있으면 추가 전달
+		    		},
+		    		success: response => {
+		    			console.log(response);	
+		    		}
+		    	});
 			});
 		}
 	</script>
