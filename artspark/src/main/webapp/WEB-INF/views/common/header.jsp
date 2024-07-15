@@ -49,6 +49,11 @@
                                     <li class="nav-item"><a class="nav-link" href="${ path2 }/loginPage" >로그인</a></li>
                                     <li class="nav-item"><a class="nav-link" href="${ path2 }/joinPage">회원가입</a></li>
                                 </c:when>
+                                <c:when test="${ sessionScope.loginUser.memCategory eq 'B' }">
+                                    <li class="nav-item"><a class="nav-link" href="${path2 }/logout">로그아웃</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="${path2 }/updateProduct">회원정보</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="${path2 }/admin">마이페이지</a></li>
+                                </c:when>
                                 <c:otherwise>
                                     <li class="nav-item"><a class="nav-link" href="${ path2 }/logout">로그아웃</a></li>
                                     <li class="nav-item"><a class="nav-link" href="${ path2 }/updatePage">회원정보</a></li>

@@ -3,6 +3,7 @@ package com.kh.artspark.member.model.service;
 import java.util.List;
 import java.util.Map;
 
+import com.kh.artspark.member.model.vo.Artist;
 import com.kh.artspark.member.model.vo.Member;
 
 public interface MemberService {
@@ -23,8 +24,11 @@ public interface MemberService {
 	int update(Member member);
 	
 	//판매자 정보수정
-	
-	
+	int insertArtist(Artist artist);
+	int updateMember(Member member);
+	int insertOrUpdateArtist(Artist artist);
+	Member getMemberById(String memId);
+	Artist getArtist(String memId);
 	//아이디찾기
 
 	String findId(Map<String,String>params);
@@ -36,7 +40,7 @@ public interface MemberService {
 	boolean updatePwd(String memPwd);
 	
 	//회원탈퇴
-  int delete(String  memId);
+	int delete(String  memId);
 	
 
 	//

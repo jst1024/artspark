@@ -1,8 +1,13 @@
 package com.kh.artspark.member.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
@@ -10,12 +15,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.member.model.service.MemberService;
+import com.kh.artspark.member.model.vo.Artist;
 import com.kh.artspark.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -97,32 +105,102 @@ public class MemberController {
 		
 	}
 	
+	
 	@GetMapping("updateProduct")
-	public String upateProduct() {
-	    return "member/changeProduct"; // 로그인 페이지의 뷰 이름 반환
+	public String updateProduct(HttpSession session, Model model) {
+	    Member loginUser = (Member) session.getAttribute("loginUser");
+	    if (loginUser != null) {
+	        Artist artist = memberService.getArtist(loginUser.getMemId());
+	        model.addAttribute("loginUser", loginUser);
+	        model.addAttribute("artist", artist);
+	        log.info("artist : {}", artist);
+	    }
+	    return "member/changeProduct";
 	}
 	
 	@PostMapping("productUpdate")
-	public String productUpdate(Member member, HttpSession session, Model model) {
-		
-		log.info("수정 요청 멤버:{}",member);
-	
-		// 1 / 0
-		if(memberService.update(member) > 0) {
-			
-			session.setAttribute("loginUser",memberService.login(member));
-			session.setAttribute("alertMsg","정보 수정 성공");	
-		
-		
-			return "redirect:/";
-			
-		}else {
-			model.addAttribute("errorMsg","정보 수정에 실패했습니다.");
-			return "common/errorPage";
-		}
-		
+	public String productUpdate(@ModelAttribute Artist artist,
+	                            @ModelAttribute Member member,
+	                            @RequestParam("profileImage") MultipartFile file,
+	                            HttpSession session,
+	                            Model model) {
+	    
+	    log.info("수정 요청 멤버: {}", member);
+	    log.info("판매자 요청 멤버: {}", artist);
+
+	    // 파일 업로드 처리
+	    if (!file.isEmpty()) {
+	        try {
+	            // 파일 저장 경로 설정
+	            String uploadPath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+	            
+	            // 원본 파일명
+	            String originalFileName = file.getOriginalFilename();
+	            
+	            // 새로운 파일명 생성 및 저장
+	            String newFileName = saveFile(file, session);
+	            
+	            // 파일 저장
+	            File destFile = new File(uploadPath + newFileName);
+	            file.transferTo(destFile);
+	            
+	            // Artist 객체에 파일 정보 설정
+	            artist.setArtistOriginName(originalFileName);
+	            artist.setArtistChangeName(newFileName);
+	            artist.setArtistPath("/resources/uploadFiles/" + newFileName);
+	            
+	            log.info("artist: {}", artist);
+	            
+	            // model에 artist 추가 (JSP 페이지로 전달)
+	            model.addAttribute("artist", artist);
+	            
+	        } catch (IOException e) {
+	            log.error("파일 업로드 실패", e);
+	            model.addAttribute("errorMsg", "파일 업로드에 실패했습니다.");
+	            return "common/errorPage";
+	        }
+	    }
+
+	    // Member 정보 업데이트
+	    int memberUpdateResult = memberService.updateMember(member);
+	    
+	    // Artist 정보 업데이트 또는 삽입
+	    int artistResult = memberService.insertOrUpdateArtist(artist);
+	    
+	    if (memberUpdateResult > 0 && artistResult > 0) {
+	        // 세션 업데이트
+	        Member updatedMember = memberService.getMemberById(member.getMemId());
+	        session.setAttribute("loginUser", updatedMember);
+	        session.setAttribute("alertMsg", "정보 수정 성공");
+	        return "redirect:/";
+	    } else {
+	        model.addAttribute("errorMsg", "정보 수정에 실패했습니다.");
+	        return "common/errorPage";
+	    }
 	}
-	
+
+	public String saveFile(MultipartFile upfile, HttpSession session) {
+	    
+	    String originName = upfile.getOriginalFilename();
+	    String ext = originName.substring(originName.lastIndexOf('.') + 1);
+	    
+	    int num = (int) (Math.random() * 900) + 100;
+	    String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+	    
+	    String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+	    
+	    String changeName = "ARTSPARK_" + currentTime + "_" + num + "." + ext;
+	    
+	    try {
+	        upfile.transferTo(new File(savePath + changeName));
+	    } catch (IOException e) {
+	        log.error("파일 업로드 실패", e);
+	        // 예외 처리
+	    }
+	    
+	    return changeName;
+	}
+
 	
 	@GetMapping("joinPage")
 	public String joinPage() {
@@ -189,39 +267,9 @@ public class MemberController {
         return "member/findId";
     }
 	
-	//비밀번호 찾기 -- 수정중...
-    /*
-	@ResponseBody
-	@PostMapping(value = "findPwd", produces = "text/html; charset=UTF-8")
-    public String findPwd(Member member, String memPwd,Model model) {
-        Member loginUser = memberService.login(member);
 
-        if (loginUser == null) {
-            return "USER_NOT_FOUND";
-        }
 
-        if (bcryptPasswordEncoder.matches(member.getMemPwd(), loginUser.getMemPwd())) {
-            String encodedNewPwd = bcryptPasswordEncoder.encode(memPwd);
 
-            
-            member.setMemPwd(encodedNewPwd);
-            
-            boolean updateResult = memberService.updatePwd(memPwd);
-            
-            if (updateResult) {
-            	model.addAttribute("alertMsg","비밀번호 변경에 성공했습니다.");
-                return memberService.updatePwd(encodedNewPwd) > 0 ? "SUCCESS" : "ERROR";
-            } else {
-            	model.addAttribute("alretMsg","비밀번호 변경에 실패했습니다.");
-                return "common/errorPage";
-            }
-        } else {
-        	model.addAttribute("errorMsg","비밀번호를 다시 입력해주세요.");
-            return  "redirect:/";
-        }
-    }
-	
-	*/
 	//비밀번호 수정
 	
 	//회원탈퇴

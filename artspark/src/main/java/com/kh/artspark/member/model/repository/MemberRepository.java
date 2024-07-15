@@ -6,6 +6,7 @@ import java.util.Map;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.artspark.member.model.vo.Artist;
 import com.kh.artspark.member.model.vo.Member;
 
 @Repository
@@ -45,6 +46,26 @@ public class MemberRepository {
 
 	public boolean update(SqlSessionTemplate sqlSession, String memPwd) {
 		return sqlSession.selectOne("memberMapper.update",memPwd);
+	}
+
+	public int insertArtist(SqlSessionTemplate sqlSession, Artist artist) {
+		return sqlSession.insert("memberMapper.insertArtist",artist);
+	}
+	
+	public int updateMember(SqlSessionTemplate sqlSession, Member member) {
+	    return sqlSession.update("memberMapper.updateMember", member);
+	}
+
+	public int insertOrUpdateArtist(SqlSessionTemplate sqlSession, Artist artist) {
+	    return sqlSession.update("memberMapper.insertOrUpdateArtist", artist);
+	}
+
+	public Member getMemberById(SqlSessionTemplate sqlSession, String memId) {
+	    return sqlSession.selectOne("memberMapper.getMemberById", memId);
+	}
+
+	public Artist getArtist(SqlSessionTemplate sqlSession, String memId) {
+		return sqlSession.selectOne("memberMapper.getArtist",memId);
 	}
 
 }
