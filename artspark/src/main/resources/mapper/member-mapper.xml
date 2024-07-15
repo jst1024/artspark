@@ -81,23 +81,87 @@
 	
 	
     <!-- 일반에서 판매자로 정보 수정  -->
-    <select id="productUpdate" parameterType="member">
-    	SELECT
-    			M.MEM_ID,
-    			M.MEM_PWD,
-    			M.MEM_NICKNAME,
-    			M.STATUS,
-    			M.MEM_ENROLL,
-    			M.MEM_CATEGORY,
-    			A.ARTIST_INTRO,
-    			A.ARTIST_PHONE
-    	 FROM
-    	 		MEMBER M
-    	 JOIN
-    	 		ARTIST A ON M.MEM_ID = A.MEM_ID
-    	  AND
-    	  		MEM_CATEGORY ='B'
-    </select>
+    <insert id="insertOrUpdateArtist" parameterType="artist">
+     	MERGE 
+     	 INTO   ARTIST
+    	USING 
+                DUAL 
+           ON   (
+                MEM_ID = #{memId}
+                )
+    	WHEN    MATCHED THEN
+       UPDATE 
+          SET
+	            ARTIST_INTRO = #{artistIntro},
+	            ARTIST_PHONE = #{artistPhone},
+	            ARTIST_PATH = #{artistPath},
+	            ARTIST_ORIGIN_NAME = #{artistOriginName},
+	            ARTIST_CHANGE_NAME = #{artistChangeName}
+         WHEN 
+          NOT 
+      MATCHED 
+         THEN
+        INSERT 
+        		(
+        		ARTIST_INTRO, 
+        		ARTIST_PHONE, 
+        		ARTIST_PATH, 
+        		ARTIST_ORIGIN_NAME, 
+        		ARTIST_CHANGE_NAME, 
+        		MEM_ID
+        		)
+        VALUES 
+        		(
+        		#{artistIntro},
+        		#{artistPhone},
+       		    #{artistPath}, 
+       		    #{artistOriginName}, 
+       		    #{artistChangeName}, 
+       		    #{memId}
+        		)
+	</insert>
+
+	<update id="updateMember" parameterType="member">
+	    UPDATE
+	    		 MEMBER
+	       SET 
+	             MEM_NICKNAME = #{memNickname},
+	             MEM_EMAIL = #{memEmail}
+	     WHERE 
+	             MEM_ID = #{memId}
+	</update>
+	<select id="getArtist" parameterType="string" resultType="artist">
+	    SELECT  
+	    		ARTIST_INTRO        artistIntro,
+	    		ARTIST_PHONE        artistPhone,
+	    		ARTIST_PATH         artistPath,
+	    		ARTIST_ORIGIN_NAME  artistOriginName,
+	    		ARTIST_CHANGE_NAME  artistChangeName,
+	    		MEM_ID              memId
+	     FROM 
+	            ARTIST
+	    WHERE 
+	            MEM_ID = #{memId}
+	</select>
+
+ <!-- 회원 ID로 회원 정보 조회 -->
+	<select id="getMemberById" parameterType="string" resultType="member">
+	    SELECT
+		        MEM_ID memId,
+		        MEM_PWD memPwd,
+		        MEM_NICKNAME memNickname,
+		        MEM_EMAIL memEmail,
+		        MEM_ENROLL memEnroll,
+		        STATUS status,
+		        MEM_CATEGORY memCategory
+	    FROM
+	        	MEMBER
+	    WHERE
+	        	MEM_ID = #{memId}
+	</select>
+
+
+
 	<!-- 아이디 찾기 -->
 	<select id="findId" resultType="string" parameterType="map">
         SELECT 
