@@ -1,5 +1,6 @@
 package com.kh.artspark.member.controller;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -7,10 +8,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.text.Format;
+import java.util.Random;
 
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +31,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.member.model.service.MemberService;
+
 import com.kh.artspark.member.model.vo.Artist;
+
+import com.kh.artspark.member.model.vo.Mail;
+
 import com.kh.artspark.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +48,7 @@ public class MemberController {
 	
 	private final MemberService memberService;
 	private final BCryptPasswordEncoder bcryptPasswordEncoder;
+	private final JavaMailSender sender;
 	
 	@GetMapping("memberList")
 	public void memberList() {
@@ -240,7 +253,6 @@ public class MemberController {
 		return memberService.idCheck(checkId) > 0 ? "ERROR" : "SUCCESS";
 	}
 	
-	
 
 	@GetMapping("lostId")
 	public String lostId() {
@@ -269,7 +281,14 @@ public class MemberController {
 
 
 
+
 	//비밀번호 수정
+	@ResponseBody
+	@PostMapping(value = "changePwd", produces = "text/html; charset=UTF-8")
+	public String changePwd(Member member, String changePwd) {
+	    member.setMemPwd(bcryptPasswordEncoder.encode(changePwd));
+	    return memberService.changePwd(member) > 0 ? "SUCCESS" : "ERROR";
+	}
 	
 	//회원탈퇴
 	@PostMapping("delete")
@@ -291,6 +310,69 @@ public class MemberController {
 	        return "redirect:/updatePage";  // 회원 정보 수정 페이지로 리다이렉트
 	    }
 	}
+	
+	
+	//메일 전송
+	@GetMapping("mailInput")
+	public String forwardInputForm() {
+		return "mail/input";
+	}
+	
+	//메일로 비밀번호 받고 새롭게 로그인
+	@ResponseBody
+	@PostMapping("auth-mail")
+	public String authMailService(@RequestParam("memId") String memId, @RequestParam("memNickname") String memNickname, @RequestParam("memEmail") String memEmail, HttpServletRequest request) throws MessagingException {
+	    Member member = memberService.getMember(memId, memNickname, memEmail);
+	    
+	    if (member == null) {
+	        return "error";
+	    }
+	    
+	    String remoteAddr = request.getRemoteAddr();
+	    
+	    // 새로운 임시 비밀번호 생성
+	    String newPassword = createPwd();
+	    
+	    // 임시 비밀번호 암호화
+	    String encryptedPassword = bcryptPasswordEncoder.encode(newPassword);
+	    
+	    // 회원 정보 업데이트
+	    member.setMemPwd(encryptedPassword);
+	    memberService.updatePassword(member);
+	    
+	    Mail mail = Mail.builder().who(remoteAddr).code(newPassword).build();
+	    
+	    int result = memberService.sendMail(mail);
+	    
+	    MimeMessage message = sender.createMimeMessage();
+	    MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+	    
+	    helper.setTo(memEmail);
+	    helper.setSubject("[artSpark] 새로운 비밀번호가 발급되었습니다.");
+	    helper.setText("새로운 비밀번호: " + newPassword + "\n로그인 후 반드시 비밀번호를 변경해주세요.");
+	    
+	    sender.send(message);
+	    
+	    return "success";
+	}
+
+	private String createPwd() {
+	    // 임시 비밀번호를 원하는 방식으로 생성하는 코드 작성 (예: 난수 생성)
+	    // 여기서는 간단하게 랜덤한 8자리 숫자를 생성하는 예시를 보여줍니다.
+		String numbers = "0123456789";
+	    Random random = new Random();
+	    StringBuilder Pwd = new StringBuilder();
+	    
+	    for (int i = 0; i < 4; i++) {
+	        int index = random.nextInt(numbers.length());
+	        Pwd.append(numbers.charAt(index));
+	    }
+	    return Pwd.toString();
+	}
+
+
+
+
 }
 
 

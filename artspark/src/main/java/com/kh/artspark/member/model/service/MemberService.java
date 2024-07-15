@@ -3,7 +3,11 @@ package com.kh.artspark.member.model.service;
 import java.util.List;
 import java.util.Map;
 
+
 import com.kh.artspark.member.model.vo.Artist;
+
+import com.kh.artspark.member.model.vo.Mail;
+
 import com.kh.artspark.member.model.vo.Member;
 
 public interface MemberService {
@@ -30,26 +34,27 @@ public interface MemberService {
 	Member getMemberById(String memId);
 	Artist getArtist(String memId);
 	//아이디찾기
-
 	String findId(Map<String,String>params);
 
 	//비밀번호 찾기
 	int findPwd(Member member);
 	
 	//비밀번호 수정
-	boolean updatePwd(String memPwd);
+	int changePwd(Member member);
 	
 	//회원탈퇴
 	int delete(String  memId);
 	
+	//메일인증
+	int sendMail(Mail mail);
+    void updatePassword(Member member);
+	Member getMember(String memId, String memNickname, String memEmail);
 
 	//
 	List<Member> getActiveMembers(int startValue, int endValue);
 
 	//
 	int countActiveMembers();
-
-	
 	
 
 

@@ -7,7 +7,11 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
 import com.kh.artspark.member.model.repository.MemberRepository;
+
 import com.kh.artspark.member.model.vo.Artist;
+
+import com.kh.artspark.member.model.vo.Mail;
+
 import com.kh.artspark.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -53,10 +57,6 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.delete(sqlSession,memId);
 	}
 	@Override
-	public boolean updatePwd(String memPwd) {
-		return memberRepository.update(sqlSession, memPwd);
-	}
-	@Override
 	public List<Member> getActiveMembers(int startValue, int endValue) {
 		return null;
 	}
@@ -65,6 +65,7 @@ public class MemberServiceImpl implements MemberService {
 		return 0;
 	}
 	@Override
+
 	public int insertArtist(Artist artist) {
 		return memberRepository.insertArtist(sqlSession, artist);
 	}
@@ -87,5 +88,24 @@ public class MemberServiceImpl implements MemberService {
 	public Artist getArtist(String memId) {
 		return memberRepository.getArtist(sqlSession,memId);
 	}
+  @Override
+	public int changePwd(Member member) {
+		return memberRepository.changePwd(sqlSession,member);
+	}
+	@Override
+	public int sendMail(Mail mail) {
+		return memberRepository.sendMail(sqlSession,mail);
+	}
+
+    @Override
+    public void updatePassword(Member member) {
+        memberRepository.updatePassword(sqlSession, member);
+    }
+    
+    @Override
+    public Member getMember(String memId, String memNickname, String memEmail) {
+        return memberRepository.getMember(sqlSession, memId, memNickname, memEmail);
+    }
+
 	
 }

@@ -1,12 +1,17 @@
 package com.kh.artspark.member.model.repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+
 import com.kh.artspark.member.model.vo.Artist;
+
+import com.kh.artspark.member.model.vo.Mail;
+
 import com.kh.artspark.member.model.vo.Member;
 
 @Repository
@@ -44,9 +49,31 @@ public class MemberRepository {
 		return sqlSession.selectOne("memberMapper.findPwd",member);
 	}
 
-	public boolean update(SqlSessionTemplate sqlSession, String memPwd) {
-		return sqlSession.selectOne("memberMapper.update",memPwd);
+	public int changePwd(SqlSessionTemplate sqlSession, Member member) {
+		return sqlSession.update("memberMapper.changePwd",member);
 	}
+	
+	public int sendMail(SqlSessionTemplate sqlSession, Mail mail) {
+		return sqlSession.insert("memberMapper.sendMail",mail);
+	}
+
+    public int updatePassword(SqlSessionTemplate sqlSession, Member member) {
+        return sqlSession.update("memberMapper.updatePassword", member);
+    }
+
+	public void delete(SqlSessionTemplate sqlSession, Mail mail) {
+		 sqlSession.delete("memberMapper.deleteMail", mail);
+
+	}
+	public Member getMember(SqlSessionTemplate sqlSession, String memId, String memNickname, String memEmail) {
+	    Map<String, String> params = new HashMap<>();
+	    params.put("memId", memId);
+	    params.put("memNickname", memNickname);
+	    params.put("memEmail", memEmail);
+	    return sqlSession.selectOne("memberMapper.getMember", params);
+	}
+	
+	
 
 	public int insertArtist(SqlSessionTemplate sqlSession, Artist artist) {
 		return sqlSession.insert("memberMapper.insertArtist",artist);

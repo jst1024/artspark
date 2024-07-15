@@ -164,7 +164,7 @@
       			SYSDATE
       			)
 	</insert>			
-	
+	<!-- 조회수 증가 -->
 	<update id="increaseCount" parameterType="_int">  
 		UPDATE
 				REQUEST
@@ -173,8 +173,65 @@
 		 WHERE
 		 		REQ_NO = #{reqNo}
 	</update>
+	
+	<!-- 게시판 상세보기 -->
+		<select id="requestFindById" parameterType="_int" resultType="request">
+		<include refid="selectRequest"/>
+		
+		  FROM
+		  		REQUEST
+		 WHERE
+		 		REQ_NO = #{reqNo}
+	</select>
+	
+	<select id="findImgFileByReqNo" parameterType="int" resultType="com.kh.artspark.common.model.vo.ImgFile">
+	<include refid="selectImgFile"/>
+    	  FROM 
+        		IMG_FILE 
+    	 WHERE 
+        		BOARD_NO = #{reqNo} 
+      	   AND   	
+      			BOARD_TYPE = '의뢰'
+	</select>
+	
+	<!-- 글 삭제하기 -->
+	<update id="deleteRequest" parameterType="_int">
+		UPDATE
+				REQUEST
+		   SET	
+		   		STATUS = 'N'
+		 WHERE
+		   		REQ_NO = #{reqNo}
 
-
+	</update>
+	
+	<!-- 글 수정하기 -->
+		<update id="updateRequest" parameterType="request">
+		UPDATE
+				REQUEST
+		   SET
+		   		REQ_PURPOSE = #{reqPurpose},
+		   		REQ_CATEGORY = #{reqCategory},
+		   		REQ_TITLE   = #{reqTitle},
+		   		REQ_CONTENT = #{reqContent}
+		 WHERE
+		 		REQ_NO = #{reqNo}
+	</update>
+	
+	<update id="updateImgFile" parameterType="ImgFile">
+	    UPDATE 
+	    		IMG_FILE
+	       SET 
+	            ORIGIN_NAME = #{originName},
+	            CHANGE_NAME = #{changeName},
+	            FILE_PATH = #{imgFilePath}
+	     WHERE  BOARD_NO = #{boardNo}
+	</update>	
+	<!-- 댓글 목록 -->
+	
+	<!-- 댓글 등록 -->
+	
+	<!-- 댓글 삭제 -->
 
 	
 </mapper>

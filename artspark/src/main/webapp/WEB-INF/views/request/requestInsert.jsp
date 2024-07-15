@@ -9,9 +9,35 @@
     <script src="https://code.jquery.com/jquery-3.6.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@naver/wysiwyg@1.0.0/dist/ndt.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/naver-editor/css/smart_editor2.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/naver-editor/js/HuskyEZCreator.js" charset="utf-8"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/naver-editor/js/SE2BasicCreator.js" charset="utf-8"></script>
     <style>
         .dropdown-custom {
             width: 50%;
+        }
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+        .file-input-wrapper label {
+            margin: 0;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .form-group {
+            position: relative;
+        }
+        .form-group .btn-primary {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+        .file-name {
+            margin-left: 10px;
         }
     </style>
 </head>

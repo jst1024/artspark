@@ -28,7 +28,7 @@
     <div class="container">
         <div class="form-container">
             <h2 class="mb-4">회원 정보 수정</h2>
-            <form action="join" method="post">
+            <form action="update" method="post">
                 <div class="mb-3">
                     <label for="userId" class="form-label">아이디</label>
                     <input type="text" class="form-control" id="memId" name="memId" value="${ sessionScope.loginUser.memId }" readonly>
@@ -87,82 +87,71 @@
             </div>
         </div>
     </div>
-    
     <!-- 비밀번호 버튼 클릭시 보여질 Modal -->
 	 <!-- Modal Header -->
                <!-- 비밀번호 변경 Modal -->
-					<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-					    <div class="modal-dialog">
-					        <div class="modal-content">
-					            <div class="modal-header">
-					                <h4 class="modal-title" id="changePasswordModalLabel">비밀번호 변경</h4>
-					                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					            </div>
-					            <div class="modal-body pass-form">
-					                <label for="userPwd" class="mr-sm-2">기존 비밀번호 : </label>
-					                <input type="password" class="form-control mb-2 mr-sm-2" placeholder="기존 비밀번호 입력" id="memPwd" name="memPwd"> <br>
-					                <label for="changePwd" class="mr-sm-2">변경 비밀번호 : </label>
-					                <input type="password" class="form-control mb-2 mr-sm-2" placeholder="변경할 비밀번호 입력" id="changePwd" name="changePwd"> <br>
-					                <label for="checkPwd" class="mr-sm-2">변경 비밀번호 재확인 : </label>
-					                <input type="password" class="form-control mb-2 mr-sm-2" placeholder="비밀번호 재확인" id="checkPwd" name="checkPwd"> <br>
-					            </div>
-					            <div class="modal-footer" align="center">
-					                <div align="center" style="display:none;" id="check-msg"></div>
-					                <button type="button" class="btn btn-danger" id="changeBtn" disabled>변경하기</button>
-					            </div>
-					        </div>
-					    </div>
-					</div>
-                     <script>
-						$(document).ready(function() {
-						    const $memId = $('#memId'); // 로그인 유저 아이디
-						    const $memPwd = $('#memPwd'); // 기존 비밀번호 입력 
-						    const $changePwd = $('#changePwd'); // 변경할 비밀번호 입력 
-						    const $checkPwd = $('#checkPwd'); // 변경 비밀번호 재확인 입력 
-						    const $changeBtn = $('#changeBtn'); // 변경 버튼
-						
-						    $checkPwd.keyup(function() {
-						        if($changePwd.val() === $checkPwd.val()) {
-						            $changeBtn.attr('disabled', false); 
-						            $('#check-msg').hide();
-						        } else { 
-						            $('#check-msg').show().html('변경할 비밀번호를 다시 확인해주세요.<br>');
-						            $changeBtn.attr('disabled', true);
-						        }
-						    });
-						    
-						    $changeBtn.click(function() {     
-						        $.ajax({
-						            url:'findPwd', 
-						            type:'post',
-						            data:{
-						                memId : $memId.val(),
-						                memPwd : $memPwd.val(),
-						                changePwd : $changePwd.val()
-						            },
-						            success: response => {
-						            	console.log(response);
-						                if(response === "SUCCESS") {
-						                    alert('비밀번호가 변경되었습니다. 다시 로그인 해주세요.');
-						                    location.href = 'logout';
-						                } else if(response === "WrongPwd") {
-						                	console.log(response);
-						                    $('#check-msg').show().html('기존 비밀번호가 올바르지 않습니다.<br>');
-						                } else {
-						                	console.log(response);
-						                    alert('비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.');
-						                }
-						            },
-						            error : function() {
-						                alert('비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.');
-						            }
-						        });
-						    });
-						});
-						</script>
+	<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title" id="changePasswordModalLabel">비밀번호 변경</h4>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	            </div>
+	           <div class="modal-body pass-form">
+				    <label for="changePwd" class="mr-sm-2">새 비밀번호 : </label>
+				    <input type="password" class="form-control mb-2 mr-sm-2" placeholder="새 비밀번호 입력" id="changePwd" name="changePwd"> <br>
+				    <label for="checkPwd" class="mr-sm-2">새 비밀번호 확인 : </label>
+				    <input type="password" class="form-control mb-2 mr-sm-2" placeholder="새 비밀번호 확인" id="checkPwd" name="checkPwd"> <br>
+				</div>
+	            <div class="modal-footer" align="center">
+	                <div align="center" style="display:none;" id="check-msg"></div>
+	                <button type="button" class="btn btn-danger" id="changeBtn" disabled>변경하기</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+    <script>
+    $(document).ready(function() {
+        const $memId = $('#memId'); // 로그인 유저 아이디
+        const $changePwd = $('#changePwd'); // 새 비밀번호 입력 
+        const $checkPwd = $('#checkPwd'); // 새 비밀번호 확인 입력 
+        const $changeBtn = $('#changeBtn'); // 변경 버튼
 
-
-    <jsp:include page="../common/footer.jsp"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        $checkPwd.keyup(function() {
+            if($changePwd.val() === $checkPwd.val()) {
+                $changeBtn.attr('disabled', false); 
+                $('#check-msg').hide();
+            } else { 
+                $('#check-msg').show().html('새 비밀번호를 다시 확인해주세요.<br>');
+                $changeBtn.attr('disabled', true);
+            }
+        });
+        
+        $changeBtn.click(function() {     
+            $.ajax({
+                url:'changePwd', 
+                type:'post',
+                data:{
+                    memId : $memId.val(),
+                    changePwd : $changePwd.val()
+                },
+                success: response => {
+                    console.log(response);
+                    if(response === "SUCCESS") {
+                        alert('비밀번호가 변경되었습니다. 다시 로그인 해주세요.');
+                        location.href = 'logout';
+                    } else {
+                        alert('비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.');
+                    }
+                },
+                error : function() {
+                    alert('비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
+        });
+    });
+	</script>
+<jsp:include page="../common/footer.jsp"/>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

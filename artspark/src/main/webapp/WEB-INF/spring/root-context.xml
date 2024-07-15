@@ -101,6 +101,19 @@
 	  <mybatis-spring:scan base-package="com.kh.artspark.request.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.buy.model.dao"/>
 
+		<!-- 메일 전송 도구 등록 -->
+		<bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="sender">
+			<property name="host" value="smtp.gmail.com"/>
+			<property name="port" value="587"/>
+			<property name="username" value="qjatn092028@gmail.com"/>
+			<property name="password" value="qmlg orti wmoz gfie"/>	
+			<property name="javaMailProperties">
+				<props>
+					<prop key="mail.smtp.auth">true</prop>
+					<prop key="mail.smtp.starttls.enable">true</prop>
+				</props>
+			</property>
+		</bean>
 	  
 </beans>
 
