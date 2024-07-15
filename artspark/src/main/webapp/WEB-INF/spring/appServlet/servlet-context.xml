@@ -30,6 +30,6 @@
 	 		<beans:bean class="com.kh.artspark.common.interceptor.LoginInterceptor" id="loginInterceptor" />
 		</interceptor>
 	</interceptors>
-	
+
 	
 </beans:beans>
