@@ -1,3 +1,5 @@
+
+
 package com.kh.artspark.member.controller;
 
 
@@ -8,9 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.text.Format;
 import java.util.Random;
-
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -31,11 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.member.model.service.MemberService;
-
 import com.kh.artspark.member.model.vo.Artist;
-
 import com.kh.artspark.member.model.vo.Mail;
-
 import com.kh.artspark.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -92,7 +89,7 @@ public class MemberController {
 	    return mv;
 	}
 	
-
+	//일반회원 정보 수정
 	@GetMapping("updatePage")
 	public String upatePage() {
 	    return "member/changeInfo"; // 로그인 페이지의 뷰 이름 반환
@@ -102,10 +99,8 @@ public class MemberController {
 	public String update(Member member, HttpSession session, Model model) {
 		
 		log.info("수정 요청 멤버:{}",member);
-	
 		// 1 / 0
 		if(memberService.update(member) > 0) {
-			
 			session.setAttribute("loginUser",memberService.login(member));
 			session.setAttribute("alertMsg","정보 수정 성공");	
 		
@@ -118,15 +113,29 @@ public class MemberController {
 		
 	}
 	
-	
+	//판매자 정보수정
 	@GetMapping("updateProduct")
 	public String updateProduct(HttpSession session, Model model) {
 	    Member loginUser = (Member) session.getAttribute("loginUser");
 	    if (loginUser != null) {
-	        Artist artist = memberService.getArtist(loginUser.getMemId());
-	        model.addAttribute("loginUser", loginUser);
-	        model.addAttribute("artist", artist);
-	        log.info("artist : {}", artist);
+	        loginUser.setMemCategory("B");
+	        
+	        // 데이터베이스 업데이트
+	        if (memberService.update(loginUser) > 0) {
+	            // 세션 업데이트
+	            session.setAttribute("loginUser", loginUser);
+	            
+	            Artist artist = memberService.getArtist(loginUser.getMemId());
+	            model.addAttribute("loginUser", loginUser);
+	            model.addAttribute("artist", artist);
+	            log.info("artist : {}", artist);
+	            log.info("Updated loginUser : {}", loginUser);
+	        } else {
+	            // 업데이트 실패 처리
+	            log.error("Failed to update user category to B");
+	            model.addAttribute("errorMsg", "판매자로 변경하는데 실패했습니다.");
+	            return "common/errorPage";
+	        }
 	    }
 	    return "member/changeProduct";
 	}
@@ -213,11 +222,12 @@ public class MemberController {
 	    return changeName;
 	}
 
-	
+	//회원가입
 	@GetMapping("joinPage")
 	public String joinPage() {
 		return "member/join";
 	}
+	
 	
 	@PostMapping("join")
 	public String join(Member member, Model model) {
@@ -247,6 +257,7 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	//아이디 체크
 	@ResponseBody
 	@GetMapping("idcheck")
 	public String checkId(String checkId) {
@@ -371,7 +382,10 @@ public class MemberController {
 	}
 
 
-
+	@GetMapping("myPage")
+	public String myPage() {
+		return "member/myPage";
+	}
 
 }
 
