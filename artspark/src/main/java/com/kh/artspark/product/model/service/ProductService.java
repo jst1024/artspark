@@ -50,7 +50,17 @@ public interface ProductService {
 	List<Tag> findByIdTag(int productNo);
 
 	// 상품 등록
-	int insertProduct(Product product, ProductDetail productDetail, List<String> changeList, ProductForm productForm,
+	int insertProduct(Product product, ProductDetail productDetail, ProductForm productForm,
+			List<Tag> tagList, List<ProductFile> productFiles);
+
+	// 상품 삭제
+	int deleteProduct(int productNo);
+	
+	// 상품 업데이트시 중복파일 삭제
+	int deleteOriginFile(String changeName);
+
+	// 상품 업데이트
+	int updateProduct(Product product, ProductDetail productDetail, ProductForm productForm,
 			List<Tag> tagList, List<ProductFile> productFiles);
 
 }

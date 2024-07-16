@@ -148,7 +148,7 @@
 	        <span style="font-size:28px;">${ product.memNickname } 작가 · ${ product.productTitle }</span>
 	        <span>
 	        	<c:if test="${ sessionScope.loginUser.memId.equals(product.memId) }">
-		        	<a href="${path1 }/product/productUpdateForm">
+		        	<a href="${path1 }/product/productUpdateForward?pno=${product.productNo}">
 		        		<button type="button" class="btn btn-primary">작품수정</button>&nbsp;&nbsp;
 		        	</a>
 		        	<button type="button" id="deleteBtn" class="btn btn-danger">작품삭제</button>&nbsp;&nbsp;
@@ -245,7 +245,7 @@
 						        <select class="price-option-select" id="price-option-select1">
 						        	<option value="" selected disabled>선택하세요.</option>
 						        	<c:forEach items="${ payOption.detailOptionList }" var="detailOption">
-							        	<option value="${ detailOption.detailOptionPrice }">${ detailOption.detailOptionName } ( ${ detailOption.detailOptionPrice }원 )</option>
+							        	<option value="${ detailOption.detailOptionPrice }">${ detailOption.detailOptionName } [ ${ detailOption.detailOptionPrice }원 ]</option>
 						        	</c:forEach>
 						        </select>
 						    </p>
@@ -293,7 +293,7 @@
 		                		$('.price-option-select').on('change', function() {
 		                			const selectPrice = parseInt($(this).val()).toLocaleString();
 		                			let selectDetailOption = $(this).find('option:selected').text();
-		                			selectDetailOption = selectDetailOption.replace(/\s*\(.*?\)\s*/g, "");
+		                			selectDetailOption = selectDetailOption.replace(/\s*\[.*?\]\s*/g, "");
 		                			const selectOption = $(this).closest('p').find('.option-name').text();
 		                			const optionKey = selectOption + ' / ' + selectDetailOption;
 		                			// console.log(optionKey);
