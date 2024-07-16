@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.kh.artspark.common.model.vo.ImgFile;
+import com.kh.artspark.request.model.vo.Reply;
 import com.kh.artspark.request.model.vo.Request;
 
 public interface RequestService {
@@ -35,6 +37,17 @@ public interface RequestService {
 	
 	//글 삭제
 	int deleteRequest(int reqNo);
+	
+	// 댓글 목록 조회
+	List<Reply>selectReply(int reqNo);
+	
+	// 댓글 등록
+	int insertReply(Reply reply);
+	
+	//request와 묶인 Reply랑 같이 조회
+	Request requestAndReply(int reqNo);
+	
+	
 
 	
 }

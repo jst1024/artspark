@@ -25,6 +25,24 @@
 		        FILE_PATH imgFilePath,
 		        FILE_DATE imgFileDate
 	</sql>
+    
+      <resultMap id="requestResultSet" type="request">
+  		<id column="REQ_NO" property="reqNo" />
+  		<result column="REQ_TITLE" property="reqTitle"/>
+  		<result column="REQ_CONTENT" property="reqContent"/>
+  		<result column="MEM_ID" property="memId"/>
+  		<result column="REQ_COUNT" property="reqCount"/>
+  		<result column="B_CREATE_DATE" property="createDate"/>
+  		<collection resultMap="replyResultSet" property="replyList" javaType="list"/>
+  	  </resultMap>
+
+      <resultMap id="replyResultSet" type="reply">
+  		<id column="REPLY_NO" property="replyNo" />
+  		<result column="REPLY_CONTENT" property="replyContent"/>
+  		<result column="MEM_ID" property="memId"/>
+  		<result column="REPLY_DATE" property="replyDate"/>
+  		<result column="REQ_NO" property="reqNo"/>
+      </resultMap>
 	
 	<select id="requestCount" resultType="_int">
 		SELECT 
@@ -140,7 +158,7 @@
       			#{memId}
       			)
 	</insert>
-	<insert id="insertImgFile" parameterType="ImgFile" useGeneratedKeys="true" keyProperty="imgFileNo">
+	<insert id="insertImgFile" parameterType="ImgFile">
 		INSERT
 	      INTO
 	      		IMG_FILE
@@ -228,9 +246,66 @@
 	     WHERE  BOARD_NO = #{boardNo}
 	</update>	
 	<!-- 댓글 목록 -->
+	   <select id="selectReply" resultType="reply" parameterType="_int">
+	   SELECT
+	   		   REPLY_NO replyNo,
+	   		   REPLY_CONTENT replyContent,
+	   		   MEM_ID memId,
+	   		   TO_CHAR(REPLY_DATE, 'YYYY-MM-DD') AS "replyDate"
+	   	 FROM
+	   	  	   REPLY
+	   	WHERE
+	   	   	   REQ_NO = #{reqNo}
+	   	ORDER
+	   	   BY
+	   	 	   REPLY_NO DESC
+   </select>
 	
 	<!-- 댓글 등록 -->
+    <insert id="insertReply" parameterType="reply">
+   	    INSERT
+   		  INTO
+   		   	    REPLY
+   		  	    (
+   		  	    REPLY_NO,
+   		  	    REPLY_CONTENT,
+   		  	    MEM_ID,
+   		  	    REQ_NO
+   		  	    )
+	    VALUES
+			    (
+			    REPLY_SEQ.NEXTVAL,
+			    #{replyContent},
+			    #{memId},
+			    #{reqNo}
+			    )
+	</insert>
 	
+   	 <select id="reqeustAndReply" parameterType="_int" resultMap="requestResultSet">
+       SELECT
+		        REQ.REQ_NO,
+		        REQ.REQ_PURPOSE,
+		        REQ.REQ_TITLE,
+		        REQ.REQ_CATEGORY,
+		        REQ.REQ_CONTENT,
+		        REQ.REQ_DATE,
+		        REQ.REQ_COUNT,
+				REQ.MEM_ID,
+		        REP.REPLY_NO,
+		        REP.REPLY_CONTENT,
+		        REP.REPLY_DATE,
+		        REP.REQ_NO,
+		        REP.REPLY_DATE,
+		        REP.MEM_ID
+   	     FROM
+                REQUEST REQ
+         LEFT
+         JOIN 
+                REPLY REP ON REQ.REQ_NO = REP.REQ_NO
+        WHERE
+                REQ.REQ_NO = #{reqNo}
+     </select>
+   
 	<!-- 댓글 삭제 -->
 
 	
