@@ -16,14 +16,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.kh.artspark.common.model.vo.ImgFile;
 import com.kh.artspark.common.model.vo.PageInfo;
 import com.kh.artspark.common.template.PageTemplate;
-import com.kh.artspark.notice.model.vo.Notice;
 import com.kh.artspark.request.model.service.RequestService;
+import com.kh.artspark.request.model.vo.Reply;
 import com.kh.artspark.request.model.vo.Request;
 
 import lombok.RequiredArgsConstructor;
@@ -256,4 +258,22 @@ public class RequestController {
 	    }
 	}
 	
+	@ResponseBody
+	@GetMapping(value="reply", produces="application/json; charset=UTF-8")
+	public String selectReply(int reqNo) {
+		return new Gson().toJson(requestService.selectReply(reqNo));	
+	}
+	
+	@ResponseBody
+	@PostMapping("reply")
+	public String saveReply(Reply reply) {
+		return requestService.insertReply(reply) > 0 ? "success" : "fail";
+	}
+	
+	@GetMapping("reqReply")
+	public Request requestAndReply(int reqNo) {
+		
+		return requestService.requestAndReply(reqNo);
+	}
+
 }
