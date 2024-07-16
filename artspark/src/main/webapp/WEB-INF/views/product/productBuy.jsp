@@ -292,7 +292,6 @@
 			    		},
 			    		success: response => {
 			    			// console.log(response.message);
-			    			alertify.alert(response.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
 			    			$('#buy-complete').submit();
 			    		},
 			    		error: e => {
