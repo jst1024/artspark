@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 import com.kh.artspark.member.model.repository.MemberRepository;
 
 import com.kh.artspark.member.model.vo.Artist;
-
+import com.kh.artspark.member.model.vo.BuyOption;
 import com.kh.artspark.member.model.vo.Mail;
 
 import com.kh.artspark.member.model.vo.Member;
+import com.kh.artspark.member.model.vo.OrderBuyOption;
 
 import lombok.RequiredArgsConstructor;
 
@@ -106,6 +107,12 @@ public class MemberServiceImpl implements MemberService {
     public Member getMember(String memId, String memNickname, String memEmail) {
         return memberRepository.getMember(sqlSession, memId, memNickname, memEmail);
     }
+
+
+	@Override
+	public List<OrderBuyOption> orderBuyOption(String memId) {
+		return memberRepository.orderBuyOption(sqlSession,memId);
+	}
 
 	
 }

@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
 
 
 import com.kh.artspark.member.model.vo.Artist;
-
+import com.kh.artspark.member.model.vo.BuyOption;
 import com.kh.artspark.member.model.vo.Mail;
 
 import com.kh.artspark.member.model.vo.Member;
+import com.kh.artspark.member.model.vo.OrderBuyOption;
 
 @Repository
 public class MemberRepository {
@@ -93,6 +94,11 @@ public class MemberRepository {
 
 	public Artist getArtist(SqlSessionTemplate sqlSession, String memId) {
 		return sqlSession.selectOne("memberMapper.getArtist",memId);
+	}
+
+
+	public List<OrderBuyOption> orderBuyOption(SqlSessionTemplate sqlSession, String memId) {
+		return sqlSession.selectList("memberMapper.orderBuyOption",memId);
 	}
 
 }

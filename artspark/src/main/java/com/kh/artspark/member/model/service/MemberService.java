@@ -3,12 +3,11 @@ package com.kh.artspark.member.model.service;
 import java.util.List;
 import java.util.Map;
 
-
 import com.kh.artspark.member.model.vo.Artist;
-
+import com.kh.artspark.member.model.vo.BuyOption;
 import com.kh.artspark.member.model.vo.Mail;
-
 import com.kh.artspark.member.model.vo.Member;
+import com.kh.artspark.member.model.vo.OrderBuyOption;
 
 public interface MemberService {
 	
@@ -49,12 +48,22 @@ public interface MemberService {
 	int sendMail(Mail mail);
     void updatePassword(Member member);
 	Member getMember(String memId, String memNickname, String memEmail);
+	
+	
+	
+	//주문관리
+	List<OrderBuyOption> orderBuyOption(String memId);
 
+	
+	
 	//
 	List<Member> getActiveMembers(int startValue, int endValue);
 
 	//
 	int countActiveMembers();
+
+
+
 	
 
 

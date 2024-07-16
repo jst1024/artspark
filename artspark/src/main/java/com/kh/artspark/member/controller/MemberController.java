@@ -32,8 +32,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.member.model.service.MemberService;
 import com.kh.artspark.member.model.vo.Artist;
+import com.kh.artspark.member.model.vo.BuyOption;
 import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
+import com.kh.artspark.member.model.vo.OrderBuyOption;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -381,12 +383,76 @@ public class MemberController {
 	    return Pwd.toString();
 	}
 
-
+	
+	//마이페이지 
 	@GetMapping("myPage")
 	public String myPage() {
 		return "member/myPage";
 	}
 
+	//주문관리로 이동
+	@GetMapping("orderManage")
+	public String ordermanage() {
+		return "member/orderManage";
+	}
+	
+	@GetMapping("orderHistory")
+	public String orderHistory(HttpSession session, Model model) {
+	    Member member = (Member)session.getAttribute("loginUser");
+	    List<OrderBuyOption> orderBuyOptions = memberService.orderBuyOption(member.getMemId());
+	    
+	    // 각 주문의 총 금액 계산하기
+	    for (OrderBuyOption order : orderBuyOptions) {
+	        int totalAmount = 0;
+	        for (BuyOption option : order.getBuyOptionList()) {
+	            totalAmount += option.getBuyOptionPrice() * option.getBuyOptionAmount();
+	        }
+	        order.setTotalAmount(totalAmount);
+	    }
+	    
+	    model.addAttribute("orderBuyOptions", orderBuyOptions);
+	    
+	    log.info("주문 내역: {}", orderBuyOptions);
+	    
+	    return "member/orderManage";  // 주문 내역 페이지로 이동
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 
 

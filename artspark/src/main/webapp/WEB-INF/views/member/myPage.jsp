@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="path2" value="${pageContext.servletContext.contextPath }" />
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -83,7 +86,7 @@
                 <button class="nav-link active" id="inquiry-tab" data-bs-toggle="tab" data-bs-target="#inquiry" type="button" role="tab">문의 및 답변</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button" role="tab">주문 관리</button>
+                <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">주문 관리</button></a>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="favorite-tab" data-bs-toggle="tab" data-bs-target="#favorite" type="button" role="tab">관심 작가</button>
@@ -110,58 +113,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade my-4" id="order" role="tabpanel">
-                <h2 class="mb-4">주문 관리</h2>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>의뢰번호</th>
-                                <th>이미지</th>
-                                <th>작가명</th>
-                                <th>주문 내용</th>
-                                <th>결제 금액</th>
-                                <th>주문 상태</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>2406-306212</td>
-                                <td><img src="path_to_image.jpg" alt="캐릭터 이미지" style="width: 50px; height: 50px;"></td>
-                                <td>삼냥</td>
-                                <td>6월이벤트 / SD캐릭터 / 선물상자 / 고정틀 주가 / 장신구(소품) / 1 컷 선물상자 / 방송용 6월이벤트 / 방송용(전통서비스) / 1 개</td>
-                                <td>63,000원</td>
-                                <td>
-                                    <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse">
-                                        자세히
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="collapse mt-3" id="detailsCollapse">
-                    <div class="card card-body bg-light">
-                        <p><strong>작가 연락처 : </strong>결제 후 공개됩니다.</p>
-                        <p><strong>입금은행 : </strong>우리은행</p>
-                        <p><strong>예금주 : </strong>(주)위고헬스</p>
-                        <p><strong>입금계좌 : </strong>1005-703-139393</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>결제일 : </strong></p>
-                                <p><strong>원본제작일 : </strong></p>
-                                <p><strong>제출 파일 유형 : </strong>png & gif</p>
-                                <p><strong>해상도 : </strong>300dpi</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>기본 사이즈 : </strong>1000 이상</p>
-                                <p><strong>수정 횟수 : </strong>3회</p>
-                                <p><strong>작업 기간 : </strong>시작일로부터 7일</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          
             <div class="tab-pane fade my-4" id="favorite" role="tabpanel">
                 <h2 class="mb-4">관심 작가</h2>
                 <div class="form-group text-end">
