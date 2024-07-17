@@ -46,6 +46,9 @@ public interface RequestService {
 	
 	//request와 묶인 Reply랑 같이 조회
 	Request requestAndReply(int reqNo);
+
+	// 댓글 삭제
+	int deleteReply(int replyNo);
 	
 	
 

@@ -193,7 +193,6 @@ public class RequestController {
 	public ModelAndView requestFindById(int reqNo, ModelAndView mv) {
 		Request request = requestService.requestFindById(reqNo);
 		ImgFile imgFile = requestService.findImgFileByReqNo(reqNo);
-		
 		if(requestService.increaseCount(reqNo) > 0) {
 		mv.addObject("request",request);
 		mv.addObject("imgFile", imgFile);
@@ -272,8 +271,15 @@ public class RequestController {
 	
 	@GetMapping("reqReply")
 	public Request requestAndReply(int reqNo) {
-		
 		return requestService.requestAndReply(reqNo);
 	}
-
+	
+	@ResponseBody
+	@PostMapping("/deleteReply")
+	public String deleteReply(@RequestParam("replyNo") int replyNo) {
+	    log.info("{}", replyNo);
+	    int result = requestService.deleteReply(replyNo);
+	    return result > 0 ? "success" : "fail";
+	}
+	
 }

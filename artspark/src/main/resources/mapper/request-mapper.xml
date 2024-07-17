@@ -305,8 +305,15 @@
         WHERE
                 REQ.REQ_NO = #{reqNo}
      </select>
-   
+     
 	<!-- 댓글 삭제 -->
+    <delete id="deleteReply" parameterType="int">
+       DELETE 
+         FROM   
+         		REPLY
+        WHERE 	
+        		REPLY_NO = #{replyNo}
+    </delete>
 
 	
 </mapper>
