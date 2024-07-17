@@ -14,6 +14,7 @@
 		<typeAlias type="com.kh.artspark.notice.model.vo.Notice" alias="notice" />	
 		<typeAlias type="com.kh.artspark.request.model.vo.Request" alias="request" />	
 		<typeAlias type="com.kh.artspark.request.model.vo.Reply" alias="reply" />	
+		<typeAlias type="com.kh.artspark.qna.model.vo.Qna" alias="qna" />	
 		<typeAlias type="com.kh.artspark.common.model.vo.ImgFile" alias="ImgFile" />	
 		<typeAlias type="com.kh.artspark.product.model.vo.Product" alias="product" />
 		<typeAlias type="com.kh.artspark.product.model.vo.ProductDetail" alias="productDetail" />
@@ -33,6 +34,7 @@
 		<mapper resource="/mapper/member-mapper.xml" />
 		<mapper resource="/mapper/notice-mapper.xml" />
 		<mapper resource="/mapper/request-mapper.xml" />
+		<mapper resource="/mapper/qna-mapper.xml" />
 		<mapper resource="/mapper/product-mapper.xml" />
 		<mapper resource="/mapper/buy-mapper.xml" />
 	</mappers>
