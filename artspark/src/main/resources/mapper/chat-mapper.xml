@@ -48,6 +48,41 @@
 		        CR.MEM_ID2 = #{loginUserId}
 	</select>
 	
+	<!-- 채팅방에 해당하는 채팅 조회 -->
+	<select id="findChatings" parameterType="_int" resultType="chat">
+		SELECT
+				CHAT_NO chatNo,
+				CHAT_TIME chatTime,
+				CHAT_CONTENT chatContent,
+				MEM_ID memId,
+				CHATROOM_NO chatroomNo
+		  FROM
+		  		CHAT
+		 WHERE
+		 		CHATROOM_NO = #{chatroomNo}
+	</select>
+	
+	<!-- 입력한 채팅 저장 -->
+	<insert id="insertChat" parameterType="map">
+		INSERT
+		  INTO
+		  		CHAT
+		  		(
+		  		CHAT_NO,
+		  		CHAT_TIME,
+		  		CHAT_CONTENT,
+		  		MEM_ID,
+		  		CHATROOM_NO
+		  		)	
+		VALUES
+				(
+				CHAT_SEQ.NEXTVAL,
+				DEFAULT,
+				#{message},
+				#{loginUserId},
+				#{chatroomNo}
+				)
+	</insert>
 </mapper>
 
 

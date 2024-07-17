@@ -221,24 +221,11 @@
 
     <div class="container">
         <div class="chat-list">
-        	<!--  
-            <div class="chat-list-item">
-                <img src="https://via.placeholder.com/40" alt="User Image">
-                <div class="user-info">
-                    <span class="username">신범드</span>
-                    <span class="last-message">조이조타님이 이모티콘을 보냈어요.</span>
-                </div>
-            </div>
-            <div class="chat-list-item">
-                <img src="https://via.placeholder.com/40" alt="User Image">
-                <div class="user-info">
-                    <span class="username">레모네이드주세요</span>
-                    <span class="last-message">만나서 반가워요</span>
-                </div>
-            </div>
-            -->
+        	
+        	<!-- 채팅방 목록 -->
             <c:forEach items="${ chatrooms }" var="chatroom">
             	<div class="chat-list-item">
+            		<input type="hidden" id="chatroom-no" value="${ chatroom.chatroomNo }">
                 	<img src="https://via.placeholder.com/40" alt="User Image">
 	                <div class="user-info">
 	                	<c:if test="${ chatroom.memId == sessionScope.loginUser.memId }">
@@ -258,41 +245,10 @@
         <!-- 채팅방 -->
         <div class="chat-content">
         
-        	<!-- 채팅방 목록 -->
-            <div class="chat-header">
-                <img src="https://via.placeholder.com/40" alt="User Image">
-                <div class="user-info">
-                    <span class="username">신범드</span>
-                    <span class="user-status">보통 1시간 이내 응답</span>
-                </div>
-            </div>
-            
             <!-- 상세 채팅 내용 -->
             <div class="chat-container">
             
-                <div class="message-row you">
-                    <div class="message">
-                        <div class="message-content">
-                            안녕하세요!
-                        </div>
-                        <div class="message-info">
-                            <span class="time">3:42 PM</span>
-                        </div>
-                        <div class="read-status">1</div>
-                    </div>
-                </div>
-                
-                <div class="message-row me">
-                    <div class="message">
-                        <div class="message-content">
-                            안녕하세요! 반갑습니다.
-                        </div>
-                        <div class="message-info">
-                            <span class="time">3:44 PM</span>
-                        </div>
-                        <div class="read-status">1</div>
-                    </div>
-                </div>
+                <h2>선택된 채팅방이 없습니다.</h2>
                 
             </div>
             
@@ -305,10 +261,87 @@
     </div>
     
     <script>
-    	var chat;
+    	let chat;
+    	let chatPartner;
     	
-    	$('#chat-start').on('click', function() {
-    		const uri = 'ws://localhost/artspark/chat';
+    	// 채팅방 클릭 이벤트
+		$('.chat-list-item').on('click',  function(e) {
+			const chatroomNo = $(e.currentTarget).children().eq(0).val();
+			chatPartner = $(e.currentTarget).find('.username').text();
+			const loginUserId = '${sessionScope.loginUser.memId}';
+			let chatHead = '';
+			let chatContent = '<div class="chat-container">';
+			let chatInput = '';
+			
+			chatInput += '<div class="input-area">'
+				   + '<input type="text" id="message" placeholder="메시지를 입력하세요...">'
+				   + '<button onclick="send(' + chatroomNo + ');">전송</button>'
+				   + '</div>';
+				   
+			$('.chat-content').html('');
+			
+			// 소켓 연결된 상태라면, 소켓 연결을 끊음
+			if(chat !== undefined) {
+				disconnect();
+			} 
+			
+			$.ajax({
+				url : 'chat-info',
+				type : 'get',
+				data : {
+					chatroomNo : chatroomNo
+				},
+				success : result => {
+					// 채팅창 띄워주는 로직
+					const chatList = result.data;
+					
+					chatHead += '<div class="chat-header">'
+								  +	'<img src="https://via.placeholder.com/40" alt="User Image">'
+								  +	'<div class="user-info">'
+								  + '<span class="username">' + chatPartner + '</span>'
+								  +	'</div></div>';
+					
+					chatList.map((chat, i) => {
+						if(chat.memId === loginUserId) {
+							chatContent += '<div class="message-row me">';
+						} else {
+							chatContent += '<div class="message-row you">'
+						}
+						
+						chatContent += '<div class="message">'
+									 + '<div class="message-content">'
+									 + chat.chatContent
+									 + '</div>'
+									 + '<div class="message-info">'
+									 + '<span class="time">' + chat.chatTime + '</span>'
+									 + '</div>'
+									 + '<div class="read-status">1</div>'
+									 + '</div></div>';
+					});
+					chatContent += '</div>';
+					
+					$('.chat-content').html(chatHead + chatContent + chatInput);
+					scrollToBottom();
+				},
+				error : e => {
+					$('.chat-content').html('');
+					
+					chatHead += '<div class="chat-header">'
+						  +	'<img src="https://via.placeholder.com/40" alt="User Image">'
+						  +	'<div class="user-info">'
+						  + '<span class="username">' + chatPartner + '</span>'
+						  +	'</div></div>';
+					$('.chat-content').html(chatHead);
+					
+					chatContent += '<h2>채팅 내역이 없습니다.</h2>'
+								 + '</div>';
+					
+					$('.chat-content').html(chatHead + chatContent + chatInput);	 
+				}
+			});
+			
+			// 소켓 연결
+			const uri = 'ws://localhost/artspark/chat';
     		chat = new WebSocket(uri);
     		
     		chat.onopen = () => {	// 소켓 연결 시 수행되는 핸들러
@@ -316,7 +349,7 @@
     		};
     		
     		chat.onclose = () => {
-    			console.log("서버 접속 실패");    			
+    			console.log("서버 종료");    			
     		};
     		
     		chat.onerror = e => {
@@ -324,37 +357,32 @@
     			console.log('서버 연결 과정에서 문제 생김');
     		};
     		
+    		// 서버로부터 온 메세지 수신
     		chat.onmessage = e => {
 				const message = e.data;
 				const msgData = JSON.parse(message);
-				const loginUserId = '${sessionScope.loginUser.memId}';
-				let wrap = '';
-				
-				// console.log(msgData);
-				// console.log(message);
+				let newChat = '';
 				
 				if(loginUserId === msgData.memId) {
-					wrap += '<div class="message-row me">'
+					newChat += '<div class="message-row me">'
 				} else {
-					wrap += '<div class="message-row you">'
+					newChat += '<div class="message-row you">'
 				}
-				wrap += '<div class="message">'
-					    + '<div class="message-content">'
-					    + msgData.chatContent
-					    + '</div>'
-					    + '<div class="message-info">'
-					    + '<span class="time">'
-					    + msgData.chatTime
-					    + '</span>'
-					    + '</div>'
-					    + '<div class="read-status">1</div>'
-					    + '</div>'
-					    + '</div>';
 				
-				$('.chat-container').append(wrap);
+				newChat += '<div class="message">'
+							 + '<div class="message-content">'
+							 + msgData.chatContent
+							 + '</div>'
+							 + '<div class="message-info">'
+							 + '<span class="time">' + msgData.chatTime + '</span>'
+							 + '</div>'
+							 + '<div class="read-status">1</div>'
+							 + '</div></div>';
+				
+				$('.chat-container').append(newChat);
 				scrollToBottom();
-			}
-    	});
+			};
+		});
     	
     	// 새로운 채팅이 올라오면 채팅방스크롤을 맨아래로 하게 함
     	function scrollToBottom() {
@@ -362,16 +390,42 @@
     	    chatContainer.scrollTop = chatContainer.scrollHeight;
     	}
     	
+    	// 소켓 연결 종료
     	function disconnect() {
-			group.close();
+			chat.close();
 		}
 		
-		function send() {
+    	// 소켓 메세지 전송
+    	// ajax로 메세지를 먼저 컨트롤러로 보내서 db에 저장한 후 send()로 웹소켓 서버로 보내줄거임
+		function send(chatroomNo) {
 			let message = document.getElementById('message').value;
 			
-			chat.send(message);
-			message = '';
+			if(message !== '') {
+				$.ajax({
+					url : 'insert-chat',
+					type : 'post',
+					data : {
+						message : message,
+						chatroomNo : chatroomNo
+					},
+					success : result => {
+						console.log(result);
+						const msgData = {
+							content : message,
+							chatPartner : chatPartner
+						};
+						
+						chat.send(JSON.stringify(msgData));
+						message = '';
+					},
+					error : e => {
+						console.log(e);
+						alert('채팅 등록 실패');
+					}
+				});
+			}
 		}
+		
     </script>
 
     <jsp:include page="../common/footer.jsp" />

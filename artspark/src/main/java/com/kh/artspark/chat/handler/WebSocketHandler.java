@@ -1,6 +1,7 @@
 package com.kh.artspark.chat.handler;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -38,36 +39,40 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		
+		Gson gson = new Gson();
 		Member chatMember = (Member) session.getAttributes().get("loginUser");
 		String chatUserId = chatMember.getMemId();
+		String payload = message.getPayload();
+		Map<String, String> msgData = gson.fromJson(payload, Map.class);
 		
-		log.info("{}로 부터 {}를 전달 받았습니다.", chatUserId, message.getPayload());
+		String content = msgData.get("content");
+		String chatPartner = msgData.get("chatPartner");
 		
-		LocalTime currentTime = LocalTime.now();
-		int hour = currentTime.getHour();
-		int minute = currentTime.getMinute();
+		log.info("{}와 {}를 전달 받았습니다.", content, chatPartner);
 		
-		String period = hour < 12 ? "오전" : "오후";
-		hour = hour < 12 ? hour : hour % 12;
-		String min = minute < 10 ? "0" + minute : "" + minute; 
+		LocalDateTime now = LocalDateTime.now();
+		
+		 // 원하는 형식 지정
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        
+        // 형식에 맞춰 시간 문자열로 변환
+        String formattedNow = now.format(formatter); 
 		
 		
 		// 채팅내용, 채팅 친 사람, 채팅 시간 저장  
 		Chat chat = new Chat();
 		chat.setMemId(chatUserId);
-		chat.setChatContent(message.getPayload());
-		chat.setChatTime(period + " " + hour + ":" + min);
+		chat.setChatContent(content);
+		chat.setChatTime(formattedNow);
 		
 		// chat 객체를 Json 문자열로 반환
-		Gson gson = new Gson();
 		String jsonMessage = gson.toJson(chat);
 		
 		TextMessage newMessage = new TextMessage(jsonMessage);
 		log.info(jsonMessage);
 		
-		for(WebSocketSession ws : users) {
-			ws.sendMessage(newMessage);
-		}
+		userMap.get(chatUserId).sendMessage(newMessage);
+		userMap.get(chatPartner).sendMessage(newMessage);
 		
 	}
 
