@@ -10,6 +10,7 @@ import com.kh.artspark.member.model.repository.MemberRepository;
 
 import com.kh.artspark.member.model.vo.Artist;
 import com.kh.artspark.member.model.vo.BuyOption;
+import com.kh.artspark.member.model.vo.Interest;
 import com.kh.artspark.member.model.vo.Mail;
 
 import com.kh.artspark.member.model.vo.Member;
@@ -112,6 +113,10 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public List<OrderBuyOption> orderBuyOption(String memId) {
 		return memberRepository.orderBuyOption(sqlSession,memId);
+	}
+	@Override
+	public List<Interest> interest(String memId) {
+		return memberRepository.interest(sqlSession,memId);
 	}
 
 	

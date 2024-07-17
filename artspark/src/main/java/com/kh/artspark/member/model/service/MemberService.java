@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kh.artspark.member.model.vo.Artist;
-import com.kh.artspark.member.model.vo.BuyOption;
+import com.kh.artspark.member.model.vo.Interest;
 import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
@@ -54,7 +54,8 @@ public interface MemberService {
 	//주문관리
 	List<OrderBuyOption> orderBuyOption(String memId);
 
-	
+	//관심 판매자 목록확인
+	List<Interest> interest(String memId);
 	
 	//
 	List<Member> getActiveMembers(int startValue, int endValue);

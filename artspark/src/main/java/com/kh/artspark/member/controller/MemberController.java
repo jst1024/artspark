@@ -33,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.artspark.member.model.service.MemberService;
 import com.kh.artspark.member.model.vo.Artist;
 import com.kh.artspark.member.model.vo.BuyOption;
+import com.kh.artspark.member.model.vo.Interest;
 import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
@@ -417,6 +418,22 @@ public class MemberController {
 	    return "member/orderManage";  // 주문 내역 페이지로 이동
 	}
 	
+	//관심 판매자
+	@GetMapping("interestPage")
+	public String interestPage() {
+		return "member/interest";
+	}
+	
+	@GetMapping("interestSeller")
+	public String interestSeller(HttpSession session, Model model) {
+		Member member = (Member)session.getAttribute("loginUser");
+		List<Interest> interestThing = memberService.interest(member.getMemId()); 
+		log.info("관심: {} ", interestThing);
+		
+		
+		
+		return "member/interest";
+	}
 	
 	
 	
