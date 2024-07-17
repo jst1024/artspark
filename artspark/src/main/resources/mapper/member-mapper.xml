@@ -109,7 +109,6 @@
 		UPDATE
 				MEMBER
 		   SET
-		   		MEM_CATEGORY ='B',
 		   		MEM_NICKNAME=#{memNickname},
 		   		MEM_EMAIL=#{memEmail}
 		 WHERE
@@ -351,6 +350,9 @@
 	    WHERE
 	    			M.MEM_ID = #{memId}
 	</select>
+	
+	
+	
 </mapper>
 
 

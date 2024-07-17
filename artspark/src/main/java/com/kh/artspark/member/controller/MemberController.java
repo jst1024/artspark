@@ -135,7 +135,6 @@ public class MemberController {
 	            log.info("Updated loginUser : {}", loginUser);
 	        } else {
 	            // 업데이트 실패 처리
-	            log.error("Failed to update user category to B");
 	            model.addAttribute("errorMsg", "판매자로 변경하는데 실패했습니다.");
 	            return "common/errorPage";
 	        }
@@ -306,11 +305,11 @@ public class MemberController {
 	
 	//회원탈퇴
 	@PostMapping("delete")
-	public String delete(@RequestParam("memPwd") String inputPwd, Model model, HttpSession session) {
+	public String delete(@RequestParam("memPwd") String memPwd, Model model, HttpSession session) {
 	    Member loginUser = (Member) session.getAttribute("loginUser");
-	    String encPwd = loginUser.getMemPwd();
+	    String encPwd =bcryptPasswordEncoder.encode(memPwd);
 	    
-	    if (bcryptPasswordEncoder.matches(inputPwd, encPwd)) {
+	    if (bcryptPasswordEncoder.matches(memPwd, encPwd)) {
 	        if (memberService.delete(loginUser.getMemId()) > 0) {
 	            session.setAttribute("alertMsg", "회원이 탈퇴되었습니다.");
 	            session.removeAttribute("loginUser");
