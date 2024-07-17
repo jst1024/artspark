@@ -161,23 +161,23 @@
         }
 
         .read-status {
-		    display: inline-block;
-		    color: #333;
-		    width: 20px;
-		    height: 20px;
-		    text-align: center;
-		    line-height: 20px;
-		    font-size: 12px;
-		    position: absolute;
-		    bottom: 0px;
-		    right:  0px;
-		}
-		
-		.message-row.me .read-status {
-		    left: 20px;
-		    padding-right: 20px;
-		    right: auto;
-		}
+            display: inline-block;
+            color: #333;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+        }
+
+        .message-row.me .read-status {
+            left: 20px;
+            padding-right: 20px;
+            right: auto;
+        }
 
         .message-row.you .read-status {
             right: -10px;
@@ -221,6 +221,7 @@
 
     <div class="container">
         <div class="chat-list">
+        	<!--  
             <div class="chat-list-item">
                 <img src="https://via.placeholder.com/40" alt="User Image">
                 <div class="user-info">
@@ -235,10 +236,29 @@
                     <span class="last-message">만나서 반가워요</span>
                 </div>
             </div>
+            -->
+            <c:forEach items="${ chatrooms }" var="chatroom">
+            	<div class="chat-list-item">
+                	<img src="https://via.placeholder.com/40" alt="User Image">
+	                <div class="user-info">
+	                	<c:if test="${ chatroom.memId == sessionScope.loginUser.memId }">
+	                    	<span class="username">${ chatroom.memId2 }</span>
+	                    </c:if>
+	                    <c:if test="${ chatroom.memId2 == sessionScope.loginUser.memId }">
+	                    	<span class="username">${ chatroom.memId }</span>
+	                    </c:if>
+	                    <span class="last-message">${ chatroom.lastChat }</span>
+	                </div>
+	            </div>
+            </c:forEach>
+            
             <!-- 추가적인 채팅방 아이템들 -->
         </div>
         
+        <!-- 채팅방 -->
         <div class="chat-content">
+        
+        	<!-- 채팅방 목록 -->
             <div class="chat-header">
                 <img src="https://via.placeholder.com/40" alt="User Image">
                 <div class="user-info">
@@ -246,7 +266,10 @@
                     <span class="user-status">보통 1시간 이내 응답</span>
                 </div>
             </div>
+            
+            <!-- 상세 채팅 내용 -->
             <div class="chat-container">
+            
                 <div class="message-row you">
                     <div class="message">
                         <div class="message-content">
@@ -258,6 +281,7 @@
                         <div class="read-status">1</div>
                     </div>
                 </div>
+                
                 <div class="message-row me">
                     <div class="message">
                         <div class="message-content">
@@ -269,44 +293,86 @@
                         <div class="read-status">1</div>
                     </div>
                 </div>
-                <div class="message-row you">
-                    <div class="message">
-                        <div class="message-content">
-                            아니요 아직 판매 중입니다.
-                        </div>
-                        <div class="message-info">
-                            <span class="time">3:44 PM</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="message-row you">
-                    <div class="message">
-                        <div class="message-content">
-                            2021년 4월 2일
-                        </div>
-                        <div class="message-info">
-                            <span class="time">3:44 PM</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="message-row me">
-                    <div class="message">
-                        <div class="message-content">
-                            네~ 그럼 7시까지 그러면 갈게요~
-                        </div>
-                        <div class="message-info">
-                            <span class="time">3:45 PM</span>
-                        </div>
-                        <div class="read-status">1</div>
-                    </div>
-                </div>
+                
             </div>
+            
+            <!-- 채팅 전송 -->
             <div class="input-area">
-                <input type="text" placeholder="메시지를 입력하세요...">
-                <button>전송</button>
+                <input type="text" id="message" placeholder="메시지를 입력하세요...">
+                <button onclick="send();">전송</button>
             </div>
         </div>
     </div>
+    
+    <script>
+    	var chat;
+    	
+    	$('#chat-start').on('click', function() {
+    		const uri = 'ws://localhost/artspark/chat';
+    		chat = new WebSocket(uri);
+    		
+    		chat.onopen = () => {	// 소켓 연결 시 수행되는 핸들러
+    			console.log("서버 접속 성공");
+    		};
+    		
+    		chat.onclose = () => {
+    			console.log("서버 접속 실패");    			
+    		};
+    		
+    		chat.onerror = e => {
+    			console.log(e);
+    			console.log('서버 연결 과정에서 문제 생김');
+    		};
+    		
+    		chat.onmessage = e => {
+				const message = e.data;
+				const msgData = JSON.parse(message);
+				const loginUserId = '${sessionScope.loginUser.memId}';
+				let wrap = '';
+				
+				// console.log(msgData);
+				// console.log(message);
+				
+				if(loginUserId === msgData.memId) {
+					wrap += '<div class="message-row me">'
+				} else {
+					wrap += '<div class="message-row you">'
+				}
+				wrap += '<div class="message">'
+					    + '<div class="message-content">'
+					    + msgData.chatContent
+					    + '</div>'
+					    + '<div class="message-info">'
+					    + '<span class="time">'
+					    + msgData.chatTime
+					    + '</span>'
+					    + '</div>'
+					    + '<div class="read-status">1</div>'
+					    + '</div>'
+					    + '</div>';
+				
+				$('.chat-container').append(wrap);
+				scrollToBottom();
+			}
+    	});
+    	
+    	// 새로운 채팅이 올라오면 채팅방스크롤을 맨아래로 하게 함
+    	function scrollToBottom() {
+    	    var chatContainer = document.querySelector('.chat-container');
+    	    chatContainer.scrollTop = chatContainer.scrollHeight;
+    	}
+    	
+    	function disconnect() {
+			group.close();
+		}
+		
+		function send() {
+			let message = document.getElementById('message').value;
+			
+			chat.send(message);
+			message = '';
+		}
+    </script>
 
     <jsp:include page="../common/footer.jsp" />
 </body>
