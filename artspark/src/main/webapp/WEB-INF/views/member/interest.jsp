@@ -44,13 +44,14 @@
             width: 500px;
         }
         .image-placeholder {
-            width: 200px;
+            width: 150px;
             height: 150px;
             background-color: #f8f8f8;
             border: 1px solid #ddd;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
         .image-caption {
             font-size: 12px;
@@ -67,6 +68,7 @@
             height: 60px;
             background-color: #ddd;
             border-radius: 50%;
+            overflow: hidden;
         }
         .form-group.text-end {
             margin-bottom: 20px;
@@ -83,79 +85,47 @@
         
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="inquiry-tab" data-bs-toggle="tab" data-bs-target="#inquiry" type="button" role="tab">문의 및 답변</button>
+                <button class="nav-link" id="inquiry-tab" data-bs-toggle="tab" data-bs-target="#inquiry" type="button" role="tab">문의 및 답변</button>
             </li>
             <li class="nav-item" role="presentation">
-              <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">주문 관리</button></a>
+                <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">주문 관리</button></a>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="favorite-tab" data-bs-toggle="tab" data-bs-target="#favorite" type="button" role="tab">관심 작가</button>
+                 <a href="${path2 }/interestSeller"><button class="nav-link active" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button" role="tab">관심 작가</button></a>
             </li>
         </ul>
         
-            <div class="tab-pane fade my-4" id="favorite" role="tabpanel">
+        <div class="tab-content mt-3" id="myTabContent">
+            <div class="tab-pane fade show active my-4" id="seller" role="tabpanel">
                 <h2 class="mb-4">관심 작가</h2>
                 <div class="form-group text-end">
                     <input type="text" class="form-control d-inline-block" placeholder="작가명" style="width: 200px;">
                     <button type="button" class="btn btn-primary ml-2">검색</button>
                 </div>
-
-                <div class="artist-card">
-                    <div class="d-flex">
-                        <div class="profile-image"></div>
-                        <div class="artist-info ml-3">
-                            <div class="artist-name">작가 이름</div>
-                            <div class="rating">평점 ★★★★★</div>
+                <c:forEach items="${interestThing}" var="seller" varStatus="status" step="3">
+                    <div class="artist-card">
+                        <div class="d-flex">
+                            <div class="profile-image">
+                                <img src="${seller.artistPath}"  style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div class="artist-info ml-3">
+                                <div class="artist-name">작가 이름: ${seller.memNickname}</div>
+                                <div class="rating">평점: ${seller.reviewStar}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="image-placeholder-wrapper">
-                            <div class="image-placeholder">이미지 1</div>
-                            <div class="image-placeholder">이미지 2</div>
-                            <div class="image-placeholder">이미지 3</div>
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="image-placeholder-wrapper">
+                                <c:forEach begin="${status.index}" end="${status.index + 2}" items="${interestThing}" var="image">
+                                    <div class="image-placeholder">
+                                        <img src="${image.filePath}" alt="작품 이미지" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                </c:forEach>
+                            </div>
+                            <div class="image-caption">${seller.productTitle}</div>
                         </div>
-                        <div class="image-caption">제목 1 / 카테고리</div>
+                        <div class="remove-button ml-3">X</div>
                     </div>
-                    <div class="remove-button ml-3">X</div>
-                </div>
-
-                <div class="artist-card">
-                    <div class="d-flex">
-                        <div class="profile-image"></div>
-                        <div class="artist-info ml-3">
-                            <div class="artist-name">작가 이름</div>
-                            <div class="rating">평점 ★★★★★</div>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="image-placeholder-wrapper">
-                            <div class="image-placeholder">이미지 1</div>
-                            <div class="image-placeholder">이미지 2</div>
-                            <div class="image-placeholder">이미지 3</div>
-                        </div>
-                        <div class="image-caption">제목 2 / 카테고리</div>
-                    </div>
-                    <div class="remove-button ml-3">X</div>
-                </div>
-
-                <div class="artist-card">
-                    <div class="d-flex">
-                        <div class="profile-image"></div>
-                        <div class="artist-info ml-3">
-                            <div class="artist-name">작가 이름</div>
-                            <div class="rating">평점 ★★★★★</div>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="image-placeholder-wrapper">
-                            <div class="image-placeholder">이미지 1</div>
-                            <div class="image-placeholder">이미지 2</div>
-                            <div class="image-placeholder">이미지 3</div>
-                        </div>
-                        <div class="image-caption">제목 3 / 카테고리</div>
-                    </div>
-                    <div class="remove-button ml-3">X</div>
-                </div>
+                </c:forEach>
             </div>
         </div>
     </div>

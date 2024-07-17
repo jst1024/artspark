@@ -3,6 +3,43 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="memberMapper">
+
+	<resultMap id="orderBuyOptionMap" type="orderBuyOption">
+	<result property="buyNo" column="BUY_NO"/>
+	<result property="productNo" column="PRODUCT_NO"/>
+	<result property="paymentName" column="PAYMENT_NAME"/>
+	<result property="paymentEmail" column="PAYMENT_EMAIL"/>
+	<result property="paymentPhone" column="PAYMENT_PHONE"/>
+	<result property="paymentRequest" column="PAYMENT_REQUEST"/>
+	<result property="paymentDate" column="PAYMENT_DATE"/>
+	<result property="productPurpose" column="PRODUCT_PURPOSE"/>
+	<result property="detailType" column="DETAIL_TYPE"/>
+	<result property="detailSize" column="DETAIL_SIZE"/>
+	<result property="detailPixel" column="DETAIL_PIXEL"/>
+	<result property="updateCount" column="UPDATE_COUNT"/>
+	<result property="detailWorkdate" column="DETAIL_WORKDATE"/>
+	<result property="memNickname" column="MEM_NICKNAME"/>
+	<result property="artistPath" column="ARTIST_PATH"/>
+	<result property="productTitle" column="PRODUCT_TITLE"/>
+	<collection property="buyOptionList" resultMap="buyOptionMap" javaType="list"/>
+	</resultMap>
+	
+	
+	<resultMap id="buyOptionMap" type="buyOptionOrder">
+	<result property="buyOptionName" column="BUY_OPTION_NAME"/>
+	<result property="buyDetailOptionName" column="BUY_DETAIL_OPTION_NAME"/>
+	<result property="buyOptionPrice" column="BUY_OPTION_PRICE"/>
+	<result property="buyOptionAmount" column="BUY_OPTION_AMOUNT"/>
+	</resultMap>
+
+	
+	<resultMap id="interest" type="interest">
+	<result property="artistPath" column="ARTIST_PATH"/>
+	<result property="memNickname" column="MEM_NICKNAME"/>
+	<result property="filePath" column="FILE_PATH"/>
+	<result property="productTitle" column="PRODUCT_TITLE"/>
+	<result property="reviewStar" column="REVIEW_STAR"/>
+	</resultMap>
 	
 	<select id="memberList" resultType="member">
 		SELECT
@@ -256,33 +293,6 @@
 </select>
 
 
-	<resultMap id="orderBuyOptionMap" type="orderBuyOption">
-	<result property="buyNo" column="BUY_NO"/>
-	<result property="productNo" column="PRODUCT_NO"/>
-	<result property="paymentName" column="PAYMENT_NAME"/>
-	<result property="paymentEmail" column="PAYMENT_EMAIL"/>
-	<result property="paymentPhone" column="PAYMENT_PHONE"/>
-	<result property="paymentRequest" column="PAYMENT_REQUEST"/>
-	<result property="paymentDate" column="PAYMENT_DATE"/>
-	<result property="productPurpose" column="PRODUCT_PURPOSE"/>
-	<result property="detailType" column="DETAIL_TYPE"/>
-	<result property="detailSize" column="DETAIL_SIZE"/>
-	<result property="detailPixel" column="DETAIL_PIXEL"/>
-	<result property="updateCount" column="UPDATE_COUNT"/>
-	<result property="detailWorkdate" column="DETAIL_WORKDATE"/>
-	<result property="memNickname" column="MEM_NICKNAME"/>
-	<result property="artistPath" column="ARTIST_PATH"/>
-	<result property="productTitle" column="PRODUCT_TITLE"/>
-	<collection property="buyOptionList" resultMap="buyOptionMap" javaType="list"/>
-	</resultMap>
-	
-	
-	<resultMap id="buyOptionMap" type="buyOptionOrder">
-	<result property="buyOptionName" column="BUY_OPTION_NAME"/>
-	<result property="buyDetailOptionName" column="BUY_DETAIL_OPTION_NAME"/>
-	<result property="buyOptionPrice" column="BUY_OPTION_PRICE"/>
-	<result property="buyOptionAmount" column="BUY_OPTION_AMOUNT"/>
-	</resultMap>
 	
 	
 	<!--주문관리  -->
@@ -324,16 +334,8 @@
 	</select>
 	
 	
-	<resultMap id="interestMap" type="interest">
-	<result property="artistPath" column="ARTIST_PATH"/>
-	<result property="memNickname" column="MEM_NICKNAME"/>
-	<result property="filePath" column="FILE_PATH"/>
-	<result property="productTitle" column="PRODUCT_TITLE"/>
-	<result property="reviewStar" column="REVIEW_STAR"/>
-	</resultMap>
-	
 		<!-- 관심 판매자 목록 -->
-	<select id="interest"  parameterType="String" resultMap="interest">
+	<select id="interest" parameterType="String" resultMap="interest">
 		SELECT
 					A.ARTIST_PATH,
 					M.MEM_NICKNAME,

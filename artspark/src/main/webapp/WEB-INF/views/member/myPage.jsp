@@ -89,7 +89,7 @@
                 <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">주문 관리</button></a>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="favorite-tab" data-bs-toggle="tab" data-bs-target="#favorite" type="button" role="tab">관심 작가</button>
+                 <a href="${path2 }/interestSeller"><button class="nav-link" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button" role="tab">관심 작가</button></a>
             </li>
         </ul>
         
@@ -113,73 +113,8 @@
                     </div>
                 </div>
             </div>
-          
-            <div class="tab-pane fade my-4" id="favorite" role="tabpanel">
-                <h2 class="mb-4">관심 작가</h2>
-                <div class="form-group text-end">
-                    <input type="text" class="form-control d-inline-block" placeholder="작가명" style="width: 200px;">
-                    <button type="button" class="btn btn-primary ml-2">검색</button>
-                </div>
-
-                <div class="artist-card">
-                    <div class="d-flex">
-                        <div class="profile-image"></div>
-                        <div class="artist-info ml-3">
-                            <div class="artist-name">작가 이름</div>
-                            <div class="rating">평점 ★★★★★</div>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="image-placeholder-wrapper">
-                            <div class="image-placeholder">이미지 1</div>
-                            <div class="image-placeholder">이미지 2</div>
-                            <div class="image-placeholder">이미지 3</div>
-                        </div>
-                        <div class="image-caption">제목 1 / 카테고리</div>
-                    </div>
-                    <div class="remove-button ml-3">X</div>
-                </div>
-
-                <div class="artist-card">
-                    <div class="d-flex">
-                        <div class="profile-image"></div>
-                        <div class="artist-info ml-3">
-                            <div class="artist-name">작가 이름</div>
-                            <div class="rating">평점 ★★★★★</div>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="image-placeholder-wrapper">
-                            <div class="image-placeholder">이미지 1</div>
-                            <div class="image-placeholder">이미지 2</div>
-                            <div class="image-placeholder">이미지 3</div>
-                        </div>
-                        <div class="image-caption">제목 2 / 카테고리</div>
-                    </div>
-                    <div class="remove-button ml-3">X</div>
-                </div>
-
-                <div class="artist-card">
-                    <div class="d-flex">
-                        <div class="profile-image"></div>
-                        <div class="artist-info ml-3">
-                            <div class="artist-name">작가 이름</div>
-                            <div class="rating">평점 ★★★★★</div>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="image-placeholder-wrapper">
-                            <div class="image-placeholder">이미지 1</div>
-                            <div class="image-placeholder">이미지 2</div>
-                            <div class="image-placeholder">이미지 3</div>
-                        </div>
-                        <div class="image-caption">제목 3 / 카테고리</div>
-                    </div>
-                    <div class="remove-button ml-3">X</div>
-                </div>
-            </div>
         </div>
-    </div>
+    </div> 
     <jsp:include page="../common/footer.jsp"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
