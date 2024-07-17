@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -102,7 +103,7 @@
                         <c:otherwise>
                             <c:forEach var="request" items="${requestList}" varStatus="status">
                                 <tr class="request-Detail">
-                                    <td>${request.reqNo}</td>
+                                    <td>${fn:length(requestList) - status.count + 1  }</td>
                                     <td>${request.reqPurpose}</td>
                                     <td>${request.reqTitle}</td>
                                     <td>${request.reqCategory}</td>                                

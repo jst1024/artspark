@@ -57,7 +57,7 @@ public class ProductController {
 		int listCount = productService.productAllCount();
 		int currentPage = page;
 		int pageLimit = 5;
-		int boardLimit = 1;
+		int boardLimit = 4;
 		
 		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
@@ -315,15 +315,8 @@ public class ProductController {
 			}
 		}
 		
-		
-		// 중복 제거를 위해 HashSet에 리스트를 넣어 중복을 제거한 뒤 다시 ArrayList로 변환
-		List<String> optionNameList = productForm.getOptionName();
-		List<String> changeList = new ArrayList<String>(new HashSet<String>(optionNameList));
-		
-//		log.info("changeList : {}", changeList);
-		
-		int result = productService.insertProduct(product, productDetail, changeList, 
-				productForm, tagList, productFiles);
+		int result = productService.insertProduct(product, productDetail,productForm, 
+												tagList, productFiles);
 		
 		if(result > 0) {
 			session.setAttribute("alertMsg", "상품 등록 성공!");
@@ -366,12 +359,138 @@ public class ProductController {
 	
 	// 상품 삭제
 	@GetMapping("productDelete")
-	public String productDelete(int productNo, Model model) {
-		// 지워야하는거 product, product_detail, pay_option, detail_option, 
-		// 필요한거 파일패스, d
+	public String productDelete(int productNo, HttpSession session, Model model) {
+		// product 테이블의 status를 N으로 바꾸고, product_deldate를 현재시간으로 업데이트
+		// 찜 테이블에서 해당 상품번호를 가진 레코드 제거
 		
+		int result = productService.deleteProduct(productNo);
 		
-		return "";
+		if(result > 0) {
+			session.setAttribute("alertMsg", "상품이 삭제되었습니다.");
+			return "redirect:/product";
+		}
+		
+		session.setAttribute("alertMsg", "상품 삭제에 실패했습니다.");
+		return "redirect:/product/" + productNo;
+	}
+	
+	// 상품 업데이트페이지 포워딩
+	@GetMapping("productUpdateForward")
+	public String productUpdateForward(String pno, Model model) {
+		int productNo = Integer.parseInt(pno);
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("loginId", "");
+		map.put("productNo", productNo);
+		
+		Map<String, Object> product = productService.findById(map);
+		List<ProductFile> productFiles = productService.findByIdFile(productNo);
+		List<Tag> productTags = productService.findByIdTag(productNo);
+		StringBuilder sb = new StringBuilder();
+		
+		for(Tag t : productTags) {
+			sb.append("#" + t.getTagName());
+		}
+		
+		log.info(sb.toString());
+		log.info("PayOption: {}", product.get("payOptionList"));
+		log.info("파일 정보 : {}", productFiles);
+		
+		model.addAttribute("productFiles", productFiles);
+		model.addAttribute("productTags", sb.toString());
+		model.addAttribute("product", product);
+		
+		return "product/productUpdate";
+	}
+	
+	// 상품 업데이트
+	@PostMapping("update")
+	public String updateProduct(Product product,
+								ProductDetail productDetail,
+								ProductForm productForm,
+								String productPurpose1,
+								String productPurpose2,
+								String tags,
+								MultipartFile upImage1,
+								MultipartFile upImage2,
+								MultipartFile upImage3,
+								HttpSession session,
+								Model model) {
+		
+		log.info("입력 정보 : {}", product);
+		log.info("입력 정보 : {}", productDetail);
+		log.info("입력 정보 : {}", productForm);
+		log.info("입력 정보 : {}", tags);
+		log.info("입력 정보 : {}", productPurpose1);
+		log.info("입력 정보 : {}", productPurpose2);
+		log.info("사진들 : {}", upImage1);
+		log.info("사진들 : {}", upImage2);
+		log.info("사진들 : {}", upImage3);
+		
+		String productPurpose = "";
+		if(productPurpose1 != null && productPurpose2 != null) {
+			productPurpose = productPurpose1 + " / " + productPurpose2;
+		} else if(productPurpose1 != null && productPurpose2 == null) {
+			productPurpose = productPurpose1;
+		} else {
+			productPurpose = productPurpose2;
+		}
+		
+		productDetail.setProductPurpose(productPurpose);
+		
+		String[] tagArray = tags.split("#");
+		List<Tag> tagList = new ArrayList<>();
+		
+		for(String s : tagArray) {
+			if(!s.trim().isEmpty()) {
+				Tag tag = new Tag();
+				tag.setTagName(s.trim());
+				tagList.add(tag);
+			}
+		}
+		
+//		log.info("태그 : {}", tagList);
+		
+		// 파일 처리
+		MultipartFile[] changeFiles = new MultipartFile[3];
+		changeFiles[0] = upImage1;
+		changeFiles[1] = upImage2;
+		changeFiles[2] = upImage3;
+		List<ProductFile> originFiles = productService.findByIdFile(product.getProductNo());
+		List<ProductFile> productFiles = new ArrayList<>();
+		
+		for(int i=0; i<changeFiles.length; i++) {
+			if(!changeFiles[i].getOriginalFilename().equals("")) {
+				ProductFile productFile = new ProductFile();
+				String changeName = saveFile(changeFiles[i], session);
+				productFile.setOriginName(changeFiles[i].getOriginalFilename());
+				productFile.setChangeName(changeName);
+				productFile.setFilePath("resources/uploadFiles/" + changeName);
+				
+				// 새 파일을 넣으면 기존파일삭제
+				if(originFiles.size() > i && !originFiles.get(i).getOriginName().equals("")) {
+					new File(session.getServletContext().getRealPath(originFiles.get(i).getFilePath())).delete();
+					productService.deleteOriginFile(originFiles.get(i).getChangeName());
+				}
+				
+				productFiles.add(productFile);
+			}
+		}
+		
+		log.info("파일들 : {}", productFiles);
+		
+		int result = productService.updateProduct(product, productDetail, productForm, 
+												tagList, productFiles);
+		
+		if(result > 0) {
+			session.setAttribute("alertMsg", "상품 수정 성공!");
+			return "redirect:/product/" + product.getProductNo();
+		}
+		
+		model.addAttribute("errorMsg", "상품 수정 실패..ㅠ");
+		return "error/errorPage";
+		
 	}
 }
 

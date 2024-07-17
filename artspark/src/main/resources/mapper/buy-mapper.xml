@@ -20,6 +20,111 @@
 		 		PRODUCT_NO = #{productNo} 	
 	</select>
 	
+	<!-- 상품 구매 정보 입력 -->
+	<insert id="insertBuy" parameterType="buy">
+		INSERT
+		  INTO
+		  		BUY
+		  		(
+		  		BUY_NO,
+		  		MEM_ID,
+		  		PRODUCT_NO
+		  		)
+		VALUES
+				(
+				#{buyNo},
+				#{memId},
+				#{productNo}
+				)
+	</insert>
+	
+	<!-- 상품 결제 정보 입력 -->
+	<insert id="insertPayment" parameterType="payment">
+		INSERT
+		  INTO
+		  		PAYMENT
+		  		(
+		  		BUY_NO,
+		  		PAYMENT_METHOD,
+		  		PAYMENT_NAME,
+		  		PAYMENT_PHONE,
+		  		PAYMENT_EMAIL,
+		  		PAYMENT_REQUEST
+		  		)
+		VALUES
+				(
+				#{buyNo},
+				#{paymentMethod},
+				#{paymentName},
+				#{paymentPhone},
+				#{paymentEmail},
+				#{paymentRequest}
+				)
+	</insert>
+	
+	<!-- 상품 구매 옵션 입력 -->
+	<insert id="insertBuyOption" parameterType="map">
+		INSERT
+		  INTO
+		  		BUY_OPTION
+		  		(
+		  		BUY_OPTION_NO,
+		  		BUY_OPTION_NAME,
+		  		BUY_DETAIL_OPTION_NAME,
+		  		BUY_OPTION_PRICE,
+		  		BUY_OPTION_AMOUNT,
+		  		BUY_NO
+		  		)
+		VALUES
+				(
+				BUY_OPTION_SEQ.NEXTVAL,
+				#{buyOptionName},
+				#{buyDetailOptionName},
+				#{buyOptionPrice},
+				#{buyOptionAmount},
+				#{buyNo}
+				)
+	</insert>
+	
+	<!-- 결제 정보 조회 -->
+	<select id="getPayment" parameterType="String" resultType="payment">
+		SELECT
+				BUY_NO buyNo,
+				PAYMENT_METHOD paymentMethod,
+				PAYMENT_NAME paymentName,
+				PAYMENT_PHONE paymentPhone,
+				PAYMENT_EMAIL paymentEmail,
+				PAYMENT_REQUEST paymentRequest
+		  FROM
+		  		PAYMENT
+		 WHERE
+		 		BUY_NO = #{merchant_uid}
+	</select>
+	
+	<resultMap id="buyOptionMap" type="map">
+		<result property="buyOptionNo" column="BUY_OPTION_NO"/>
+		<result property="buyOptionName" column="BUY_OPTION_NAME"/>
+		<result property="buyDetailOptionName" column="BUY_DETAIL_OPTION_NAME"/>
+		<result property="buyOptionPrice" column="BUY_OPTION_PRICE"/>
+		<result property="buyOptionAmount" column="BUY_OPTION_AMOUNT"/>
+		<result property="buyNo" column="BUY_NO"/>
+	</resultMap>
+	
+	<!-- 구매 옵션 조회 -->
+	<select id="getBuyOption" parameterType="String" resultMap="buyOptionMap">
+		SELECT
+				BUY_OPTION_NO,
+				BUY_OPTION_NAME,
+				BUY_DETAIL_OPTION_NAME,
+				BUY_OPTION_PRICE,
+				BUY_OPTION_AMOUNT,
+				BUY_NO
+		  FROM
+		  		BUY_OPTION
+		 WHERE
+		 		BUY_NO = #{merchant_uid}
+	</select>
+	
 </mapper>
 
 

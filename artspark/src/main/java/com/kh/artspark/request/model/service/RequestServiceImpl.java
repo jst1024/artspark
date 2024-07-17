@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.artspark.common.model.vo.ImgFile;
 import com.kh.artspark.notice.model.vo.Notice;
 import com.kh.artspark.request.model.dao.RequestMapper;
+import com.kh.artspark.request.model.vo.Reply;
 import com.kh.artspark.request.model.vo.Request;
 
 import lombok.RequiredArgsConstructor;
@@ -85,6 +86,21 @@ public class RequestServiceImpl implements RequestService {
 		 }
 		 
 		 return result1 * result2;
+	}
+
+	@Override
+	public List<Reply> selectReply(int reqNo) {
+		return requestMapper.selectReply(reqNo);
+	}
+
+	@Override
+	public int insertReply(Reply reply) {
+		return requestMapper.insertReply(reply);
+	}
+
+	@Override
+	public Request requestAndReply(int reqNo) {
+		return requestMapper.requestAndReply(reqNo);
 	}
 	
 }
