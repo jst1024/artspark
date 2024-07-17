@@ -688,6 +688,7 @@ ALTER TABLE REQUEST ADD STATUS VARCHAR2(1) DEFAULT 'Y' NOT NULL;
 ALTER TABLE QNA ADD STATUS VARCHAR2(1) DEFAULT 'Y' NOT NULL;
 ALTER TABLE ANSWER ADD STATUS VARCHAR2(1) DEFAULT 'Y' NOT NULL;
 
+
 -- 멤버, 상품, 의뢰, 문의, 답변 테이블에 삭제된 시간 추가
 ALTER TABLE PRODUCT ADD PRODUCT_DELDATE DATE;
 ALTER TABLE REQUEST ADD REQUEST_DELDATE DATE;
@@ -696,43 +697,5 @@ ALTER TABLE ANSWER ADD ANSWER_DELDATE DATE;
 ALTER TABLE MEMBER ADD MEM_DELDATE DATE;
 
 COMMIT;
-		SELECT
-				REQ_NO, 
-				REQ_PURPOSE, 
-	            REQ_TITLE, 
-	            REQ_CATEGORY, 
-	            REQ_CONTENT, 
-	            REQ_DATE, 
-	            REQ_COUNT,
-				MEM_ID
 
-  	  FROM
-            (SELECT 
-                    REQ_NO,
-                    REQ_PURPOSE,
-                    REQ_TITLE,
-                    REQ_CATEGORY,
-                  	REQ_CONTENT,
-                    REQ_DATE,
-                    REQ_COUNT,
-                 	MEM_ID,
-                    ROWNUM RNUM 
-              FROM
-                   	 (SELECT 
-                             REQ_NO,
-                             REQ_PURPOSE,
-                             REQ_TITLE,
-                             REQ_CATEGORY,
-                             REQ_CONTENT,
-                             REQ_DATE,
-                             REQ_COUNT,
-							 MEM_ID
-                        FROM
-                             REQUEST                            
-                       ORDER
-                          BY
-                             REQ_NO DESC))               
-	  WHERE
-      		 RNUM BETWEEN 1 AND 3;
 
-select * from request;
