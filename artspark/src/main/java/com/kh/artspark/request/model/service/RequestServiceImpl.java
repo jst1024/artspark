@@ -103,4 +103,9 @@ public class RequestServiceImpl implements RequestService {
 		return requestMapper.requestAndReply(reqNo);
 	}
 	
+	@Override
+	public int deleteReply(int replyNo) {
+		return requestMapper.deleteReply(replyNo);
+	}
+	
 }

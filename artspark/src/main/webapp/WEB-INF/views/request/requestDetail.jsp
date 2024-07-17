@@ -138,8 +138,10 @@
         <script>
 	    	$(() => {
 	    		selectReply();
-	    	})
-	    
+	    	});
+	    	
+	    	const currentUserId = '${sessionScope.loginUser.memId}';
+	    	
 	    	function selectReply() {
 	    		$.ajax({
 	    			url : 'reply',
@@ -155,19 +157,22 @@
 	    					resultStr += '<tr>'
 	    							+ '<td>' + result[i].memId + '</td>'
 	    							+ '<td>' + result[i].replyContent + '</td>'
-	    							+ '<td>' + result[i].replyDate + '</td>'
-	    							+ '</tr>';
-	    				}
+	    							+ '<td>' + result[i].replyDate + '</td>';
+	    							 if (result[i].memId === currentUserId) {
+	    		                            resultStr += '<td><button class="btn btn-danger" onclick="deleteReply(' + result[i].replyNo + ')">삭제</button></td>';
+	    							 } else {
+	    		                            resultStr += '<td></td>'; // 삭제 버튼이 없는 빈 셀 추가
+	    		                     }
+	    							 resultStr += '</tr>';
+	                    }
 	    				$('#replyArea tbody').html(resultStr);
 	    				$('#replyCount').text(result.length);
-	
 	    			}
 	    		});
 	    	}
         
         
         	function insertReply() {
-        		
         		
         		 if($('#replyContent').val().trim() != ''){
         			$.ajax({
@@ -192,7 +197,23 @@
         			alertify.alert('올브르즈 은습느드..');
         		}
         	}
-        
+        	
+        	function deleteReply(replyNo) {
+        	    $.ajax({
+        	        url: 'deleteReply',
+        	        type: 'post',
+        	        data: {
+        	            replyNo: replyNo
+        	        },
+        	        success: result => {
+        	            if (result == 'success') {
+        	                selectReply();
+        	            } else {
+        	                alert('댓글 삭제에 실패했습니다.');
+        	            }
+        	        }
+        	    });
+        	}
 
 
 
