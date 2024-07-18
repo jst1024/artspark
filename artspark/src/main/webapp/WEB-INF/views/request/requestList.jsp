@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -102,10 +103,11 @@
                         <c:otherwise>
                             <c:forEach var="request" items="${requestList}" varStatus="status">
                                 <tr class="request-Detail">
-                                    <td>${request.reqNo}</td>
+                                	<input type="hidden" value="${request.reqNo }">
+                                    <td>${fn:length(requestList) - status.count + 1  }</td>
                                     <td>${request.reqPurpose}</td>
                                     <td>${request.reqTitle}</td>
-                                    <td>${request.reqCategory}</td>
+                                    <td>${request.reqCategory}</td>                                
                                     <td>${request.memId}</td>
                                     <td>${request.reqDate}</td>
                                     <td>${request.reqCount}</td>
@@ -118,7 +120,7 @@
             <script>
                 $(() => {
                     $('.request-Detail').click(e => {
-                        location.href = 'requestDetail?reqNo=' + $(e.currentTarget).children().eq(0).text();
+                        location.href = 'requestDetail?reqNo=' + $(e.currentTarget).children().eq(0).val();
                     });
                 });
             </script>

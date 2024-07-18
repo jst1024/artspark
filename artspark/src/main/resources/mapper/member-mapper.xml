@@ -28,7 +28,7 @@
 		  		MEM_NICKNAME,
 		  		MEM_EMAIL
 		  		)
-		VALUSE
+		VALUES
 				
 				(
 				#{memId},
@@ -66,35 +66,102 @@
 		 WHERE
 				 MEM_ID=#{checkId}
 	</select>
+	
 	<!--일반회원 정보 수정 -->
 	<update id="update" parameterType="member">
 		UPDATE
 				MEMBER
 		   SET
-		   		MEM_CATEGORY ='B'
+		   		MEM_CATEGORY ='B',
+		   		MEM_NICKNAME=#{memNickname},
+		   		MEM_EMAIL=#{memEmail}
 		 WHERE
 				MEM_ID= #{memId}
 	</update>
 	
 	
     <!-- 일반에서 판매자로 정보 수정  -->
-    <select id="productUpdate" parameterType="member">
-    	SELECT
-    			M.MEM_ID,
-    			M.MEM_PWD,
-    			M.MEM_NICKNAME,
-    			M.STATUS,
-    			M.MEM_ENROLL,
-    			M.MEM_CATEGORY,
-    			A.ARTIST_INTRO,
-    			A.ARTIST_PHONE
-    	 FROM
-    	 		MEMBER M
-    	 JOIN
-    	 		ARTIST A ON M.MEM_ID = A.MEM_ID
-    	  AND
-    	  		MEM_CATEGORY ='B'
-    </select>
+    <insert id="insertOrUpdateArtist" parameterType="artist">
+     	MERGE 
+     	 INTO   ARTIST
+    	USING 
+                DUAL 
+           ON   (
+                MEM_ID = #{memId}
+                )
+    	WHEN    MATCHED THEN
+       UPDATE 
+          SET
+	            ARTIST_INTRO = #{artistIntro},
+	            ARTIST_PHONE = #{artistPhone},
+	            ARTIST_PATH = #{artistPath},
+	            ARTIST_ORIGIN_NAME = #{artistOriginName},
+	            ARTIST_CHANGE_NAME = #{artistChangeName}
+         WHEN 
+          NOT 
+      MATCHED 
+         THEN
+        INSERT 
+        		(
+        		ARTIST_INTRO, 
+        		ARTIST_PHONE, 
+        		ARTIST_PATH, 
+        		ARTIST_ORIGIN_NAME, 
+        		ARTIST_CHANGE_NAME, 
+        		MEM_ID
+        		)
+        VALUES 
+        		(
+        		#{artistIntro},
+        		#{artistPhone},
+       		    #{artistPath}, 
+       		    #{artistOriginName}, 
+       		    #{artistChangeName}, 
+       		    #{memId}
+        		)
+	</insert>
+
+	<update id="updateMember" parameterType="member">
+	    UPDATE
+	    		 MEMBER
+	       SET 
+	             MEM_NICKNAME = #{memNickname},
+	             MEM_EMAIL = #{memEmail}
+	     WHERE 
+	             MEM_ID = #{memId}
+	</update>
+	<select id="getArtist" parameterType="string" resultType="artist">
+	    SELECT  
+	    		ARTIST_INTRO        artistIntro,
+	    		ARTIST_PHONE        artistPhone,
+	    		ARTIST_PATH         artistPath,
+	    		ARTIST_ORIGIN_NAME  artistOriginName,
+	    		ARTIST_CHANGE_NAME  artistChangeName,
+	    		MEM_ID              memId
+	     FROM 
+	            ARTIST
+	    WHERE 
+	            MEM_ID = #{memId}
+	</select>
+
+ <!-- 회원 ID로 회원 정보 조회 -->
+	<select id="getMemberById" parameterType="string" resultType="member">
+	    SELECT
+		        MEM_ID memId,
+		        MEM_PWD memPwd,
+		        MEM_NICKNAME memNickname,
+		        MEM_EMAIL memEmail,
+		        MEM_ENROLL memEnroll,
+		        STATUS status,
+		        MEM_CATEGORY memCategory
+	    FROM
+	        	MEMBER
+	    WHERE
+	        	MEM_ID = #{memId}
+	</select>
+
+
+
 	<!-- 아이디 찾기 -->
 	<select id="findId" resultType="string" parameterType="map">
         SELECT 
@@ -133,7 +200,7 @@
 	</select>
 	
 	<!-- 비밀번호 수정 -->
-	<update id="updatePwd" parameterType="member">
+	<update id="changePwd" parameterType="member">
 		UPDATE
 				MEMBER
 		   SET
@@ -141,6 +208,52 @@
 		 WHERE
 		 		MEM_ID= #{memId}
 	</update>
+	
+	<!-- 메일 보내기 -->
+	<select id="pwdCheck" parameterType="string" resultType="_int">
+		SELECT
+				COUNT(*)
+		  FROM
+		  		MEMBER
+		 WHERE
+		 		MEM_PWD=#{memPwd}	
+	</select>
+	
+	<!-- 메일 값 추가 -->
+	<insert id="sendMail" parameterType="com.kh.artspark.member.model.vo.Mail">
+		INSERT
+		  INTO
+		  		MAIL
+		VALUES
+				(
+				#{who},
+				#{code},
+				SYSDATE
+				)
+	</insert>
+	
+	  
+	<!-- 메일로 받는 비밀번호로 인해 회원 정보 업데이트에 필요한 맵 정보 -->  
+	<resultMap id="memberResultSet" type="member">
+    <result property="memId" column="MEM_ID" />
+    <result property="memEmail" column="MEM_EMAIL" />
+    <result property="memNickname" column="MEM_NICKNAME" />
+	</resultMap>
+	  
+	  
+    <update id="updatePassword">
+        UPDATE MEMBER
+        SET MEM_PWD = #{memPwd}
+        WHERE MEM_EMAIL = #{memEmail}
+    </update>
+   	
+   	<select id="getMember" resultMap="memberResultSet">
+	    SELECT *
+	    FROM MEMBER
+	    WHERE MEM_ID = #{memId}
+	    AND MEM_NICKNAME = #{memNickname}
+	    AND MEM_EMAIL = #{memEmail}
+</select>
 </mapper>
 
 

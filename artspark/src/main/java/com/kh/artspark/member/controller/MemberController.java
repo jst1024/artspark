@@ -1,21 +1,41 @@
 package com.kh.artspark.member.controller;
 
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.text.Format;
+import java.util.Random;
 
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.member.model.service.MemberService;
+
+import com.kh.artspark.member.model.vo.Artist;
+
+import com.kh.artspark.member.model.vo.Mail;
+
 import com.kh.artspark.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +48,7 @@ public class MemberController {
 	
 	private final MemberService memberService;
 	private final BCryptPasswordEncoder bcryptPasswordEncoder;
+	private final JavaMailSender sender;
 	
 	@GetMapping("memberList")
 	public void memberList() {
@@ -97,32 +118,101 @@ public class MemberController {
 		
 	}
 	
+	
 	@GetMapping("updateProduct")
-	public String upateProduct() {
-	    return "member/changeProduct"; // 로그인 페이지의 뷰 이름 반환
+	public String updateProduct(HttpSession session, Model model) {
+	    Member loginUser = (Member) session.getAttribute("loginUser");
+	    if (loginUser != null) {
+	        Artist artist = memberService.getArtist(loginUser.getMemId());
+	        model.addAttribute("loginUser", loginUser);
+	        model.addAttribute("artist", artist);
+	        log.info("artist : {}", artist);
+	    }
+	    return "member/changeProduct";
 	}
 	
 	@PostMapping("productUpdate")
-	public String productUpdate(Member member, HttpSession session, Model model) {
-		
-		log.info("수정 요청 멤버:{}",member);
-	
-		// 1 / 0
-		if(memberService.update(member) > 0) {
-			
-			session.setAttribute("loginUser",memberService.login(member));
-			session.setAttribute("alertMsg","정보 수정 성공");	
-		
-		
-			return "redirect:/";
-			
-		}else {
-			model.addAttribute("errorMsg","정보 수정에 실패했습니다.");
-			return "common/errorPage";
-		}
-		
+	public String productUpdate(@ModelAttribute Artist artist,
+	                            @ModelAttribute Member member,
+	                            @RequestParam("profileImage") MultipartFile file,
+	                            HttpSession session,
+	                            Model model) {
+	    
+
+
+	    // 파일 업로드 처리
+	    if (!file.isEmpty()) {
+	        try {
+	            // 파일 저장 경로 설정
+	            String uploadPath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+	            
+	            // 원본 파일명
+	            String originalFileName = file.getOriginalFilename();
+	            
+	            // 새로운 파일명 생성 및 저장
+	            String newFileName = saveFile(file, session);
+	            
+	            // 파일 저장
+	            File destFile = new File(uploadPath + newFileName);
+	            file.transferTo(destFile);
+	            
+	            // Artist 객체에 파일 정보 설정
+	            artist.setArtistOriginName(originalFileName);
+	            artist.setArtistChangeName(newFileName);
+	            artist.setArtistPath("/resources/uploadFiles/" + newFileName);
+	            
+	            log.info("artist2: {}", artist);
+	            
+	            // model에 artist 추가 (JSP 페이지로 전달)
+	            model.addAttribute("artist", artist);
+	            
+	        } catch (IOException e) {
+	            log.error("파일 업로드 실패", e);
+	            model.addAttribute("errorMsg", "파일 업로드에 실패했습니다.");
+	            return "common/errorPage";
+	        }
+	    }
+
+	    // Member 정보 업데이트
+	    int memberUpdateResult = memberService.updateMember(member);
+	    
+	    // Artist 정보 업데이트 또는 삽입
+	    int artistResult = memberService.insertOrUpdateArtist(artist);
+	    
+	    if (memberUpdateResult > 0 && artistResult > 0) {
+	        // 세션 업데이트
+	        Member updatedMember = memberService.getMemberById(member.getMemId());
+	        session.setAttribute("loginUser", updatedMember);
+	        session.setAttribute("alertMsg", "정보 수정 성공");
+	        return "redirect:/";
+	    } else {
+	        model.addAttribute("errorMsg", "정보 수정에 실패했습니다.");
+	        return "common/errorPage";
+	    }
 	}
-	
+
+	public String saveFile(MultipartFile upfile, HttpSession session) {
+	    
+	    String originName = upfile.getOriginalFilename();
+	    String ext = originName.substring(originName.lastIndexOf('.') + 1);
+	    
+	    int num = (int) (Math.random() * 900) + 100;
+	    String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+	    
+	    String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+	    
+	    String changeName = "ARTSPARK_" + currentTime + "_" + num + "." + ext;
+	    
+	    try {
+	        upfile.transferTo(new File(savePath + changeName));
+	    } catch (IOException e) {
+	        log.error("파일 업로드 실패", e);
+	        // 예외 처리
+	    }
+	    
+	    return changeName;
+	}
+
 	
 	@GetMapping("joinPage")
 	public String joinPage() {
@@ -163,7 +253,6 @@ public class MemberController {
 		return memberService.idCheck(checkId) > 0 ? "ERROR" : "SUCCESS";
 	}
 	
-	
 
 	@GetMapping("lostId")
 	public String lostId() {
@@ -189,40 +278,17 @@ public class MemberController {
         return "member/findId";
     }
 	
-	//비밀번호 찾기 -- 수정중...
-    /*
-	@ResponseBody
-	@PostMapping(value = "findPwd", produces = "text/html; charset=UTF-8")
-    public String findPwd(Member member, String memPwd,Model model) {
-        Member loginUser = memberService.login(member);
 
-        if (loginUser == null) {
-            return "USER_NOT_FOUND";
-        }
 
-        if (bcryptPasswordEncoder.matches(member.getMemPwd(), loginUser.getMemPwd())) {
-            String encodedNewPwd = bcryptPasswordEncoder.encode(memPwd);
 
-            
-            member.setMemPwd(encodedNewPwd);
-            
-            boolean updateResult = memberService.updatePwd(memPwd);
-            
-            if (updateResult) {
-            	model.addAttribute("alertMsg","비밀번호 변경에 성공했습니다.");
-                return memberService.updatePwd(encodedNewPwd) > 0 ? "SUCCESS" : "ERROR";
-            } else {
-            	model.addAttribute("alretMsg","비밀번호 변경에 실패했습니다.");
-                return "common/errorPage";
-            }
-        } else {
-        	model.addAttribute("errorMsg","비밀번호를 다시 입력해주세요.");
-            return  "redirect:/";
-        }
-    }
-	
-	*/
+
 	//비밀번호 수정
+	@ResponseBody
+	@PostMapping(value = "changePwd", produces = "text/html; charset=UTF-8")
+	public String changePwd(Member member, String changePwd) {
+	    member.setMemPwd(bcryptPasswordEncoder.encode(changePwd));
+	    return memberService.changePwd(member) > 0 ? "SUCCESS" : "ERROR";
+	}
 	
 	//회원탈퇴
 	@PostMapping("delete")
@@ -244,6 +310,69 @@ public class MemberController {
 	        return "redirect:/updatePage";  // 회원 정보 수정 페이지로 리다이렉트
 	    }
 	}
+	
+	
+	//메일 전송
+	@GetMapping("mailInput")
+	public String forwardInputForm() {
+		return "mail/input";
+	}
+	
+	//메일로 비밀번호 받고 새롭게 로그인
+	@ResponseBody
+	@PostMapping("auth-mail")
+	public String authMailService(@RequestParam("memId") String memId, @RequestParam("memNickname") String memNickname, @RequestParam("memEmail") String memEmail, HttpServletRequest request) throws MessagingException {
+	    Member member = memberService.getMember(memId, memNickname, memEmail);
+	    
+	    if (member == null) {
+	        return "error";
+	    }
+	    
+	    String remoteAddr = request.getRemoteAddr();
+	    
+	    // 새로운 임시 비밀번호 생성
+	    String newPassword = createPwd();
+	    
+	    // 임시 비밀번호 암호화
+	    String encryptedPassword = bcryptPasswordEncoder.encode(newPassword);
+	    
+	    // 회원 정보 업데이트
+	    member.setMemPwd(encryptedPassword);
+	    memberService.updatePassword(member);
+	    
+	    Mail mail = Mail.builder().who(remoteAddr).code(newPassword).build();
+	    
+	    int result = memberService.sendMail(mail);
+	    
+	    MimeMessage message = sender.createMimeMessage();
+	    MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+	    
+	    helper.setTo(memEmail);
+	    helper.setSubject("[artSpark] 새로운 비밀번호가 발급되었습니다.");
+	    helper.setText("새로운 비밀번호: " + newPassword + "\n로그인 후 반드시 비밀번호를 변경해주세요.");
+	    
+	    sender.send(message);
+	    
+	    return "success";
+	}
+
+	private String createPwd() {
+	    // 임시 비밀번호를 원하는 방식으로 생성하는 코드 작성 (예: 난수 생성)
+	    // 여기서는 간단하게 랜덤한 8자리 숫자를 생성하는 예시를 보여줍니다.
+		String numbers = "0123456789";
+	    Random random = new Random();
+	    StringBuilder Pwd = new StringBuilder();
+	    
+	    for (int i = 0; i < 4; i++) {
+	        int index = random.nextInt(numbers.length());
+	        Pwd.append(numbers.charAt(index));
+	    }
+	    return Pwd.toString();
+	}
+
+
+
+
 }
 
 

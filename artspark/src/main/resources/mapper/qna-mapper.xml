@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.artspark.qna.model.dao.QnaMapper">
+
+	<sql id="selectQna">
+		SELECT
+				QNA_NO qnaNo,
+	            QNA_TITLE qnaTitle,
+	            QNA_CONTENT qnaContent,
+	            QNA_DATE qnaDate,
+				MEM_ID memId,
+				SECRET secret
+	</sql>
+	
+	<sql id="selectImgFile">
+		SELECT
+		        FILE_NO imgFile,
+		        BOARD_TYPE boardType,
+		        BOARD_NO boardNo,
+		        ORIGIN_NAME originName,
+		        CHANGE_NAME changeName,
+		        FILE_PATH imgFilePath,
+		        FILE_DATE imgFileDate
+	</sql>
+	<select id="qnaCount" resultType="_int">
+	SELECT 
+			COUNT(QNA_NO)
+	  FROM
+	  		QNA
+	</select>	
+
+	<select id="qnaFindAll" resultType="qna" parameterType="map">
+	
+	<include refid="selectQna"/>
+  	  FROM
+            (SELECT 
+                    QNA_NO,
+                    QNA_TITLE,
+                  	QNA_CONTENT,
+                    QNA_DATE,
+                 	MEM_ID,
+                 	SECRET,
+                    ROWNUM RNUM 
+              FROM
+                   	 (SELECT 
+                             QNA_NO,
+                             QNA_TITLE,
+                             QNA_CONTENT,
+                             QNA_DATE,
+							 MEM_ID,
+							 SECRET
+                        FROM
+                             QNA                            
+                       ORDER
+                          BY
+                             QNA_NO DESC))               
+	  WHERE
+      		 RNUM BETWEEN #{startValue} AND #{endValue} 
+	</select>
+	
+		<!-- 검색 시 행의 개수 -->
+	<select id="qnaSearchCount" parameterType="hashmap" resultType="int">
+		SELECT
+        		COUNT(QNA_NO)
+		  FROM
+		        QNA
+		 WHERE  
+		  <if test="condition == 'writer'">      
+		        MEM_ID LIKE '%' || #{keyword} || '%'
+	      </if>
+		  <if test="condition == 'title'">
+		   		QNA_TITLE LIKE '%' || #{keyword} || '%'
+		  </if>
+		  <if test="condition == 'content'">
+		   		QNA_CONTENT LIKE '%' || #{keyword} || '%'
+		  </if>
+	</select>
+	
+	<!-- 검색 결과 -->
+	<select id="qnaFindConditionAndKeyword" parameterType="hashmap" resultType="qna">
+	
+	<include refid="selectQna"/>
+	      FROM
+	      		QNA
+	     WHERE
+	   	<choose>
+ 		   	<when test="condition == 'writer'">
+	   			MEM_ID LIKE '%' || #{keyword} || '%'
+	   		</when>
+	   		<when test="condition == 'title'">
+	   			QNA_TITLE LIKE '%' || #{keyword} || '%'
+	   		</when>
+			<otherwise>
+				QNA_CONTENT LIKE '%' || #{keyword} || '%'
+			</otherwise>
+    	</choose>
+     	 ORDER
+     	    BY
+     			QNA_NO DESC
+	</select>
+	
+	
+	
+	
+	
+
+</mapper>

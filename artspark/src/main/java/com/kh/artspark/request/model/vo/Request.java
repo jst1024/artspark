@@ -1,6 +1,7 @@
 package com.kh.artspark.request.model.vo;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,5 @@ public class Request {
 	private String status; // 상태 (y, n)
 	private Date reqDeldate; // (삭제일)
 	private String memId; //회원아이디
+	private List<Reply> replyList;
 }

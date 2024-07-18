@@ -176,7 +176,7 @@ VALUES (3, '휴대폰결제', '사용자3', '010-3456-7890', 'user3@example.com'
 
 
 
-
+select * from request;
 -- REQUEST 테이블 생성
 CREATE TABLE REQUEST (
    REQ_NO NUMBER NOT NULL,
@@ -230,8 +230,6 @@ INSERT INTO REPLY (REPLY_NO, REPLY_CONTENT, REPLY_DATE, REQ_NO, MEM_ID)
 VALUES (REPLY_SEQ.NEXTVAL, '답변 내용3', SYSDATE, 3, 'user3');
 
 
-
-
 -- QNA 테이블 생성
 CREATE TABLE QNA (
    QNA_NO NUMBER NOT NULL,
@@ -256,7 +254,7 @@ INSERT INTO QNA (QNA_NO, QNA_TITLE, QNA_CONTENT, QNA_DATE, MEM_ID, SECRET)
 VALUES (QNA_SEQ.NEXTVAL, '질문 제목3', '질문 내용3', SYSDATE, 'user3', 'N');
 
 
-
+select * from reply;
 
 -- ANSWER 테이블 생성
 CREATE TABLE ANSWER (
@@ -690,6 +688,7 @@ ALTER TABLE REQUEST ADD STATUS VARCHAR2(1) DEFAULT 'Y' NOT NULL;
 ALTER TABLE QNA ADD STATUS VARCHAR2(1) DEFAULT 'Y' NOT NULL;
 ALTER TABLE ANSWER ADD STATUS VARCHAR2(1) DEFAULT 'Y' NOT NULL;
 
+
 -- 멤버, 상품, 의뢰, 문의, 답변 테이블에 삭제된 시간 추가
 ALTER TABLE PRODUCT ADD PRODUCT_DELDATE DATE;
 ALTER TABLE REQUEST ADD REQUEST_DELDATE DATE;
@@ -698,43 +697,5 @@ ALTER TABLE ANSWER ADD ANSWER_DELDATE DATE;
 ALTER TABLE MEMBER ADD MEM_DELDATE DATE;
 
 COMMIT;
-		SELECT
-				REQ_NO, 
-				REQ_PURPOSE, 
-	            REQ_TITLE, 
-	            REQ_CATEGORY, 
-	            REQ_CONTENT, 
-	            REQ_DATE, 
-	            REQ_COUNT,
-				MEM_ID
 
-  	  FROM
-            (SELECT 
-                    REQ_NO,
-                    REQ_PURPOSE,
-                    REQ_TITLE,
-                    REQ_CATEGORY,
-                  	REQ_CONTENT,
-                    REQ_DATE,
-                    REQ_COUNT,
-                 	MEM_ID,
-                    ROWNUM RNUM 
-              FROM
-                   	 (SELECT 
-                             REQ_NO,
-                             REQ_PURPOSE,
-                             REQ_TITLE,
-                             REQ_CATEGORY,
-                             REQ_CONTENT,
-                             REQ_DATE,
-                             REQ_COUNT,
-							 MEM_ID
-                        FROM
-                             REQUEST                            
-                       ORDER
-                          BY
-                             REQ_NO DESC))               
-	  WHERE
-      		 RNUM BETWEEN 1 AND 3;
 
-select * from request;
