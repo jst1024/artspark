@@ -10,10 +10,14 @@
 	<!-- 주의할 점! : 별칭 등록을 하기 위해서는 반드시 해당 클래스가 존재해야 함! -->
 	<typeAliases>
 		<typeAlias type="com.kh.artspark.member.model.vo.Member" alias="member" />
+		<typeAlias type="com.kh.artspark.member.model.vo.OrderBuyOption" alias="orderBuyOption"/>
+		<typeAlias type="com.kh.artspark.member.model.vo.BuyOption" alias="buyOptionOrder"/>
+		<typeAlias type="com.kh.artspark.member.model.vo.Interest" alias="interest"/>
 		<typeAlias type="com.kh.artspark.member.model.vo.Artist" alias="artist" />
 		<typeAlias type="com.kh.artspark.notice.model.vo.Notice" alias="notice" />	
 		<typeAlias type="com.kh.artspark.request.model.vo.Request" alias="request" />	
 		<typeAlias type="com.kh.artspark.request.model.vo.Reply" alias="reply" />	
+		<typeAlias type="com.kh.artspark.qna.model.vo.Qna" alias="qna" />	
 		<typeAlias type="com.kh.artspark.common.model.vo.ImgFile" alias="ImgFile" />	
 		<typeAlias type="com.kh.artspark.product.model.vo.Product" alias="product" />
 		<typeAlias type="com.kh.artspark.product.model.vo.ProductDetail" alias="productDetail" />
@@ -26,6 +30,8 @@
 		<typeAlias type="com.kh.artspark.buy.model.vo.Buy" alias="buy" />
 		<typeAlias type="com.kh.artspark.buy.model.vo.BuyOption" alias="buyOption" />
 		<typeAlias type="com.kh.artspark.buy.model.vo.Payment" alias="payment" />
+		<typeAlias type="com.kh.artspark.chat.model.vo.Chatroom" alias="chatroom" />
+		<typeAlias type="com.kh.artspark.chat.model.vo.Chat" alias="chat" />
 	</typeAliases>
 	
 	<!-- 주의할 점! : 매퍼 파일을 등록하기 위해서는 반드시 해당 경로에 해당 파일이 존재해야하며 namespace 속성값도 존재해야함 -->
@@ -33,8 +39,10 @@
 		<mapper resource="/mapper/member-mapper.xml" />
 		<mapper resource="/mapper/notice-mapper.xml" />
 		<mapper resource="/mapper/request-mapper.xml" />
+		<mapper resource="/mapper/qna-mapper.xml" />
 		<mapper resource="/mapper/product-mapper.xml" />
 		<mapper resource="/mapper/buy-mapper.xml" />
+		<mapper resource="/mapper/chat-mapper.xml" />
 	</mappers>
 	
 	<!-- 

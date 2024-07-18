@@ -99,7 +99,10 @@
 	  <mybatis-spring:scan base-package="com.kh.artspark.product.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.notice.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.request.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.qna.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.buy.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.chat.model.dao"/>
+
 
 		<!-- 메일 전송 도구 등록 -->
 		<bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="sender">
