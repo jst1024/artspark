@@ -10,6 +10,9 @@
 	<!-- 주의할 점! : 별칭 등록을 하기 위해서는 반드시 해당 클래스가 존재해야 함! -->
 	<typeAliases>
 		<typeAlias type="com.kh.artspark.member.model.vo.Member" alias="member" />
+		<typeAlias type="com.kh.artspark.member.model.vo.OrderBuyOption" alias="orderBuyOption"/>
+		<typeAlias type="com.kh.artspark.member.model.vo.BuyOption" alias="buyOptionOrder"/>
+		<typeAlias type="com.kh.artspark.member.model.vo.Interest" alias="interest"/>
 		<typeAlias type="com.kh.artspark.member.model.vo.Artist" alias="artist" />
 		<typeAlias type="com.kh.artspark.notice.model.vo.Notice" alias="notice" />	
 		<typeAlias type="com.kh.artspark.request.model.vo.Request" alias="request" />	

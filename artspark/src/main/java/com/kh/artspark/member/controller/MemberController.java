@@ -1,3 +1,5 @@
+
+
 package com.kh.artspark.member.controller;
 
 
@@ -8,9 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.text.Format;
 import java.util.Random;
-
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -31,12 +31,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.artspark.member.model.service.MemberService;
-
 import com.kh.artspark.member.model.vo.Artist;
-
+import com.kh.artspark.member.model.vo.BuyOption;
+import com.kh.artspark.member.model.vo.Interest;
 import com.kh.artspark.member.model.vo.Mail;
-
 import com.kh.artspark.member.model.vo.Member;
+import com.kh.artspark.member.model.vo.OrderBuyOption;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +92,7 @@ public class MemberController {
 	    return mv;
 	}
 	
-
+	//일반회원 정보 수정
 	@GetMapping("updatePage")
 	public String upatePage() {
 	    return "member/changeInfo"; // 로그인 페이지의 뷰 이름 반환
@@ -102,10 +102,8 @@ public class MemberController {
 	public String update(Member member, HttpSession session, Model model) {
 		
 		log.info("수정 요청 멤버:{}",member);
-	
 		// 1 / 0
 		if(memberService.update(member) > 0) {
-			
 			session.setAttribute("loginUser",memberService.login(member));
 			session.setAttribute("alertMsg","정보 수정 성공");	
 		
@@ -118,15 +116,28 @@ public class MemberController {
 		
 	}
 	
-	
+	//판매자 정보수정
 	@GetMapping("updateProduct")
 	public String updateProduct(HttpSession session, Model model) {
 	    Member loginUser = (Member) session.getAttribute("loginUser");
 	    if (loginUser != null) {
-	        Artist artist = memberService.getArtist(loginUser.getMemId());
-	        model.addAttribute("loginUser", loginUser);
-	        model.addAttribute("artist", artist);
-	        log.info("artist : {}", artist);
+	        loginUser.setMemCategory("B");
+	        
+	        // 데이터베이스 업데이트
+	        if (memberService.update(loginUser) > 0) {
+	            // 세션 업데이트
+	            session.setAttribute("loginUser", loginUser);
+	            
+	            Artist artist = memberService.getArtist(loginUser.getMemId());
+	            model.addAttribute("loginUser", loginUser);
+	            model.addAttribute("artist", artist);
+	            log.info("artist : {}", artist);
+	            log.info("Updated loginUser : {}", loginUser);
+	        } else {
+	            // 업데이트 실패 처리
+	            model.addAttribute("errorMsg", "판매자로 변경하는데 실패했습니다.");
+	            return "common/errorPage";
+	        }
 	    }
 	    return "member/changeProduct";
 	}
@@ -213,11 +224,12 @@ public class MemberController {
 	    return changeName;
 	}
 
-	
+	//회원가입
 	@GetMapping("joinPage")
 	public String joinPage() {
 		return "member/join";
 	}
+	
 	
 	@PostMapping("join")
 	public String join(Member member, Model model) {
@@ -247,6 +259,7 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	//아이디 체크
 	@ResponseBody
 	@GetMapping("idcheck")
 	public String checkId(String checkId) {
@@ -292,11 +305,11 @@ public class MemberController {
 	
 	//회원탈퇴
 	@PostMapping("delete")
-	public String delete(@RequestParam("memPwd") String inputPwd, Model model, HttpSession session) {
+	public String delete(@RequestParam("memPwd") String memPwd, Model model, HttpSession session) {
 	    Member loginUser = (Member) session.getAttribute("loginUser");
-	    String encPwd = loginUser.getMemPwd();
+	    String encPwd =bcryptPasswordEncoder.encode(memPwd);
 	    
-	    if (bcryptPasswordEncoder.matches(inputPwd, encPwd)) {
+	    if (bcryptPasswordEncoder.matches(memPwd, encPwd)) {
 	        if (memberService.delete(loginUser.getMemId()) > 0) {
 	            session.setAttribute("alertMsg", "회원이 탈퇴되었습니다.");
 	            session.removeAttribute("loginUser");
@@ -370,9 +383,93 @@ public class MemberController {
 	    return Pwd.toString();
 	}
 
+	
+	//마이페이지 
+	@GetMapping("myPage")
+	public String myPage() {
+		return "member/myPage";
+	}
 
-
-
+	//주문관리로 이동
+	@GetMapping("orderManage")
+	public String ordermanage() {
+		return "member/orderManage";
+	}
+	
+	@GetMapping("orderHistory")
+	public String orderHistory(HttpSession session, Model model) {
+	    Member member = (Member)session.getAttribute("loginUser");
+	    List<OrderBuyOption> orderBuyOptions = memberService.orderBuyOption(member.getMemId());
+	    
+	    // 각 주문의 총 금액 계산하기
+	    for (OrderBuyOption order : orderBuyOptions) {
+	        int totalAmount = 0;
+	        for (BuyOption option : order.getBuyOptionList()) {
+	            totalAmount += option.getBuyOptionPrice() * option.getBuyOptionAmount();
+	        }
+	        order.setTotalAmount(totalAmount);
+	    }
+	    
+	    model.addAttribute("orderBuyOptions", orderBuyOptions);
+	    
+	    log.info("주문 내역: {}", orderBuyOptions);
+	    
+	    return "member/orderManage";  // 주문 내역 페이지로 이동
+	}
+	
+	//관심 판매자
+	@GetMapping("interestPage")
+	public String interestPage() {
+		return "member/interest";
+	}
+	
+	@GetMapping("interestSeller")
+	public String interestSeller(HttpSession session, Model model) {
+		Member member = (Member)session.getAttribute("loginUser");
+		List<Interest> interestThing = memberService.interest(member.getMemId()); 
+		
+		model.addAttribute("interestThing", interestThing);
+		log.info("관심: {} ", interestThing);
+		
+		
+		return "member/interest";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 
 

@@ -44,13 +44,14 @@
             width: 500px;
         }
         .image-placeholder {
-            width: 200px;
+            width: 150px;
             height: 150px;
             background-color: #f8f8f8;
             border: 1px solid #ddd;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
         .image-caption {
             font-size: 12px;
@@ -67,6 +68,7 @@
             height: 60px;
             background-color: #ddd;
             border-radius: 50%;
+            overflow: hidden;
         }
         .form-group.text-end {
             margin-bottom: 20px;
@@ -83,38 +85,45 @@
         
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="inquiry-tab" data-bs-toggle="tab" data-bs-target="#inquiry" type="button" role="tab">문의 및 답변</button>
+                <button class="nav-link" id="inquiry-tab" data-bs-toggle="tab" data-bs-target="#inquiry" type="button" role="tab">문의 및 답변</button>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">주문 관리</button></a>
+                <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button" role="tab">주문 관리</button></a>
             </li>
             <li class="nav-item" role="presentation">
-                 <a href="${path2 }/interestSeller"><button class="nav-link" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button" role="tab">관심 작가</button></a>
+                 <a href="${path2 }/interestSeller"><button class="nav-link active" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button" role="tab">관심 작가</button></a>
             </li>
         </ul>
         
         <div class="tab-content mt-3" id="myTabContent">
-            <div class="tab-pane fade show active my-4" id="inquiry" role="tabpanel">
-                <h2>문의 및 답변</h2>
-                <div class="mt-3 d-flex justify-content-end">
-                    <div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="showDeleted">
-                            <label class="form-check-label" for="showDeleted">삭제된 문의 보기</label>
+                <c:forEach items="${interestThing}" var="seller" varStatus="status" step="3">
+                    <div class="artist-card">
+                        <div class="d-flex">
+                            <div class="profile-image">
+                                <img src="${seller.artistPath}" alt="작가 프로필" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div class="artist-info ml-3">
+                                <div class="artist-name">작가 이름: ${seller.memNickname}</div>
+                                <div class="rating">평점: ${seller.reviewStar}</div>
+                            </div>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="showAnswered">
-                            <label class="form-check-label" for="showAnswered">내용검색</label>
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="image-placeholder-wrapper">
+                                  <c:forEach var="filePath" items="${seller.filePaths}" varStatus="status">
+							        <c:if test="${status.index < 3}">
+							            <div class="image-placeholder">
+							                <img src="${filePath}" alt="작품 이미지" style="width: 100%; height: 100%; object-fit: cover;">
+							            </div>
+							        </c:if>
+							    </c:forEach>
+                            </div>
+                            <div class="image-caption">${seller.productTitle}</div>
                         </div>
-                        <div class="input-group w-auto d-inline-flex align-middle">
-                            <input type="text" class="form-control" placeholder="작성자/제목">
-                            <button class="btn btn-primary" type="button">검색</button>
-                        </div>
+                        <div class="remove-button ml-3">X</div>
                     </div>
-                </div>
+                </c:forEach>
             </div>
         </div>
-    </div> 
     <jsp:include page="../common/footer.jsp"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
