@@ -291,8 +291,11 @@ public class MemberController {
         return "member/findId";
     }
 	
-
-
+	//비밀번호 찾기 
+	@GetMapping("lostPwd")
+	public String lostPwd() {
+		return "member/lostPwd";
+	}
 
 
 	//비밀번호 수정
