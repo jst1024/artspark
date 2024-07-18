@@ -60,6 +60,9 @@
 		  		CHAT
 		 WHERE
 		 		CHATROOM_NO = #{chatroomNo}
+		 ORDER
+		 	BY
+		 		CHAT_TIME 
 	</select>
 	
 	<!-- 입력한 채팅 저장 -->

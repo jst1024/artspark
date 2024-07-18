@@ -263,10 +263,11 @@
     <script>
     	let chat;
     	let chatPartner;
+    	let chatroomNo;
     	
     	// 채팅방 클릭 이벤트
 		$('.chat-list-item').on('click',  function(e) {
-			const chatroomNo = $(e.currentTarget).children().eq(0).val();
+			chatroomNo = $(e.currentTarget).children().eq(0).val();
 			chatPartner = $(e.currentTarget).find('.username').text();
 			const loginUserId = '${sessionScope.loginUser.memId}';
 			let chatHead = '';
@@ -307,7 +308,7 @@
 						} else {
 							chatContent += '<div class="message-row you">'
 						}
-						
+						console.log(chat.chatContent);
 						chatContent += '<div class="message">'
 									 + '<div class="message-content">'
 									 + chat.chatContent
@@ -363,6 +364,10 @@
 				const msgData = JSON.parse(message);
 				let newChat = '';
 				
+				if(msgData.chatroomNo != chatroomNo) {
+					return;
+				} 
+				
 				if(loginUserId === msgData.memId) {
 					newChat += '<div class="message-row me">'
 				} else {
@@ -397,7 +402,7 @@
 		
     	// 소켓 메세지 전송
     	// ajax로 메세지를 먼저 컨트롤러로 보내서 db에 저장한 후 send()로 웹소켓 서버로 보내줄거임
-		function send(chatroomNo) {
+		function send(roomNo) {
 			let message = document.getElementById('message').value;
 			
 			if(message !== '') {
@@ -406,13 +411,14 @@
 					type : 'post',
 					data : {
 						message : message,
-						chatroomNo : chatroomNo
+						chatroomNo : roomNo
 					},
 					success : result => {
 						console.log(result);
 						const msgData = {
 							content : message,
-							chatPartner : chatPartner
+							chatPartner : chatPartner,
+							chatroomNo : roomNo
 						};
 						
 						chat.send(JSON.stringify(msgData));

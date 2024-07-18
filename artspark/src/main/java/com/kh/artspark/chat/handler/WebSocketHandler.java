@@ -43,10 +43,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		Member chatMember = (Member) session.getAttributes().get("loginUser");
 		String chatUserId = chatMember.getMemId();
 		String payload = message.getPayload();
-		Map<String, String> msgData = gson.fromJson(payload, Map.class);
+		Map<String, Object> msgData = gson.fromJson(payload, Map.class);
+		System.out.println(msgData.get("chatroomNo"));
 		
-		String content = msgData.get("content");
-		String chatPartner = msgData.get("chatPartner");
+		String content =(String) msgData.get("content");
+		String chatPartner =(String) msgData.get("chatPartner");
+		int chatroomNo = ((Double) msgData.get("chatroomNo")).intValue();
 		
 		log.info("{}와 {}를 전달 받았습니다.", content, chatPartner);
 		
@@ -64,6 +66,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		chat.setMemId(chatUserId);
 		chat.setChatContent(content);
 		chat.setChatTime(formattedNow);
+		chat.setChatroomNo(chatroomNo);
 		
 		// chat 객체를 Json 문자열로 반환
 		String jsonMessage = gson.toJson(chat);
@@ -72,7 +75,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		log.info(jsonMessage);
 		
 		userMap.get(chatUserId).sendMessage(newMessage);
-		userMap.get(chatPartner).sendMessage(newMessage);
+		if(userMap.get(chatPartner) != null) { 
+			userMap.get(chatPartner).sendMessage(newMessage);
+		}
 		
 	}
 
