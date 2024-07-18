@@ -58,7 +58,7 @@ public class BuyController {
 		ProductDetail productDetail = buyService.getProductDetail(productNo);
 //		log.info("상세옵션 : {}", productDetail);
 		
-		String merchant_uid = "artspark_" + new Date().getTime();
+		String merchant_uid = "as-" + new Date().getTime();
 		log.info("{}",merchant_uid);
 		
 		JsonObject preparePayment = portoneService.setPreparePayment(merchant_uid, totalPrice);
@@ -102,12 +102,12 @@ public class BuyController {
 																			 .build());
 		}
 		
-		log.info("{}",buyOptionName[0]);
-		log.info("{}",buyOptionName[1]);
-		log.info("{}",buyDetailOptionName);
-		log.info("{}",buyOptionPrice);
-		log.info("{}",buyOptionAmount);
-		log.info("{}",paymentRequest);
+//		log.info("{}",buyOptionName[0]);
+//		log.info("{}",buyOptionName[1]);
+//		log.info("{}",buyDetailOptionName);
+//		log.info("{}",buyOptionPrice);
+//		log.info("{}",buyOptionAmount);
+//		log.info("{}",paymentRequest);
 		
 		Member loginUser = (Member) session.getAttribute("loginUser");
 		
@@ -160,15 +160,16 @@ public class BuyController {
 	// payment, product_detail, artist, 
 	@PostMapping("buyComplete")
 	public String buyComplete(int productNo, String merchant_uid, String productTitle, 
-							String memNickname, int totalPrice, Model model) {
+							String memNickname, int totalPrice, Model model, HttpSession session) {
 
 		ProductDetail productDetail = buyService.getProductDetail(productNo);
 		
 		Payment payment = buyService.getPayment(merchant_uid);
 		
 		List<Map<String, Object>> buyOptionList = buyService.getBuyOption(merchant_uid);
-		log.info("{}", buyOptionList);
+//		log.info("{}", buyOptionList);
 		
+		session.setAttribute("alertMsg", "결제 완료!!");
 		model.addAttribute("productNo", productNo);
 		model.addAttribute("productTitle", productTitle);
 		model.addAttribute("memNickname", memNickname);
