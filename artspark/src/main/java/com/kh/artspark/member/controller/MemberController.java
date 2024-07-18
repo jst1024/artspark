@@ -428,7 +428,6 @@ public class MemberController {
 		Member member = (Member)session.getAttribute("loginUser");
 		List<Interest> interestThing = memberService.interest(member.getMemId()); 
 		
-		
 		model.addAttribute("interestThing", interestThing);
 		log.info("관심: {} ", interestThing);
 		

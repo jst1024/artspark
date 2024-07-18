@@ -106,4 +106,8 @@ public class MemberRepository {
 		return sqlSession.selectList("memberMapper.interest",memId);
 	}
 
+
+
+
+
 }

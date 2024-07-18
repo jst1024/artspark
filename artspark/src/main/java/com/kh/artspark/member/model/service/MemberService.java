@@ -57,6 +57,9 @@ public interface MemberService {
 	//관심 판매자 목록확인
 	List<Interest> interest(String memId);
 	
+	//별점의 평균
+	
+	
 	//
 	List<Member> getActiveMembers(int startValue, int endValue);
 

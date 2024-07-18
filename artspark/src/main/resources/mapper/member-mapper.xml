@@ -36,10 +36,13 @@
 	<resultMap id="interest" type="interest">
 	<result property="artistPath" column="ARTIST_PATH"/>
 	<result property="memNickname" column="MEM_NICKNAME"/>
-	<result property="filePath" column="FILE_PATH"/>
 	<result property="productTitle" column="PRODUCT_TITLE"/>
 	<result property="reviewStar" column="REVIEW_STAR"/>
+	    <collection property="filePaths" ofType="string">
+        <result column="FILE_PATH"/>
+    </collection>
 	</resultMap>
+	
 	
 	<select id="memberList" resultType="member">
 		SELECT
@@ -351,7 +354,14 @@
 	    			M.MEM_ID = #{memId}
 	</select>
 	
-	
+	<select id="reviewStar" parameterType="String">
+		SELECT
+				AVG(REVIEW_STAR)
+		  FROM
+		  		REVIEW
+		 WHERE
+		 		MEM_ID = #{memId}
+	</select>
 	
 </mapper>
 

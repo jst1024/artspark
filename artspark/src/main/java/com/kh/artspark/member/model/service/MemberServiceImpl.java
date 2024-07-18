@@ -119,5 +119,7 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.interest(sqlSession,memId);
 	}
 
+
+
 	
 }
