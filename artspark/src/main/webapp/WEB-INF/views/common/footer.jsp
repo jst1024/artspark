@@ -52,7 +52,7 @@
             <a href="#">이용약관</a> | 
             <a href="#">개인정보취급방침</a> | 
             <a href="noticelist">공지사항</a> | 
-            <a href="#">문의사항</a>
+            <a href="qnalist">문의사항</a>
         </div>
         <br>
         <br>

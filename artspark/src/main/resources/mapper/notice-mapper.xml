@@ -117,7 +117,7 @@
       			)
 	</insert>	
 	
-	<insert id="insertImgFile" parameterType="ImgFile" useGeneratedKeys="true" keyProperty="imgFileNo">
+	<insert id="insertImgFile" parameterType="ImgFile">
 		INSERT
 	      INTO
 	      		IMG_FILE
@@ -169,7 +169,8 @@
         	IMG_FILE 
     WHERE 
         	BOARD_NO = #{noticeNo} 
-      AND   BOARD_TYPE = '공지'
+      AND   
+      		BOARD_TYPE = '공지'
 	</select>
 	
 	<delete id="deleteNotice" parameterType="_int">

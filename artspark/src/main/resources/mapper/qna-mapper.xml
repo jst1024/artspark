@@ -24,6 +24,7 @@
 		        FILE_PATH imgFilePath,
 		        FILE_DATE imgFileDate
 	</sql>
+	
 	<select id="qnaCount" resultType="_int">
 	SELECT 
 			COUNT(QNA_NO)
@@ -100,7 +101,70 @@
      	    BY
      			QNA_NO DESC
 	</select>
+		<insert id="insertQna" parameterType="qna">
+		INSERT
+	      INTO
+	      		QNA
+	      		(
+	      		QNA_NO,
+	      		QNA_TITLE,
+	      		QNA_CONTENT,
+	      		QNA_DATE,
+	      		MEM_ID,
+	      		SECRET
+	      		)
+      	VALUES
+      			(
+      			QNA_SEQ.NEXTVAL,      			
+      			#{qnaTitle},
+      			#{qnaContent},
+      			SYSDATE,
+      			#{memId},
+      			#{secret}
+      			)
+	</insert>
+	<insert id="insertImgFile" parameterType="ImgFile">
+		INSERT
+	      INTO
+	      		IMG_FILE
+	      		(
+	      		FILE_NO,
+	      		BOARD_TYPE,
+	      		BOARD_NO,
+	      		ORIGIN_NAME,
+	      		CHANGE_NAME,
+	      		FILE_PATH,
+	      		FILE_DATE
+	      		)
+      	VALUES
+      			(
+      			IMG_FILE_SEQ.NEXTVAL,
+      			#{boardType},
+      			QNA_SEQ.CURRVAL,
+      			#{originName},
+      			#{changeName},
+      			#{imgFilePath},
+      			SYSDATE
+      			)
+	</insert>	
+	<select id="qnaFindById" parameterType="_int" resultType="qna">
+		<include refid="selectQna"/>
+		
+		  FROM
+		  		QNA
+		 WHERE
+		 		QNA_NO = #{qnaNo}
+	</select>
 	
+	<select id="findImgFileByQnaNo" parameterType="int" resultType="com.kh.artspark.common.model.vo.ImgFile">
+	<include refid="selectImgFile"/>
+    	  FROM 
+        		IMG_FILE 
+         WHERE 
+        	    BOARD_NO = #{qnaNo} 
+           AND       
+                BOARD_TYPE = '문의'
+	</select>
 	
 	
 	

@@ -26,9 +26,7 @@ public interface NoticeMapper {
 	
 	// 게시글 작성
 	int insertNotice(Notice notice);
-    
-    // 파일 등록
-    int insertImgFile(ImgFile imgFile);
+    int insertImgFile(ImgFile imgFile);    // 파일 등록
 	
     /*
 	//게시글 조회수 증가

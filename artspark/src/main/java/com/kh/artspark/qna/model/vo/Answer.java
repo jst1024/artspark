@@ -12,6 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Answer {
 	private int answerNo; // 답변번호
+	private int answerIndent; // 들여쓰기 
 	private String answerTitle; // 제목
 	private String answerContent; // 내용
 	private Date answerDate; // 작성일

@@ -123,18 +123,15 @@
         </table>
     </div>
     
-    <script>
+     <script>
            $(() => {
                $('.qna-Detail').click(e => {
                    const qnaNo = $(e.currentTarget).children().eq(0).text();
                    const secret = $(e.currentTarget).hasClass('secret'); 
                    const currentUserId = '${sessionScope.loginUser.memId}';
-                   const isAdmin = '${sessionScope.loginUser.memId}' === 'admin';
-                   const qnaMemId = $(e.currentTarget).children().eq(3).text().replace(/0/g, '');
-                   $('.request-Detail').click(e => {
-                       location.href = 'requestDetail?reqNo=' + $(e.currentTarget).children().eq(0).text();
-                   });
-               });
+                   const isAdmin = currentUserId === 'admin';
+                   const qnaMemId = $(e.currentTarget).children().eq(2).text();
+                   
                    if (secret) {
                        if (isAdmin || qnaMemId === currentUserId) {
                            // 관리자 또는 작성자인 경우 접근 허용
@@ -147,6 +144,9 @@
                        // 비밀글이 아닌 경우 접근 허용
                        location.href = 'qnaDetail?qnaNo=' + qnaNo;
                    }
+               });
+               $('.request-Detail').click(e => {
+                   location.href = 'requestDetail?reqNo=' + $(e.currentTarget).children().eq(0).text();
                });
            });
     </script>

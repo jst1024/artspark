@@ -45,8 +45,10 @@ public class NoticeServiceImpl implements NoticeService {
 		 int result1 = noticeMapper.insertNotice(notice);
 		 int result2 = 1;
 		 
-		 if(imgFile.getOriginName() != null) {
-			  result2 = noticeMapper.insertImgFile(imgFile);
+		 System.out.println(imgFile);
+		 if(imgFile.getOriginName() != null && !imgFile.getOriginName().equals("")) {
+			 System.out.println(imgFile.getOriginName());
+			 result2 = noticeMapper.insertImgFile(imgFile);
 		 }
 		 
 		 return result1 * result2;

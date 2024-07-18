@@ -1,15 +1,25 @@
 package com.kh.artspark.qna.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.artspark.common.model.vo.ImgFile;
 import com.kh.artspark.common.model.vo.PageInfo;
 import com.kh.artspark.common.template.PageTemplate;
 import com.kh.artspark.qna.model.service.QnaService;
@@ -94,8 +104,8 @@ public class QnaController {
 
 		
 		List<Qna> qnaList = qnaService.qnaFindConditionAndKeyword(map, rowBounds);
-		log.info("{}", qnaList);
-		log.info("{}", searchCount);
+		// log.info("{}", qnaList);
+		// log.info("{}", searchCount);
 		
 		model.addAttribute("qnaList", qnaList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -103,5 +113,83 @@ public class QnaController {
 		model.addAttribute("condition", condition);
 		
 		return "qna/qnaList";
+	}
+	@GetMapping("qnaInsert")
+	public String qnaInsert() {
+		return "qna/qnaInsert";
+	}
+	
+	@PostMapping("qnaInsert")
+	public String insert(Qna qna,
+			HttpSession session,
+			Model model,
+			MultipartFile upfile) { 
+
+		ImgFile imgFile = new ImgFile();
+		
+//		log.info("{}",upfile);
+			
+		// log.info("{}", imgFile.getChangeName());
+		
+		 if (!upfile.getOriginalFilename().equals("") && upfile.getOriginalFilename() != null) {
+		        imgFile.setOriginName(upfile.getOriginalFilename());
+		        imgFile.setChangeName(saveFile(upfile, session));
+		        imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
+		        imgFile.setBoardType("문의");
+		    }
+
+		    if (qna.getSecret() == null || qna.getSecret().isEmpty()) {
+		        qna.setSecret("N"); // 기본값을 "N"으로 설정
+		    }
+
+		    if (qnaService.insertQna(qna, imgFile) > 0) {
+		        session.setAttribute("alertMsg", "게시글 작성 성공~!");
+		        return "redirect:/qnalist";
+		    } else {
+		        model.addAttribute("errorMsg", "게시글 작성 실패!");
+		        return "common/errorPage";
+		    }
+		}
+	public String saveFile(MultipartFile upfile, HttpSession session) {
+		
+		String originName = upfile.getOriginalFilename();
+		String ext = originName.substring(originName.lastIndexOf('.')+1, originName.length());
+		
+		int num = (int) (Math.random() * 900) + 100;
+		// 곱하는 값 : 값의 범위
+		// 더하는 값 : 시작값
+		// ex) 100 ~ 999
+		
+		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		
+		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+		
+		String changeName = "ARTSPARK_" + currentTime + "_" + num + ext;
+		
+		
+		try {
+			upfile.transferTo(new File(savePath + changeName));
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return changeName;
+	}
+	@GetMapping("qnaDetail")
+	public ModelAndView qnaFindById(int qnaNo, ModelAndView mv) {
+		Qna qna = qnaService.qnaFindById(qnaNo);
+		ImgFile imgFile = qnaService.findImgFileByQnaNo(qnaNo);
+		if(qna != null) {
+		mv.addObject("qna",qna);
+		mv.addObject("imgFile", imgFile);
+		mv.setViewName("qna/qnaDetail");	
+		//응답화면 지정
+		} else {
+				mv.addObject("errorMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");
+		}
+
+		return mv;
 	}
 }
