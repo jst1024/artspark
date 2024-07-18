@@ -120,35 +120,41 @@
         color: black;
     }
     .sticky-button {
-        position: fixed;
-        bottom: 60px;
-        right: 60px;
-        width: 70px;
-        height: 70px;
-        background-color: #ff6e40;
-        border-radius: 50%;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        z-index: 1000;
-    }
-
-    .badge {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        width: 20px;
-        height: 20px;
-        background-color: red;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 12px;
-    }
+	    position: fixed;
+	    bottom: 60px;
+	    right: 60px;
+	    width: 70px;
+	    height: 70px;
+	    background-color: #ff6e40;
+	    border-radius: 50%;
+	    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    cursor: pointer;
+	    z-index: 1000;
+	}
+	
+	.badge {
+	    position: absolute;
+	    top: 5px;
+	    right: 5px;
+	    width: 20px;
+	    height: 20px;
+	    background-color: red;
+	    color: white;
+	    border-radius: 50%;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    font-size: 12px;
+	    pointer-events: none; 
+	}
+	
+	.sticky-button p {
+	    margin: 0;
+	    line-height: 1;
+	}
 </style>
 </head>
 <body>

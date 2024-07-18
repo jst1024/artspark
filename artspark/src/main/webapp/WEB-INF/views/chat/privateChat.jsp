@@ -123,11 +123,12 @@
 
         .message {
             max-width: 60%;
-            padding: 10px;
-            margin: 0 10px;
-            border-radius: 15px;
-            position: relative;
-            font-size: 14px;
+		    padding: 10px;
+		    margin: 0 10px;
+		    border-radius: 15px;
+		    position: relative;
+		    font-size: 14px;
+		    word-wrap: break-word; 
         }
 
         .message-content {
@@ -135,16 +136,36 @@
         }
 
         .message-row.you .message {
-            background-color: #d1e7dd;
+            background-color: #dee2e6;
             color: #0f5132;
             margin-right: auto;
         }
 
         .message-row.me .message {
-            background-color: #0d6efd;
+            background-color: #fd6901;
             color: white;
             margin-left: auto;
         }
+        
+        .message-row.me .message:after {
+		    content: '';
+		    position: absolute;
+		    top: 10px;
+		    right: -10px;
+		    border-width: 10px;
+		    border-style: solid;
+		    border-color: #fd6901 transparent transparent transparent;
+		}
+		
+		.message-row.you .message:after {
+		    content: '';
+		    position: absolute;
+		    top: 10px;
+		    left: -10px;
+		    border-width: 10px;
+		    border-style: solid;
+		    border-color: #dee2e6 transparent transparent transparent;
+		}
 
         .message-info {
             font-size: 12px;
@@ -252,11 +273,6 @@
                 
             </div>
             
-            <!-- 채팅 전송 -->
-            <div class="input-area">
-                <input type="text" id="message" placeholder="메시지를 입력하세요...">
-                <button onclick="send();">전송</button>
-            </div>
         </div>
     </div>
     
@@ -334,8 +350,7 @@
 						  +	'</div></div>';
 					$('.chat-content').html(chatHead);
 					
-					chatContent += '<h2>채팅 내역이 없습니다.</h2>'
-								 + '</div>';
+					chatContent += '</div>';
 					
 					$('.chat-content').html(chatHead + chatContent + chatInput);	 
 				}
@@ -404,7 +419,7 @@
     	// ajax로 메세지를 먼저 컨트롤러로 보내서 db에 저장한 후 send()로 웹소켓 서버로 보내줄거임
 		function send(roomNo) {
 			let message = document.getElementById('message').value;
-			
+			console.log(roomNo);
 			if(message !== '') {
 				$.ajax({
 					url : 'insert-chat',
@@ -422,7 +437,7 @@
 						};
 						
 						chat.send(JSON.stringify(msgData));
-						message = '';
+						document.getElementById('message').value = '';
 					},
 					error : e => {
 						console.log(e);
@@ -431,7 +446,14 @@
 				});
 			}
 		}
-		
+    	
+		// input 요소에 keydown 이벤트 리스너 추가
+		$(document).on('keydown', '#message', function(event) {
+		    if (event.key === 'Enter') {
+		        send(chatroomNo);
+		    }
+		});
+    	
     </script>
 
     <jsp:include page="../common/footer.jsp" />
