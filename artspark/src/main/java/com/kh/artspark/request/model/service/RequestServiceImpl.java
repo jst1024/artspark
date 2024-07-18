@@ -47,7 +47,7 @@ public class RequestServiceImpl implements RequestService {
 		 int result1 = requestMapper.insertRequest(request);
 		 int result2 = 1;
 		 
-		 if(imgFile.getOriginName() != null) {
+		 if(imgFile.getOriginName() != null && !imgFile.getOriginName().equals("")) {
 			  result2 = requestMapper.insertImgFile(imgFile);
 		 }
 		

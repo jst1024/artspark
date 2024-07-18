@@ -3,7 +3,7 @@ package com.kh.artspark.notice.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -156,22 +156,17 @@ public class NoticeController {
 
 		ImgFile imgFile = new ImgFile();
 		
-//		log.info("{}",upfile);
-		
-		if(!upfile.getOriginalFilename().equals("")) {
+		if(!upfile.getOriginalFilename().equals("") && upfile.getOriginalFilename() != null) {
 			
-			 saveFile(upfile, session); 
-			 
 			// 첨부파일이 존재하면.
 			// 1. 업로드 완료
 			// 2. Board객체에 originName + changeName에 담아줘야한다.
-			
 			imgFile.setOriginName(upfile.getOriginalFilename());
 			imgFile.setChangeName(saveFile(upfile, session));
 			imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
 			imgFile.setBoardType("공지");
 		}
-		
+		log.info("{}", imgFile.getOriginName());
 		log.info("{}", imgFile.getChangeName());
 		
 		//첨부파일이 존재하지 않을 경우 board : 제목 / 내용 / 작성자
@@ -191,7 +186,7 @@ public class NoticeController {
 		
 		String originName = upfile.getOriginalFilename();
 		
-		String ext = originName.substring(originName.lastIndexOf("."));
+		String ext = originName.substring(originName.lastIndexOf('.')+1, originName.length());
 		// "abc.ddd.txt" => 뒤에 . 기준
 		
 		int num = (int)(Math.random() * 900) + 100; // 값의 범위를 곱한다. 그런뒤에 시작값을 더해준다.
@@ -200,11 +195,11 @@ public class NoticeController {
 		// 시간메서드
 		// log.info("currentTime : {}", new Date());
 		
-		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(num));
+		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 		
 		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/"); // /가 없으면 파일이 들어가지 않는다.
 		// 새로운 파일 명
-		String changeName = "ArtSpark" + currentTime + "_" + num + ext;
+		String changeName = "ArtSpark_" + currentTime + "_" + num + ext;
 		
 		try {
 			upfile.transferTo(new File(savePath + changeName)); // 파일경로 + 파일이름
@@ -225,12 +220,13 @@ public class NoticeController {
 		ImgFile imgFile = noticeService.findImgFileByNoticeNo(noticeNo);
 		
 		if(notice != null) {
-		mv.addObject("notice",notice);
-		mv.addObject("imgFile", imgFile);
-		mv.setViewName("notice/noticeDetail");	
-		//응답화면 지정
+			mv.addObject("notice",notice);
+			mv.addObject("imgFile", imgFile);
+			mv.setViewName("notice/noticeDetail");	
+			log.info("{}", imgFile);
+			//응답화면 지정
 		} else {
-				mv.addObject("errorMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");
+			mv.addObject("errorMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");
 		}
 		//get방식이기때문에 DML(CRUD)이 성공할 수도 있고 실패할 수도 있음. 카운트가 증가되면 상제조회가 되도록.
 		// 실패여부 확인
@@ -289,4 +285,3 @@ public class NoticeController {
 	}
 		
 }
-

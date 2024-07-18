@@ -2,7 +2,7 @@ package com.kh.artspark.request.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -138,8 +138,7 @@ public class RequestController {
 		
 //		log.info("{}",upfile);
 		
-		if(upfile.getOriginalFilename() != null) {
-			 saveFile(upfile, session); 
+		if(!upfile.getOriginalFilename().equals("") && upfile.getOriginalFilename() != null) {
 			
 			imgFile.setOriginName(upfile.getOriginalFilename());
 			imgFile.setChangeName(saveFile(upfile, session));
@@ -164,7 +163,7 @@ public class RequestController {
 			
 		String originName = upfile.getOriginalFilename();
 		
-		String ext = originName.substring(originName.lastIndexOf("."));
+		String ext = originName.substring(originName.lastIndexOf(".") + 1, originName.length());
 		// "abc.ddd.txt" => 뒤에 . 기준
 		
 		int num = (int)(Math.random() * 900) + 100; // 값의 범위를 곱한다. 그런뒤에 시작값을 더해준다.
@@ -173,7 +172,7 @@ public class RequestController {
 		// 시간메서드
 		// log.info("currentTime : {}", new Date());
 		
-		String currentTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date(num)); // 작성일에도 영향을 미침
+		String currentTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date()); // 작성일에도 영향을 미침
 		
 		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/"); // /가 없으면 파일이 들어가지 않는다.
 		// 새로운 파일 명
@@ -191,6 +190,7 @@ public class RequestController {
 	}
 	@GetMapping("requestDetail")
 	public ModelAndView requestFindById(int reqNo, ModelAndView mv) {
+		log.info("{}", reqNo);
 		Request request = requestService.requestFindById(reqNo);
 		ImgFile imgFile = requestService.findImgFileByReqNo(reqNo);
 		if(requestService.increaseCount(reqNo) > 0) {

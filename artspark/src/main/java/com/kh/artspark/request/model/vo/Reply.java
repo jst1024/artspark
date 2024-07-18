@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class Reply {
-	private int replyNo; // 댓글번호x
+	private int replyNo; // 답글번호
 	private String replyContent; // 내용
 	private Date replyDate; // 작성일
 	private int reqNo; // 의뢰번호

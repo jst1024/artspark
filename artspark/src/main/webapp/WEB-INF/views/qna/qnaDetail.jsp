@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공지사항 상세보기</title>
+    <title>문의 글 상세보기</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -14,13 +14,13 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-        .notice-content {
+        .qna-content {
             margin: 20px 0;
         }
-        .notice-file {
+        .qna-file {
             margin-top: 10px;
         }
-        .admin-actions {
+        .memId-actions {
             margin-top: 20px;
             display: flex;
             justify-content: space-between;
@@ -39,27 +39,46 @@
                 padding: 0 15px;
             }
         }
+        .secret-icon {
+            color: red;
+            margin-right: 5px;
+        }
+        .non-secret-icon {
+            color: green;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <jsp:include page="../common/header.jsp" />
     <div class="container-fluid" style="max-width: 1920px;">
         <div class="container-main">
-            <h2 class="mt-5">공지사항 상세보기</h2>
+            <h2 class="mt-5">질문 글 상세보기</h2>
             <table class="table table-bordered">
                 <tbody>
                     <tr>
+ 						<th>비밀 글 여부</th>
+                        <td>
+                            <c:choose>
+                                <c:when test="${qna.secret == 'Y'}">
+                                    <i class="fas fa-lock secret-icon"></i>비밀글
+                                </c:when>
+                                <c:otherwise>
+                                    <i class="fas fa-unlock non-secret-icon"></i>일반글
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <th scope="row">글 번호</th>
-                        <td>${notice.noticeNo}</td>
+                        <td>${qna.qnaNo}</td>
                         <th scope="row">작성일</th>
-                        <td>${notice.noticeDate}</td>
+                        <td>${qna.qnaDate}</td>
                     </tr>
                     <tr>
                         <th scope="row">제목</th>
-                        <td colspan="3">${notice.noticeTitle}</td>
+                        <td colspan="3">${qna.qnaTitle}</td>
                     </tr>
                     <tr>
-                        <td colspan="4" class="notice-content">
+                        <td colspan="4" class="qna-content">
                             <div class="mb-3 text-center">
                                 <c:if test="${imgFile != null}">
                                     <img src="${imgFile.imgFilePath}" alt="첨부 이미지" class="img-fluid img-fixed">
@@ -68,31 +87,31 @@
                                     <span></span>
                                 </c:if>
                             </div>
-                            <p>${notice.noticeContent}</p>
+                            <p>${qna.qnaContent}</p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">첨부파일</th>
                         <td colspan="3">
-                            <c:if test="${imgFile != null && !imgFile.equals('')}">
+                            <c:if test="${imgFile != null}">
                                 <strong>첨부파일: </strong><a href="${imgFile.imgFilePath}" target="_blank">${imgFile.originName}</a>
                             </c:if>
-                            <c:if test="${imgFile == null || imgFile.equals('')}">
+                            <c:if test="${imgFile == null}">
                                 <span>첨부파일 없음</span>
                             </c:if>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div class="admin-actions">
+            <div class="memId-actions">
                 <c:choose>
-                    <c:when test="${sessionScope.loginUser.memId == 'admin'}">
-                        <form action="updateNotice" method="post" style="display: inline;">
-    						<input type="hidden" name="noticeNo" value="${notice.noticeNo}">
+                    <c:when test="${sessionScope.loginUser.memId == sessionScope.qna.memId || sessionScope.loginUser.memId == 'admin'}">
+                        <form action="updateQna" method="post" style="display: inline;">
+    						<input type="hidden" name="qnaNo" value="${qna.qnaNo}">
     						<button type="submit" class="btn btn-primary">수정하기</button>
 						</form>
-                       	<form action="deleteNotice" method="post" style="display:inline;">
-                             <input type="hidden" name="noticeNo" value="${notice.noticeNo}">
+                       	<form action="deleteQna" method="post" style="display:inline;">
+                             <input type="hidden" name="qnaNo" value="${qna.qnaNo}">
                              <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
                              <button type="submit" class="btn btn-danger">삭제하기</button>
                        	</form>

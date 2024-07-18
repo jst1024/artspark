@@ -158,7 +158,7 @@
 	    							+ '<td>' + result[i].memId + '</td>'
 	    							+ '<td>' + result[i].replyContent + '</td>'
 	    							+ '<td>' + result[i].replyDate + '</td>';
-	    							 if (result[i].memId === currentUserId) {
+	    							 if (result[i].memId === currentUserId || currentUserId === 'admin') {
 	    		                            resultStr += '<td><button class="btn btn-danger" onclick="deleteReply(' + result[i].replyNo + ')">삭제</button></td>';
 	    							 } else {
 	    		                            resultStr += '<td></td>'; // 삭제 버튼이 없는 빈 셀 추가
