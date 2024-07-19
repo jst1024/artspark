@@ -24,6 +24,7 @@ import com.kh.artspark.common.model.vo.PageInfo;
 import com.kh.artspark.common.template.PageTemplate;
 import com.kh.artspark.qna.model.service.QnaService;
 import com.kh.artspark.qna.model.vo.Qna;
+import com.kh.artspark.request.model.vo.Request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -192,4 +193,54 @@ public class QnaController {
 
 		return mv;
 	}
+	@PostMapping("deleteQna")
+	public String deleteQna(int qnaNo, String filePath, HttpSession session, Model model) {
+		if (filePath != null && !"".equals(filePath)) {
+			// 파일 경로가 존재하는 경우 해당 파일을 삭제
+			new File(session.getServletContext().getRealPath(filePath)).delete();
+		}
+		if(qnaService.deleteQna(qnaNo) > 0) {
+	        session.setAttribute("alertMsg", "게시글 삭제 성공");
+	        return "redirect:/qnalist";
+	    } else {
+	        model.addAttribute("errorMsg", "게시글 삭제 실패");
+	        return "common/errorPage";
+	    }
+	}
+	@PostMapping("updateQna")
+	public ModelAndView updateQna(ModelAndView mv, int qnaNo) {
+		mv.addObject("imgFile", qnaService.findImgFileByQnaNo(qnaNo))
+		  .addObject("qna", qnaService.qnaFindById(qnaNo)).setViewName("qna/qnaUpdate");
+		return mv;
+	}
+	
+	@PostMapping("qnaUpdate")
+	public String qnaUpdate(Qna qna, HttpSession session, MultipartFile reUpFile, Model model) {
+	    ImgFile imgFile = new ImgFile();
+	    
+	    // 새로운 첨부파일이 존재하는 경우
+	    if(!reUpFile.getOriginalFilename().equals("")) { // 빈문자열과 같지 않으면 (새로운 첨부파일이 있다.)
+	        // 새로운 파일 저장
+	        String changeName = saveFile(reUpFile, session);
+	        imgFile.setOriginName(reUpFile.getOriginalFilename());
+	        imgFile.setChangeName(changeName);
+	        imgFile.setImgFilePath("resources/uploadFiles/" + changeName);
+	        imgFile.setBoardNo(qna.getQnaNo());
+	        imgFile.setBoardType("문의");
+	        
+	        //log.info("{}", qna);
+	        //log.info("{}", imgFile);
+	       
+	        model.addAttribute("imgFile", imgFile);
+	    }
+
+	    if (qnaService.updateQna(qna, imgFile) > 0) {
+	        session.setAttribute("alertMsg", "수정 완료");
+	        return "redirect:qnaDetail?qnaNo=" + qna.getQnaNo();
+	    } else {
+	        session.setAttribute("errorMsg", "정보 수정 실패");
+	        return "common/errorPage";
+	    }
+	}
+	
 }

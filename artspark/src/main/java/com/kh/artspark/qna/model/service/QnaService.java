@@ -25,4 +25,8 @@ public interface QnaService {
 
 	ImgFile findImgFileByQnaNo(int qnaNo);
 
+	int deleteQna(int qnaNo);
+
+	int updateQna(Qna qna, ImgFile imgFile);
+
 }

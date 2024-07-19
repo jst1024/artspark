@@ -125,7 +125,9 @@
                              REQ_COUNT,
 							 MEM_ID
                         FROM
-                             REQUEST                            
+                             REQUEST            
+                       WHERE 
+                       		 STATUS = 'Y'                   
                        ORDER
                           BY
                              REQ_NO DESC))               

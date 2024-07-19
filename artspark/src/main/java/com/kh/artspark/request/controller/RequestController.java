@@ -223,8 +223,8 @@ public class RequestController {
 	
 	@PostMapping("updateRequest")
 	public ModelAndView updateRequest(ModelAndView mv, int reqNo) {
-		mv.addObject("imgFile", requestService.findImgFileByReqNo(reqNo));
-		mv.addObject("request", requestService.requestFindById(reqNo)).setViewName("request/requestUpdate");
+		mv.addObject("imgFile", requestService.findImgFileByReqNo(reqNo))
+		  .addObject("request", requestService.requestFindById(reqNo)).setViewName("request/requestUpdate");
 		return mv;
 	}
 	
@@ -242,8 +242,8 @@ public class RequestController {
 	        imgFile.setBoardNo(request.getReqNo());
 	        imgFile.setBoardType("의뢰");
 	        
-	        log.info("{}", request);
-	        log.info("{}", imgFile);
+	        //log.info("{}", request);
+	        //log.info("{}", imgFile);
 	       
 	        model.addAttribute("imgFile", imgFile);
 	    }

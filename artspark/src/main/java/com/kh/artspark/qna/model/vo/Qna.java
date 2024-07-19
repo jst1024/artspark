@@ -18,5 +18,6 @@ public class Qna {
 	private String memId; // 회원아이디
 	private String secret; // 비밀글여부 (Y, N)
 	private String status; // 삭제여부 (Y(default), N(삭제))
+	private Date qnaDelDate; // 삭제일
 	
 }
