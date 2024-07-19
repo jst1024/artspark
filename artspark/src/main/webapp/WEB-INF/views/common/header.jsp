@@ -20,7 +20,7 @@
     <div class="container-fluid header">
         <div class="d-flex justify-content-between align-items-center">
             <div class="p-2">
-                <a href="${path2 }/index.jsp">
+                <a href="${path2 }">
                     <img src="${path2 }/resources/images/logo.png" alt="Logo" width="100">
                 </a>
             </div>

@@ -240,6 +240,12 @@ private final ProductMapper productMapper;
 		
 		return 1;
 	}
+
+	// 어드민에 쓸 리스트야
+	@Override
+	public List<Product> productFindAll(Map<String, Integer> map) {
+		return productMapper.productFindAll(map);
+	}
 	
 }
 

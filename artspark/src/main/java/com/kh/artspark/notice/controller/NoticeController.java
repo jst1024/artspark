@@ -223,7 +223,7 @@ public class NoticeController {
 			mv.addObject("notice",notice);
 			mv.addObject("imgFile", imgFile);
 			mv.setViewName("notice/noticeDetail");	
-			log.info("{}", imgFile);
+//			log.info("{}", imgFile);
 			//응답화면 지정
 		} else {
 			mv.addObject("errorMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");

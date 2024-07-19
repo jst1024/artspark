@@ -62,5 +62,8 @@ public interface ProductService {
 	// 상품 업데이트
 	int updateProduct(Product product, ProductDetail productDetail, ProductForm productForm,
 			List<Tag> tagList, List<ProductFile> productFiles);
+	
+	// 어드민에 쓸 리스트
+	List<Product> productFindAll(Map<String, Integer> map);
 
 }

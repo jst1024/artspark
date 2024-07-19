@@ -736,6 +736,37 @@
 		 WHERE
 		 		PRODUCT_NO = #{productNo}
 	</delete>
+	
+	<!-- 어드민에 들어갈 리스트 -->
+	<select id="productFindAll" resultType="product" parameterType="map">
+	SELECT
+				PRODUCT_NO productNo,
+	            PRODUCT_TITLE productTitle,
+	            PRODUCT_DATE productDate,
+				MEM_ID memId
+  	  FROM
+            (SELECT 
+                    PRODUCT_NO,
+                    PRODUCT_TITLE,
+                    PRODUCT_DATE,
+                 	MEM_ID,
+                    ROWNUM RNUM 
+              FROM
+                   	 (SELECT 
+                             PRODUCT_NO,
+                             PRODUCT_TITLE,
+                             PRODUCT_DATE,
+							 MEM_ID
+                        FROM
+                             PRODUCT
+                       WHERE
+                             STATUS = 'Y'                            
+                       ORDER
+                          BY
+                             PRODUCT_NO DESC))               
+	  WHERE
+      		 RNUM BETWEEN #{startValue} AND #{endValue}
+	</select>
 </mapper>
 
 
