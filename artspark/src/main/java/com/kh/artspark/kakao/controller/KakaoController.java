@@ -10,11 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.kh.artspark.kakao.model.service.KakaoService;
-import com.kh.artspark.kakao.model.service.SocialMember;
+import com.kh.artspark.member.model.vo.Member;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class KakaoController {
 
+	
 	@Autowired
 	private KakaoService kakaoService;
 	
@@ -29,8 +33,9 @@ public class KakaoController {
 		String accessToken= kakaoService.getToken(code);
 		session.setAttribute("accessToken",accessToken);
 		
-		SocialMember sm = kakaoService.getUserInfo(accessToken);
-		session.setAttribute("loginUser", sm);
+		Member member = kakaoService.getUserInfo(accessToken);
+		
+		session.setAttribute("loginUser", member);
 		
 		return "redirect:/";
 	}
@@ -47,6 +52,10 @@ public class KakaoController {
 		
 		
 	}
+	
+	
+
+	
 
 		
 		

@@ -239,6 +239,7 @@ public class MemberController {
 		member.setMemPwd(encPwd);;
 		member.setMemCategory("A");  //회원가입하면 일반회원 카테고리를 가지고 가입한다.
 		String viewName ="";
+
 		if(memberService.insert(member) > 0) {//성공 => 메인~
 			
 			viewName ="redirect:/";
@@ -251,6 +252,9 @@ public class MemberController {
 			return viewName;
 
 	}
+	
+	
+	
 	
 	//로그아웃!!
 	@GetMapping("logout")

@@ -14,6 +14,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
+import com.kh.artspark.member.model.vo.Member;
+
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 public class KakaoService {
 	
@@ -56,6 +60,7 @@ public String getToken(String code)throws IOException, ParseException{
 		JSONObject element = (JSONObject)parser.parse(responseData);
 		
 		String accessToken = element.get("access_token").toString();
+		//System.out.println(accessToken); 토큰 잘받음
 		
 		br.close();
 		bw.close();
@@ -72,7 +77,7 @@ public void logout(String accessToken) {
 		url = new URL(logoutUrl);
 		conn = (HttpURLConnection)url.openConnection();
 		conn.setRequestMethod("POST");
-		conn.setRequestProperty("Authorization", "Bearer" + accessToken);
+		conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		
@@ -89,15 +94,15 @@ public void logout(String accessToken) {
 	
 }
 	
-public SocialMember getUserInfo(String accessToken) throws ParseException {
+public Member getUserInfo(String accessToken) throws ParseException {
 		
 		String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
-			SocialMember sm = null;
+		Member member = null;
 		try {
 			URL url = new URL(userInfoUrl);
 			HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
 			urlConnection.setRequestMethod("GET");
-			urlConnection.setRequestProperty("Authorization","Bearer" + accessToken);
+			urlConnection.setRequestProperty("Authorization","Bearer " + accessToken);
 			
 			BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 			
@@ -106,13 +111,17 @@ public SocialMember getUserInfo(String accessToken) throws ParseException {
 			//System.out.println(responseData);
 			
 			JSONObject responseObj = (JSONObject)new JSONParser().parse(responseData);
+			System.out.println(responseObj);
 			JSONObject propObj = (JSONObject)responseObj.get("properties");
+			
 			//long id = Integer.parseInt(responseObj.get("id");
 			
-			sm = new SocialMember();
-			sm.setId(responseObj.get("id").toString());
-			sm.setNickName(propObj.get("nickname").toString());
-			sm.setThumbnailImg(propObj.get("thumnail_image").toString());
+			member = new Member();
+			member.setMemId(responseObj.get("id").toString());
+			member.setMemNickname(propObj.get("nickname").toString());
+			System.out.println(responseObj);
+			
+			//sm.setThumbnailImg(propObj.get("thumnail_image").toString());
 			
 		}catch(MalformedURLException e) {
 			e.printStackTrace();
@@ -120,7 +129,7 @@ public SocialMember getUserInfo(String accessToken) throws ParseException {
 			e.printStackTrace();
 		}
 		
-		return sm;
+		return member;
 	}
 
 }
