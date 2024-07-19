@@ -515,11 +515,6 @@
 	            ${ product.productContent }
 	        </div>
 	        
-			<div class="col-md-12">
-	            <img src="${path1 }/resources/images/test04.png" class="img-preview">
-	            <img src="${path1 }/resources/images/test05.png" class="img-preview">
-	        </div>
-	        
 	    </div>
 	    
 	    <!-- 태그 -->
@@ -631,6 +626,25 @@
 	            </div>
             </c:forEach>
 	    </div>
+	    
+	    <!--  상품 리뷰 ajax 요청
+	    <script>
+	    	const productNo = parseInt('${product.productNo}');
+	    
+	    	$(() => {
+	    		$.ajax({
+	    			url : '${path1}/product/review',
+	    			type : 'get',
+	    			data : {
+	    				productNo : productNo
+	    			},
+	    			success : result => {
+	    				console.log(result);
+	    			}
+	    		});
+	    	});
+	    </script>
+	    -->
 	    
 	    <!-- 후기 페이징 -->
 	    <nav aria-label="Page navigation" style="margin-bottom: 200px;">

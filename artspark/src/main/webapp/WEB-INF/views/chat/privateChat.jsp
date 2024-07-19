@@ -332,7 +332,7 @@
 									 + '<div class="message-info">'
 									 + '<span class="time">' + chat.chatTime + '</span>'
 									 + '</div>'
-									 + '<div class="read-status">1</div>'
+									 // + '<div class="read-status">1</div>'
 									 + '</div></div>';
 					});
 					chatContent += '</div>';
@@ -396,7 +396,7 @@
 							 + '<div class="message-info">'
 							 + '<span class="time">' + msgData.chatTime + '</span>'
 							 + '</div>'
-							 + '<div class="read-status">1</div>'
+							 // + '<div class="read-status">1</div>'
 							 + '</div></div>';
 				
 				$('.chat-container').append(newChat);

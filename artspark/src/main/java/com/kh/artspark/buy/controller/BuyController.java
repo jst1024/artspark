@@ -189,7 +189,7 @@ public class BuyController {
 			return "error/errorPage";
 		}
 		
-		session.setAttribute("alertMsg", "결제 완료 및 채팅방 생성");
+		session.setAttribute("alertMsg", "결제 완료!");
 		model.addAttribute("productNo", productNo);
 		model.addAttribute("productTitle", productTitle);
 		model.addAttribute("memNickname", memNickname);
