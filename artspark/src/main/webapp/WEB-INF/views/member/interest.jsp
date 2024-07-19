@@ -104,7 +104,7 @@
                             </div>
                             <div class="artist-info ml-3">
                                 <div class="artist-name">작가 이름: ${seller.memNickname}</div>
-                                <div class="rating">평점: ${seller.reviewStar}</div>
+                                <div class="rating">별점: ${seller.reviewStar}</div>
                             </div>
                         </div>
                         <div class="d-flex flex-column align-items-center">
