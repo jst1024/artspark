@@ -60,7 +60,7 @@
  						<th>비밀 글 여부</th>
                         <td>
                             <c:choose>
-                                <c:when test="${qna.secret == 'Y'}">
+                                <c:when test="${qna.secret == 'Y'}" >
                                     <i class="fas fa-lock secret-icon"></i>비밀글
                                 </c:when>
                                 <c:otherwise>
@@ -75,10 +75,10 @@
                     </tr>
                     <tr>
                         <th scope="row">제목</th>
-                        <td colspan="3">${qna.qnaTitle}</td>
+                        <td colspan="6">${qna.qnaTitle}</td>
                     </tr>
                     <tr>
-                        <td colspan="4" class="qna-content">
+                        <td colspan="6" class="qna-content">
                             <div class="mb-3 text-center">
                                 <c:if test="${imgFile != null}">
                                     <img src="${imgFile.imgFilePath}" alt="첨부 이미지" class="img-fluid img-fixed">
@@ -92,7 +92,7 @@
                     </tr>
                     <tr>
                         <th scope="row">첨부파일</th>
-                        <td colspan="3">
+                        <td colspan="6">
                             <c:if test="${imgFile != null}">
                                 <strong>첨부파일: </strong><a href="${imgFile.imgFilePath}" target="_blank">${imgFile.originName}</a>
                             </c:if>
@@ -104,23 +104,27 @@
                 </tbody>
             </table>
             <div class="memId-actions">
+                <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우나 관리자만 보여져야 함 -->
                 <c:choose>
-                    <c:when test="${sessionScope.loginUser.memId == sessionScope.qna.memId || sessionScope.loginUser.memId == 'admin'}">
-                        <form action="updateQna" method="post" style="display: inline;">
-    						<input type="hidden" name="qnaNo" value="${qna.qnaNo}">
-    						<button type="submit" class="btn btn-primary">수정하기</button>
-						</form>
-                       	<form action="deleteQna" method="post" style="display:inline;">
-                             <input type="hidden" name="qnaNo" value="${qna.qnaNo}">
-                             <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
-                             <button type="submit" class="btn btn-danger">삭제하기</button>
-                       	</form>
-
-                    </c:when>
-                    <c:otherwise>
-                        <button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
-                    </c:otherwise>
+                	<c:when test="${sessionScope.loginUser != null && (sessionScope.loginUser.memId == sessionScope.qna.memId || sessionScope.loginUser.memId == 'admin')}">
+                    	<a class="btn btn-primary" onclick="postSubmit(this.innerHTML);">수정하기</a>
+                    	<a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">삭제하기</a>
+                    	<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+                	</c:when>
+                	<c:otherwise>
+               			<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+                	</c:otherwise>
                 </c:choose>
+                <form method="post" action="" id="QnaPostForm">
+                    <input type="hidden" name="qnaNo" value="${qna.qnaNo }" />
+                    <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
+                </form>
+                <script>
+                    function postSubmit(el) {
+                        const attrValue = '수정하기' === el ? 'updateQna' : 'deleteQna';
+                        $('#QnaPostForm').attr('action', attrValue).submit();
+                    }
+                </script>
             </div>
         </div>
     </div>

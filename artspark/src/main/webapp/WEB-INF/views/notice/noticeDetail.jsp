@@ -96,7 +96,7 @@
                              <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
                              <button type="submit" class="btn btn-danger">삭제하기</button>
                        	</form>
-
+                       	<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
                     </c:when>
                     <c:otherwise>
                         <button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>

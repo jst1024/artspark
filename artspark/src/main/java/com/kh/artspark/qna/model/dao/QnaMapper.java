@@ -26,4 +26,10 @@ public interface QnaMapper {
 
 	ImgFile findImgFileByQnaNo(int qnaNo);
 
+	int deleteQna(int qnaNo);
+
+	int updateQna(Qna qna);
+
+	int updateImgFile(ImgFile imgFile);
+
 }

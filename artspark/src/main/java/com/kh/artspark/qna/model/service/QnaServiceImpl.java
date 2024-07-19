@@ -67,5 +67,22 @@ public class QnaServiceImpl implements QnaService {
 		return qnaMapper.findImgFileByQnaNo(qnaNo);
 	}
 
+	@Override
+	public int deleteQna(int qnaNo) {
+		return qnaMapper.deleteQna(qnaNo);
+	}
+	@Transactional
+	@Override
+	public int updateQna(Qna qna, ImgFile imgFile) {
+		 int result1 = qnaMapper.updateQna(qna);
+		 int result2 = 1;
+		 
+		 if(imgFile.getOriginName() != null) {
+			  result2 = qnaMapper.updateImgFile(imgFile);
+		 }
+		 
+		 return result1 * result2;
+	}
+
 	
 }

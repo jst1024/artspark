@@ -166,8 +166,8 @@ public class NoticeController {
 			imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
 			imgFile.setBoardType("공지");
 		}
-		log.info("{}", imgFile.getOriginName());
-		log.info("{}", imgFile.getChangeName());
+		//log.info("{}", imgFile.getOriginName());
+		//log.info("{}", imgFile.getChangeName());
 		
 		//첨부파일이 존재하지 않을 경우 board : 제목 / 내용 / 작성자
 		// 첨부파일이 존재할 경우 board : 제목 / 내용 / 작성자 / 원봉명 / 변경된 경로와 이름
@@ -223,7 +223,7 @@ public class NoticeController {
 			mv.addObject("notice",notice);
 			mv.addObject("imgFile", imgFile);
 			mv.setViewName("notice/noticeDetail");	
-			log.info("{}", imgFile);
+			//log.info("{}", imgFile);
 			//응답화면 지정
 		} else {
 			mv.addObject("errorMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");
@@ -269,8 +269,8 @@ public class NoticeController {
 	        imgFile.setBoardNo(notice.getNoticeNo());
 	        imgFile.setBoardType("공지");
 	        
-	        log.info("{}", notice);
-	        log.info("{}", imgFile);
+	        //log.info("{}", notice);
+	        //log.info("{}", imgFile);
 	       
 	        model.addAttribute("imgFile", imgFile);
 	    }

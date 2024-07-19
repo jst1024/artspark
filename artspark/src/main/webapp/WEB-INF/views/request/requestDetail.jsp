@@ -64,6 +64,7 @@
                         <td colspan="7">${request.reqTitle}</td>
                     </tr>
                     <tr>
+                    <!-- 내용 -->
                         <td colspan="8" class="req-content">
                             <div class="mb-7 text-center">
                                 <c:if test="${imgFile != null}">
@@ -90,8 +91,7 @@
                 </tbody>
             </table>
             <div class="memId-actions">
-                <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우에만 보여져야 함 -->
-                <c:if test="${ sessionScope.loginUser.memId eq requestScope.request.memId }">
+                <c:if test="${sessionScope.loginUser != null && (sessionScope.loginUser.memId == sessionScope.request.memId || sessionScope.loginUser.memId == 'admin')}">
                     <a class="btn btn-primary" onclick="postSubmit(this.innerHTML);">수정하기</a>
                     <a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">삭제하기</a>
                 </c:if>
