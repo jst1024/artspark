@@ -64,8 +64,6 @@
 		        )
 	</select>
 	
-	
-	
 	<!-- 태그 30개 조회 -->
 	<select id="getTags" resultType="tag">
 		SELECT
@@ -83,7 +81,7 @@
 		  		 		TAG_NO
 		  		)
 		 WHERE
-		 		ROWNUM BETWEEN 1 AND 30
+		 		ROWNUM BETWEEN 1 AND 45
 	</select>
 	
 	<!-- 상품 목록 resultMap -->

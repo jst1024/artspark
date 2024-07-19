@@ -25,6 +25,7 @@ import com.kh.artspark.buy.model.vo.BuyOption;
 import com.kh.artspark.buy.model.vo.Payment;
 import com.kh.artspark.common.model.vo.Message;
 import com.kh.artspark.member.model.vo.Member;
+import com.kh.artspark.product.model.vo.Product;
 import com.kh.artspark.product.model.vo.ProductDetail;
 
 import lombok.RequiredArgsConstructor;
@@ -169,7 +170,26 @@ public class BuyController {
 		List<Map<String, Object>> buyOptionList = buyService.getBuyOption(merchant_uid);
 //		log.info("{}", buyOptionList);
 		
-		session.setAttribute("alertMsg", "결제 완료!!");
+		// 상품 구매 완료 시 구매자와 판매자의 채팅방 생성
+		Member member = (Member) session.getAttribute("loginUser");
+		String loginUserId = member.getMemId();
+		String seller = buyService.getSeller(productNo);
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("loginUserId", loginUserId);
+		map.put("seller", seller);
+		map.put("chatroomActive", "Y");
+		map.put("workStatus", "시작");
+		map.put("myReadStatus", "N");
+		map.put("yourReadStatus", "N");
+		
+		int result = buyService.createChatroom(map);
+		if(result == 0) {
+			model.addAttribute("errorMsg", "채팅방 생성 실패");
+			return "error/errorPage";
+		}
+		
+		session.setAttribute("alertMsg", "결제 완료!");
 		model.addAttribute("productNo", productNo);
 		model.addAttribute("productTitle", productTitle);
 		model.addAttribute("memNickname", memNickname);

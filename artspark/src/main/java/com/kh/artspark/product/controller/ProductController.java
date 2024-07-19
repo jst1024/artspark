@@ -247,6 +247,14 @@ public class ProductController {
 		
 		return mv;
 	}
+
+	@ResponseBody
+	@GetMapping("review")
+	public ResponseEntity<Message> productRevice(int productNo) {
+		
+		
+		return null;
+	}
 	
 	@GetMapping("productInsertForm")
 	public String productInsertForward() {

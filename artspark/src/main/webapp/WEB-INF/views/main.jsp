@@ -119,36 +119,6 @@
         text-decoration: none;
         color: black;
     }
-    .sticky-button {
-        position: fixed;
-        bottom: 60px;
-        right: 60px;
-        width: 70px;
-        height: 70px;
-        background-color: #ff6e40;
-        border-radius: 50%;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        z-index: 1000;
-    }
-
-    .badge {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        width: 20px;
-        height: 20px;
-        background-color: red;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 12px;
-    }
 </style>
 </head>
 <body>
@@ -242,23 +212,6 @@
         <br>
         <br>
     </div>
-    
-    <div class="sticky-button">
-	    <p style="color:white;">채팅</p>
-	    <div class="badge"></div>
-	</div>
-	
-	<script>
-		const loginUser = '${sessionScope.loginUser.memId}';
-		
-		$('.sticky-button').on('click', function() {
-			if(loginUser === '') {
-				alertify.alert("로그인 후 이용 가능합니다.").setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
-			} else {
-				location.href = "${path2}/private-chat";
-			}
-		});
-	</script>
     
     <jsp:include page="common/footer.jsp"/>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

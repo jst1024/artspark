@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.kh.artspark.buy.model.vo.Buy;
 import com.kh.artspark.buy.model.vo.Payment;
+import com.kh.artspark.product.model.vo.Product;
 import com.kh.artspark.product.model.vo.ProductDetail;
 
 public interface BuyService {
@@ -20,5 +21,11 @@ public interface BuyService {
 
 	// 구매 옵션 조회
 	List<Map<String, Object>> getBuyOption(String merchant_uid);
+
+	// 상품 올린사람 조회
+	String getSeller(int productNo);
+
+	// 채팅방 생성
+	int createChatroom(Map<String, String> map);
 
 }
