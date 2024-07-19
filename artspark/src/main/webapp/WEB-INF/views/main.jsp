@@ -4,58 +4,36 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="java.util.List, java.util.ArrayList, java.util.Map, java.util.HashMap, java.util.Date" %>
 <c:set var="path2" value="${pageContext.servletContext.contextPath }" />
-        <%-- 더미 데이터 설정 --%>
-        <%
-            // 배너 이미지
-            List<String> banners = new ArrayList<>();
-            banners.add("image1.jpg");
-            banners.add("image2.jpg");
-            banners.add("image3.jpg");
-            request.setAttribute("banners", banners);
-
-            // 카테고리
-            List<Map<String, Object>> categories = new ArrayList<>();
-            for (int i = 1; i <= 4; i++) {
-                Map<String, Object> category = new HashMap<>();
-                category.put("id", i);
-                category.put("name", "Category" + i);
-                categories.add(category);
-            }
-            request.setAttribute("categories", categories);
-
-            // 인기 작가
-            List<Map<String, Object>> popularWriters = new ArrayList<>();
-            for (int i = 1; i <= 6; i++) {
-                Map<String, Object> writer = new HashMap<>();
-                writer.put("id", i);
-                writer.put("image", "/cat3.jpg"); 
-                popularWriters.add(writer);
-            }
-            request.setAttribute("popularWriters", popularWriters);
-
-            // 공지사항
-            List<Map<String, Object>> notices = new ArrayList<>();
-            for (int i = 1; i <= 3; i++) {
-                Map<String, Object> notice = new HashMap<>();
-                notice.put("id", i);
-                notice.put("title", "Notice Title" + i);
-                notice.put("date", new Date());
-                notices.add(notice);
-            }
-            request.setAttribute("notices", notices);
-
-            // 의뢰게시판
-            List<Map<String, Object>> requests = new ArrayList<>();
-            for (int i = 1; i <= 3; i++) {
-                Map<String, Object> requestItem = new HashMap<>();
-                requestItem.put("id", i);
-                requestItem.put("title", "Request Title" + i);
-                requestItem.put("date", new Date());
-                requests.add(requestItem);
-            }
-            request.setAttribute("requests", requests);
-        %>
 <jsp:include page="common/head.jsp" />
+ <%-- 더미 데이터 설정 --%>
+<%
+   // 배너 이미지
+   List<String> banners = new ArrayList<>();
+   banners.add("image1.jpg");
+   banners.add("image2.jpg");
+   banners.add("image3.jpg");
+   request.setAttribute("banners", banners);
+
+   // 카테고리
+   List<Map<String, Object>> categories = new ArrayList<>();
+   for (int i = 1; i <= 4; i++) {
+       Map<String, Object> category = new HashMap<>();
+       category.put("id", i);
+       category.put("name", "Category" + i);
+       categories.add(category);
+   }
+   request.setAttribute("categories", categories);
+
+   // 인기 작가
+   List<Map<String, Object>> popularWriters = new ArrayList<>();
+   for (int i = 1; i <= 6; i++) {
+       Map<String, Object> writer = new HashMap<>();
+       writer.put("id", i);
+       writer.put("image", "/cat3.jpg"); 
+       popularWriters.add(writer);
+   }
+   request.setAttribute("popularWriters", popularWriters);
+%>          
 <style>
     .carousel-item {
         height: 300px;
@@ -119,36 +97,6 @@
         text-decoration: none;
         color: black;
     }
-    .sticky-button {
-        position: fixed;
-        bottom: 60px;
-        right: 60px;
-        width: 70px;
-        height: 70px;
-        background-color: #ff6e40;
-        border-radius: 50%;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        z-index: 1000;
-    }
-
-    .badge {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        width: 20px;
-        height: 20px;
-        background-color: red;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 12px;
-    }
 </style>
 </head>
 <body>
@@ -208,57 +156,40 @@
 
 
         <div class="container mt-4">
-		    <div class="row">
-		        <div class="col-md-6">
-		            <div class="section-title">공지사항</div>
-		            <div class="board-title">
-		                <a href="${path2}/noticelist">more</a>
-		            </div>
-		            <ul class="list-group">
-		                <c:forEach var="notice" items="${notices}">
-		                    <li class="list-group-item d-flex justify-content-between align-items-center">
-		                        <a href="${path2}/notice/${notice.id}" style="color: black; text-decoration: none;">${notice.title}</a>
-		                        <fmt:formatDate value="${notice.date}" pattern="yyyy-MM-dd"/>
-		                    </li>
-		                </c:forEach>
-		            </ul>
-		        </div>
-		        <div class="col-md-6">
-		            <div class="section-title">의뢰게시판</div>
-		            <div class="board-title">
-		                <a href="${path2}/requestlist">more</a>
-		            </div>
-		            <ul class="list-group">
-		                <c:forEach var="request" items="${requests}">
-		                    <li class="list-group-item d-flex justify-content-between align-items-center">
-		                        <a href="${path2}/request/${request.id}" style="color: black; text-decoration: none;">${request.title}</a>
-		                        <fmt:formatDate value="${request.date}" pattern="yyyy-MM-dd"/>
-		                    </li>
-		                </c:forEach>
-		            </ul>
-		        </div>
-		    </div>
-		</div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="section-title">공지사항</div>
+                    <div class="board-title">
+                        <a href="${path2}/noticelist">more</a>
+                    </div>
+                    <ul class="list-group">
+                        <c:forEach var="notice" items="${noticeList}">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="${path2}/noticeDetail?noticeNo=${notice.noticeNo}" style="color: black; text-decoration: none;">${notice.noticeTitle}</a>
+                                <fmt:formatDate value="${notice.noticeDate}" pattern="yyyy-MM-dd"/>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <div class="section-title">의뢰게시판</div>
+                    <div class="board-title">
+                        <a href="${path2}/requestlist">more</a>
+                    </div>
+                    <ul class="list-group">
+                        <c:forEach var="request" items="${requestList}">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="${path2}/requestDetail?reqNo=${request.reqNo}" style="color: black; text-decoration: none;">${request.reqTitle}</a>
+                                <fmt:formatDate value="${request.reqDate}" pattern="yyyy-MM-dd"/>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <br>
         <br>
     </div>
-    
-    <div class="sticky-button">
-	    <p style="color:white;">채팅</p>
-	    <div class="badge"></div>
-	</div>
-	
-	<script>
-		const loginUser = '${sessionScope.loginUser.memId}';
-		
-		$('.sticky-button').on('click', function() {
-			if(loginUser === '') {
-				alertify.alert("로그인 후 이용 가능합니다.").setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
-			} else {
-				location.href = "${path2}/private-chat";
-			}
-		});
-	</script>
     
     <jsp:include page="common/footer.jsp"/>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

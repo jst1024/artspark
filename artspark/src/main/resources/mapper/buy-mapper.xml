@@ -125,6 +125,42 @@
 		 		BUY_NO = #{merchant_uid}
 	</select>
 	
+	<!-- 상품 등록한 사람 조회 -->
+	<select id="getSeller" parameterType="_int" resultType="String">
+		SELECT
+				MEM_ID memId
+		  FROM
+		  		PRODUCT
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</select>
+	
+	<!-- 채팅방 생성 -->
+	<insert id="createChatroom" parameterType="map">
+		INSERT
+		  INTO
+		  		CHATROOM
+		  		(
+		  		CHATROOM_NO,
+		  		CHATROOM_ACTIVE,
+		  		WORK_STATUS,
+		  		MY_READ_STATUS,
+		  		YOUR_READ_STATUS,
+		  		MEM_ID,
+		  		MEM_ID2
+		  		)
+		VALUES
+				(
+				CHATROOM_SEQ.NEXTVAL,
+				#{chatroomActive},
+				#{workStatus},
+				#{myReadStatus},
+				#{yourReadStatus},
+				#{loginUserId},
+				#{seller}
+				)
+	</insert>
+	
 </mapper>
 
 

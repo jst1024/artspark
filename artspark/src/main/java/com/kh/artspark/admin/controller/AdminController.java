@@ -6,8 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,8 +19,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.artspark.common.model.vo.PageInfo;
 import com.kh.artspark.member.model.service.MemberService;
+import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.notice.model.service.NoticeService;
 import com.kh.artspark.notice.model.vo.Notice;
+import com.kh.artspark.product.model.service.ProductService;
+import com.kh.artspark.product.model.vo.Product;
+import com.kh.artspark.qna.model.service.QnaService;
+import com.kh.artspark.qna.model.vo.Qna;
 import com.kh.artspark.request.model.service.RequestService;
 import com.kh.artspark.request.model.vo.Request;
 
@@ -29,9 +38,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/admin")
 public class AdminController {
 
+	private final ProductService productService;
     private final NoticeService noticeService;
     private final MemberService memberService;
     private final RequestService requestService;
+    private final QnaService qnaService;
     private final BCryptPasswordEncoder bcryptPasswordEncoder;
 
     @GetMapping
@@ -159,6 +170,118 @@ public class AdminController {
 
         Map<String, Object> result = new HashMap<>();
         result.put("requestList", formattedRequestList);
+        result.put("pageInfo", pageInfo);
+
+        return result;
+    }
+
+    
+    @ResponseBody
+    @GetMapping("/ajaxProductManagement")
+    public Map<String, Object> getProductListAjax(@RequestParam(value = "page", defaultValue = "1") int page) {
+    	int listCount = productService.productAllCount();
+    	int currentPage = page;
+    	int pageLimit = 5;
+    	int boardLimit = 5;
+    	
+    	int maxPage = (int) Math.ceil((double) listCount / boardLimit);
+    	int startPage = ((currentPage - 1) / pageLimit) * pageLimit + 1;
+    	int endPage = startPage + pageLimit - 1;
+    	
+    	if (endPage > maxPage) {
+    		endPage = maxPage;
+    	}
+    	
+    	PageInfo pageInfo = PageInfo.builder()
+    			.listCount(listCount)
+    			.currentPage(currentPage)
+    			.pageLimit(pageLimit)
+    			.boardLimit(boardLimit)
+    			.maxPage(maxPage)
+    			.startPage(startPage)
+    			.endPage(endPage)
+    			.build();
+    	
+    	Map<String, Integer> map = new HashMap<>();
+    	
+    	int startValue = (currentPage - 1) * boardLimit + 1;
+    	int endValue = startValue + boardLimit - 1;
+    	
+    	map.put("startValue", startValue);
+    	map.put("endValue", endValue);
+    	
+    	List<Product> productList = productService.productFindAll(map);
+    	
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	List<Map<String, Object>> formattedProductList = new ArrayList<>();
+    	
+    	for (Product product : productList) {
+    		Map<String, Object> formattedProduct = new HashMap<>();
+    		formattedProduct.put("productNo", product.getProductNo());
+    		formattedProduct.put("productTitle", product.getProductTitle());
+    		formattedProduct.put("productDate", sdf.format(product.getProductDate()));
+    		formattedProduct.put("memId", product.getMemId());
+    		formattedProductList.add(formattedProduct);
+    	}
+    	
+    	Map<String, Object> result = new HashMap<>();
+    	result.put("productList", formattedProductList);
+    	result.put("pageInfo", pageInfo);
+    	
+    	return result;
+    }
+
+    @ResponseBody
+    @GetMapping("/ajaxQnaManagement")
+    public Map<String, Object> getQnaListAjax(@RequestParam(value = "page", defaultValue = "1") int page) {
+
+        int listCount = qnaService.qnaCount(); 
+        int currentPage = page; // 현재페이지(사용자가 요청한 페이지)
+        int pageLimit = 5; // 페이지 하단에 보여질 페이징바의 최대 개수 => 5개로 고정 
+        int boardLimit = 10; // 한 페이지에 보여질 게시글의 최대 개수 => 10개로 고정
+
+        int maxPage = (int)Math.ceil((double)listCount / boardLimit); // 가장 마지막 페이지가 몇 번 페이지인지(총 페이지의 개수)
+        int startPage = ((currentPage-1) / pageLimit) * pageLimit + 1; // 그 화면상 하단에 보여질 페이징바의 시작하는 페이지넘버
+        int endPage = startPage + pageLimit - 1;; // 그 화면상 하단에 보여질 페이징바의 끝나는 페이지넘버
+
+        if(endPage > maxPage) {
+            endPage = maxPage;
+        }
+
+        PageInfo pageInfo = PageInfo.builder()
+                .listCount(listCount)
+                .currentPage(currentPage)
+                .pageLimit(pageLimit)
+                .boardLimit(boardLimit)
+                .maxPage(maxPage)
+                .startPage(startPage)
+                .endPage(endPage)
+                .build();
+
+        Map<String, Integer> map = new HashMap<>();
+
+        int startValue = (currentPage - 1) * boardLimit + 1;
+        int endValue = startValue + boardLimit - 1;
+
+        map.put("startValue", startValue);
+        map.put("endValue", endValue);
+
+        List<Qna> qnaList = qnaService.qnaFindAll(map);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Map<String, Object>> formattedQnaList = new ArrayList<>();
+
+        for (Qna qna : qnaList) {
+            Map<String, Object> formattedQna = new HashMap<>();
+            formattedQna.put("qnaNo", qna.getQnaNo());
+            formattedQna.put("qnaTitle", qna.getQnaTitle());
+            formattedQna.put("qnaDate", sdf.format(qna.getQnaDate()));
+            formattedQna.put("memId", qna.getMemId());
+            formattedQnaList.add(formattedQna);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("qnaList", formattedQnaList);
         result.put("pageInfo", pageInfo);
 
         return result;

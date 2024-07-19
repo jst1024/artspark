@@ -44,11 +44,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		String chatUserId = chatMember.getMemId();
 		String payload = message.getPayload();
 		Map<String, Object> msgData = gson.fromJson(payload, Map.class);
-		System.out.println(msgData.get("chatroomNo"));
+		
+		// System.out.println(msgData.get("chatroomNo"));
 		
 		String content =(String) msgData.get("content");
 		String chatPartner =(String) msgData.get("chatPartner");
-		int chatroomNo = ((Double) msgData.get("chatroomNo")).intValue();
+		
+		Object chatroomNoObj = msgData.get("chatroomNo");
+        int chatroomNo = 0;
+        if (chatroomNoObj instanceof Double) {
+            chatroomNo = ((Double) chatroomNoObj).intValue();
+        } else if (chatroomNoObj instanceof String) {
+            chatroomNo = Integer.parseInt((String) chatroomNoObj);
+        }
 		
 		log.info("{}와 {}를 전달 받았습니다.", content, chatPartner);
 		
@@ -73,6 +81,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		
 		TextMessage newMessage = new TextMessage(jsonMessage);
 		log.info(jsonMessage);
+		log.info("{}", userMap);
+		log.info("{}", userMap.get(chatPartner));
 		
 		userMap.get(chatUserId).sendMessage(newMessage);
 		if(userMap.get(chatPartner) != null) { 
@@ -84,6 +94,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		users.remove(session);
+		Member chatMember = (Member) session.getAttributes().get("loginUser");
+		String chatUserId = chatMember.getMemId();
+		userMap.remove(chatUserId);
 		log.info("사용자 접속 종료 ! 현재 {}명 접속중입니다.", users.size());
 	}
 	

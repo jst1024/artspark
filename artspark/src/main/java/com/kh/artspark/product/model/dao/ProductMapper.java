@@ -71,4 +71,6 @@ public interface ProductMapper {
 
 	int deleteOptions(int productNo);
 
+	List<Product> productFindAll(Map<String, Integer> map);
+
 }

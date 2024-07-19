@@ -62,7 +62,7 @@
     <div class="content">
         <div class="dashboard-container">
             <div class="dashboard-item">
-                <h5>신고된 회원</h5>
+                <h5>삭제된 회원</h5>
                 <div class="table-container">
                     <table class="table table-striped">
                         <thead>
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="dashboard-item">
-                <h5>신고된 게시글</h5>
+                <h5>삭제된 상품</h5>
                 <div class="table-container">
                     <table class="table table-striped">
                         <thead>
