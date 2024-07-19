@@ -43,8 +43,8 @@
                         </div>
                         <button type="submit" class="btn btn-primary w-100 mb-3">아이디 찾기</button>
                         <div class="d-flex justify-content-between">
-                            <a href="#" class="btn btn-link">회원가입</a>
-                            <a href="#" class="btn btn-link">로그인 하기</a>
+                            <a href="joinPage" class="btn btn-link">회원가입</a>
+                            <a href="loginPage" class="btn btn-link">로그인 하기</a>
                         </div>
                     </form>
                 </div>

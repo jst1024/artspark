@@ -36,8 +36,8 @@
                     </c:choose>
                     
                     <div class="btn-group w-100">
-                        <a href="login.jsp" class="btn btn-secondary">로그인하기</a>
-                        <a href="findPwd.jsp" class="btn btn-primary">비밀번호찾기</a>
+                        <a href="loginPage" class="btn btn-secondary">로그인하기</a>
+                        <a href="lostPwd" class="btn btn-primary">비밀번호찾기</a>
                     </div>
                 </div>
                 <div class="modal-footer">
