@@ -24,4 +24,8 @@ public interface BuyMapper {
 
 	List<Map<String, Object>> getBuyOption(String merchant_uid);
 
+	String getSeller(int productNo);
+
+	int createChatroom(Map<String, String> map);
+
 }

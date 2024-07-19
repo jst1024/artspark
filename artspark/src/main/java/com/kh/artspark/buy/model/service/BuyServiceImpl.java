@@ -50,4 +50,14 @@ public class BuyServiceImpl implements BuyService {
 		return buyMapper.getBuyOption(merchant_uid);
 	}
 
+	@Override
+	public String getSeller(int productNo) {
+		return buyMapper.getSeller(productNo);
+	}
+
+	@Override
+	public int createChatroom(Map<String, String> map) {
+		return buyMapper.createChatroom(map);
+	}
+
 }
