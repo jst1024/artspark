@@ -1,6 +1,7 @@
 package com.kh.artspark.qna.model.vo;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,6 @@ public class Qna {
 	private String secret; // 비밀글여부 (Y, N)
 	private String status; // 삭제여부 (Y(default), N(삭제))
 	private Date qnaDelDate; // 삭제일
-	
+	private String qnaCategory; // 관리자, 판매자
+    private List<Answer> answers; // 답변 목록
 }

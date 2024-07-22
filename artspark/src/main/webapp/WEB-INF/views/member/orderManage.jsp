@@ -85,7 +85,7 @@
         
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="inquiry-tab" data-bs-toggle="tab" data-bs-target="#inquiry" type="button" role="tab">문의 및 답변</button>
+                <a href="${path2 }/myPage"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">문의 답변</button></a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button" role="tab">주문 관리</button></a>

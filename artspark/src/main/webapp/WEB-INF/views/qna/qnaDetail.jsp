@@ -74,6 +74,10 @@
                         <td>${qna.qnaDate}</td>
                     </tr>
                     <tr>
+                        <th scope='row'>문의대상</th>
+                        <td colspan="6">${qna.qnaCategory }</td>
+                    </tr>
+                    <tr>
                         <th scope="row">제목</th>
                         <td colspan="6">${qna.qnaTitle}</td>
                     </tr>

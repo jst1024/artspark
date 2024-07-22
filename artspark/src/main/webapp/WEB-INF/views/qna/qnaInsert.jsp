@@ -65,17 +65,30 @@
                  <input type="checkbox" class="form-check-input" id="secret" name="secret" value="Y">
                  <label class="form-check-label" for="secret">비밀글 여부</label>
              </div>
+            <div class="form-group">
+                <label for="category">문의대상</label>
+                <select class="form-control dropdown-custom" name="qnaCategory">
+                    <option value="관리자">관리자</option>
+                    <option value="판매자">판매자</option>
+                </select>
+            </div>         
 		     <div class="form-group">
 		         <label for="title">제목</label>
 		         <input type="hidden" value="${sessionScope.loginUser.memId}" name="memId">
-		         <input type="text" class="form-control" name="qnaTitle" placeholder="내용을 입력해주세요">
+		         <input type="text" class="form-control" id="qnaTitle" name="qnaTitle" placeholder="내용을 입력해주세요">
 		     </div>
 		     
 		     <div class="form-group">
 		         <label for="editorTxt">내용</label>
-		         <textarea class="form-control" id="editorTxt" name="qnaContent" rows="10" placeholder="내용을 입력해주세요"></textarea>
+		         <textarea class="form-control" id="editorTxt" name="qnaContent" rows="10">
+		         ----------------------------------------------<br>
+		         * 판매자문의시 판매자 이름과 상품명을 작성해주세요.<br>
+		         * 판매자 : <br> 
+		         * 상품명 : <br>
+		         ----------------------------------------------<br>
+		         </textarea>
+		         
 		     </div>
-		     
 		     <div class="form-group">
 		         <label for="file">첨부파일</label>
 		         <div class="file-input-wrapper">
@@ -103,6 +116,13 @@
 	        // 폼 전송 버튼 클릭 시 스마트에디터의 내용을 텍스트에어리어로 동기화
 	        function submitContents(e) {
 	            oEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", []);
+	            
+	            // 제목이 비어 있는지 확인
+	            var title = document.getElementById("qnaTitle").value;
+	            if (title.trim() === "") {
+	                alert("제목을 입력해주세요.");
+	                return false;
+	            }
 	
 	            // 실제 form submit
 	            try {

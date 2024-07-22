@@ -98,7 +98,7 @@
             </thead>
             <tbody>
                 <c:choose>
-                    <c:when test="${empty qnaList}"> 
+                    <c:when test="${empty qnaList}">
                         <tr>
                             <td colspan="4">조회된 결과가 존재하지 않습니다.</td>
                         </tr>
@@ -116,6 +116,19 @@
                                 <td>${qna.memId}</td>
                                 <td>${qna.qnaDate}</td>
                             </tr>
+                            <c:if test="${empty qna.answers}">
+                            	
+                            </c:if>
+                            <c:if test="${not empty qna.answers}">
+                                <c:forEach var="answer" items="${qna.answers}">
+                                    <tr class="answer">
+                                        <td></td>
+                                        <td colspan="3" style="text-indent: ${answer.answerIndent * 20}px;">
+                                            <strong>답변: </strong> ${answer.answerTitle}
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:if>
 				        </c:forEach>
                     </c:otherwise>
                 </c:choose>
@@ -201,7 +214,7 @@
                     </li>
                 </c:when>
                 <c:otherwise>
-                    <li>
+                    <li class="page-item">
                         <a class="page-link" href="qnaSearch?page=${pageInfo.currentPage + 1}&condition=${condition}&keyword=${keyword}">다음</a>
                     </li>
                 </c:otherwise>
