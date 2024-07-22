@@ -12,6 +12,7 @@ import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
 
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -123,6 +124,8 @@ public class MemberServiceImpl implements MemberService {
 	public int countActiveMembers() {
 		return memberMapper.countActiveMembers();
 	}
+
+
 	
 	
 	

@@ -88,11 +88,21 @@
                 <a href="${path2 }/myPage"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">문의 답변</button></a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button" role="tab">주문 관리</button></a>
+                <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">주문 관리</button></a>
             </li>
             <li class="nav-item" role="presentation">
-                 <a href="${path2 }/interestSeller"><button class="nav-link active" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button" role="tab">관심 작가</button></a>
+                 <a href="${path2 }/interestSeller"><button class="nav-link" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button" role="tab">관심 작가</button></a>
             </li>
+            <c:if test="${ sessionScope.loginUser.memCategory == 'A' }">
+             <li class="nav-item" role="presentation">
+                <a href="${path2 }/updatePage"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">회원 정보</button></a>
+            </li>
+            </c:if>
+            <c:if test="${ sessionScope.loginUser.memCategory != 'A' }">
+             <li class="nav-item" role="presentation">
+                <a href="${path2 }/updateProduct"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">회원 정보</button></a>
+            </li>
+            </c:if>
         </ul>
         
         <div class="tab-content mt-3" id="myTabContent">

@@ -116,9 +116,8 @@
                                 <td>${qna.memId}</td>
                                 <td>${qna.qnaDate}</td>
                             </tr>
-                            <c:if test="${empty qna.answers}">
-                            	
-                            </c:if>
+                            <c:if test="${empty qna.answers}"/>	
+                            </c:forEach>
                             <c:if test="${not empty qna.answers}">
                                 <c:forEach var="answer" items="${qna.answers}">
                                     <tr class="answer">
@@ -129,7 +128,6 @@
                                     </tr>
                                 </c:forEach>
                             </c:if>
-				        </c:forEach>
                     </c:otherwise>
                 </c:choose>
             </tbody>
