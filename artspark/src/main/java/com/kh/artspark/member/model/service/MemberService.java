@@ -9,6 +9,7 @@ import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
 
+
 public interface MemberService {
 	
 	List<Member> memberList();
@@ -50,6 +51,8 @@ public interface MemberService {
 	Member getMember(String memId, String memNickname, String memEmail);
 	
 	
+
+
 	
 	//주문관리
 	List<OrderBuyOption> orderBuyOption(String memId);

@@ -11,6 +11,7 @@ import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
 
+
 @Mapper
 public interface MemberMapper {
 
@@ -53,5 +54,7 @@ public interface MemberMapper {
 	List<Member> getActiveMembers(int startValue, int endValue);
 
 	int countActiveMembers();
+
+
 
 }

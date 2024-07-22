@@ -44,6 +44,7 @@
 	</resultMap>
 	
 	
+	
 	<select id="memberList" resultType="member">
 		SELECT
 				MEM_ID memId,
@@ -363,6 +364,7 @@
 		 		MEM_ID = #{memId}
 	</select>
 	
+
 </mapper>
 
 
