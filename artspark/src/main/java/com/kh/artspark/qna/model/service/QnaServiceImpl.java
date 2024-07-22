@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.artspark.common.model.vo.ImgFile;
 import com.kh.artspark.qna.model.dao.QnaMapper;
+import com.kh.artspark.qna.model.vo.Answer;
 import com.kh.artspark.qna.model.vo.Qna;
 import com.kh.artspark.request.model.vo.Request;
 
@@ -27,8 +28,12 @@ public class QnaServiceImpl implements QnaService {
 	}
 
 	@Override
-	public List<Qna> qnaFindAll(Map<String, Integer> map) {
-		return qnaMapper.qnaFindAll(map);
+	public List<Qna> qnaFindAllWithAnswers(Map<String, Integer> map) {
+		return qnaMapper.qnaFindAllWithAnswers(map);
+	}
+	@Override
+	public List<Qna> qnaForArtist(String memId) {
+		return qnaMapper.qnaForArtist(memId);
 	}
 
 	@Override
@@ -40,7 +45,7 @@ public class QnaServiceImpl implements QnaService {
 	public List<Qna> qnaFindConditionAndKeyword(Map<String, String> map, RowBounds rowBounds) {
 		return qnaMapper.qnaFindConditionAndKeyword(map, rowBounds);
 	}
-
+	
 	@Transactional
 	@Override
 	public int insertQna(Qna qna, ImgFile imgFile) {
@@ -55,8 +60,11 @@ public class QnaServiceImpl implements QnaService {
 		
 		return result1 * result2;
 	}
-
-
+	@Override
+	public String getArtistMemIdByProductNo(int productNo) {
+		return qnaMapper.getArtistMemIdByProductNo(productNo);
+	}
+	
 	@Override
 	public Qna qnaFindById(int qnaNo) {
 		return qnaMapper.qnaFindById(qnaNo);
@@ -83,6 +91,25 @@ public class QnaServiceImpl implements QnaService {
 		 
 		 return result1 * result2;
 	}
+
+	@Override
+	@Transactional
+	public int insertAnswer(Answer answer, ImgFile imgFile) {
+		
+		 int result1 = qnaMapper.insertAnswer(answer);
+		 int result2 = 1;
+		 
+		 if(imgFile.getOriginName() != null) {
+			  result2 = qnaMapper.insertImgFile(imgFile);
+		 }
+		
+		return result1 * result2;
+	}
+
+
+
+
+
 
 	
 }

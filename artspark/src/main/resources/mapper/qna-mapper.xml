@@ -5,14 +5,15 @@
 <mapper namespace="com.kh.artspark.qna.model.dao.QnaMapper">
 
 	<sql id="selectQna">
-		SELECT
-				QNA_NO qnaNo,
-	            QNA_TITLE qnaTitle,
-	            QNA_CONTENT qnaContent,
-	            QNA_DATE qnaDate,
-				MEM_ID memId,
-				SECRET secret
-	</sql>
+        SELECT
+		        QNA_NO qnaNo,
+		        QNA_TITLE qnaTitle,
+		        QNA_CONTENT qnaContent,
+		        QNA_DATE qnaDate,
+		        MEM_ID memId,
+		        SECRET secret,
+		        QNA_CATEGORY qnaCategory
+    </sql>
 	
 	<sql id="selectImgFile">
 		SELECT
@@ -25,6 +26,40 @@
 		        FILE_DATE imgFileDate
 	</sql>
 	
+    <sql id="selectAnswer">
+        SELECT
+	            A.ANSWER_NO answerNo,
+	            A.ANSWER_INDENT answerIndent,
+	            A.ANSWER_TITLE answerTitle,
+	            A.ANSWER_CONTENT answerContent,
+	            A.ANSWER_DATE answerDate,
+	            A.MEM_ID memId,
+	            A.STATUS status,
+	            A.QNA_NO qnaNo
+    </sql>
+    
+    <resultMap id="QnaWithAnswers" type="Qna">
+       <id property="qnaNo" column="qnaNo"/>
+       <result property="qnaTitle" column="qnaTitle"/>
+       <result property="qnaContent" column="qnaContent"/>
+       <result property="qnaDate" column="qnaDate"/>
+       <result property="memId" column="memId"/>
+       <result property="secret" column="secret"/>
+       <result property="status" column="status"/>
+       <result property="qnaDelDate" column="qnaDelDate"/>
+       <result property="qnaCategory" column="qnaCategory"/>
+       <collection property="answers" ofType="Answer">
+           <id property="answerNo" column="answerNo"/>
+           <result property="qnaNo" column="qnaNo"/>
+           <result property="answerTitle" column="answerTitle"/>
+           <result property="answerContent" column="answerContent"/>
+           <result property="answerDate" column="answerDate"/>
+           <result property="memId" column="memId"/>
+           <result property="status" column="status"/>
+           <result property="answerIndent" column="answerIndent"/>
+       </collection>
+   </resultMap>
+	
 	<select id="qnaCount" resultType="_int">
 	SELECT 
 			COUNT(QNA_NO)
@@ -32,35 +67,76 @@
 	  		QNA
 	</select>	
 
-	<select id="qnaFindAll" resultType="qna" parameterType="map">
+    <select id="qnaFindAllWithAnswers" resultMap="QnaWithAnswers" parameterType="map">
+        <include refid="selectQna"/>
+ 	  FROM
+       		(SELECT 
+            		QNA_NO,
+            		QNA_TITLE,
+            		QNA_CONTENT,
+            		QNA_DATE,
+            		MEM_ID,
+            		SECRET,
+            		QNA_CATEGORY,
+            		ROWNUM RNUM
+        	   FROM
+            		(SELECT 
+               				QNA.QNA_NO,
+                			QNA.QNA_TITLE,
+                			QNA.QNA_CONTENT,
+                			QNA.QNA_DATE,
+                			QNA.MEM_ID,
+                			QNA.SECRET,
+                			QNA.QNA_CATEGORY
+            		  FROM 
+            		  		QNA
+            		  LEFT
+            		  JOIN 
+            		  		ANSWER ON QNA.QNA_NO = ANSWER.QNA_NO
+           			 WHERE 
+           			 		QNA.STATUS = 'Y'
+            		 ORDER 
+            		    BY 
+            		    	QNA.QNA_NO DESC, ANSWER.ANSWER_DATE ASC)
+            	)
+        WHERE
+        		RNUM BETWEEN #{startValue} AND #{endValue}
+    </select>
 	
-	<include refid="selectQna"/>
-  	  FROM
-            (SELECT 
-                    QNA_NO,
-                    QNA_TITLE,
-                  	QNA_CONTENT,
-                    QNA_DATE,
-                 	MEM_ID,
-                 	SECRET,
-                    ROWNUM RNUM 
-              FROM
-                   	 (SELECT 
-                             QNA_NO,
-                             QNA_TITLE,
-                             QNA_CONTENT,
-                             QNA_DATE,
-							 MEM_ID,
-							 SECRET
-                        FROM
-                             QNA      
-                       WHERE 
-                       		 STATUS = 'Y'                      
-                       ORDER
-                          BY
-                             QNA_NO DESC))               
-	  WHERE
-      		 RNUM BETWEEN #{startValue} AND #{endValue} 
+		<!-- 판매자가 자신의 마이페이지에서 자신의 상품에 등록된 문의를 전체조회 -->
+	<select id="qnaForArtist" parameterType="string" resultType="qna">
+    	SELECT
+        		Q.QNA_NO qnaNo,
+        		Q.QNA_TITLE qnaTitle,
+        		Q.QNA_CONTENT qnaContent,
+        		Q.QNA_DATE qnaDate,
+        		Q.MEM_ID memId,
+        		Q.SECRET secret,
+        		Q.QNA_CATEGORY qnaCategory
+    	  FROM
+        		QNA Q
+    	  JOIN
+        	    PRODUCT P ON Q.MEM_ID = P.MEM_ID
+    	  JOIN
+        		MEMBER M ON P.MEM_ID = M.MEM_ID
+    	  JOIN
+        		ARTIST A ON M.MEM_ID = A.MEM_ID
+   		 WHERE
+        		A.MEM_ID = #{memId}
+    	   AND
+        		Q.STATUS = 'Y'
+    	 ORDER 
+    		BY
+        		Q.QNA_DATE DESC
+	</select>
+	<!-- 특정 상품번호를 기준으로 문의사항을 조회 -->
+	<select id="getArtistMemIdByProductNo" parameterType="int" resultType="string">
+    	SELECT 
+        		MEM_ID
+    	  FROM 
+       			PRODUCT
+    	 WHERE 
+        		PRODUCT_NO = #{productNo}
 	</select>
 	
 		<!-- 검색 시 행의 개수 -->
@@ -115,7 +191,8 @@
 	      		MEM_ID,
 	      		SECRET,
 	      		STATUS,
-	      		QNA_DELDATE
+	      		QNA_DELDATE,
+	      		QNA_CATEGORY
 	      		)
       	VALUES
       			(
@@ -126,9 +203,11 @@
       			#{memId},
       			#{secret},
       			default,
-      			#{qnaDelDate}
+      			#{qnaDelDate},
+      			#{qnaCategory}
       			)
 	</insert>
+	
 	<insert id="insertImgFile" parameterType="ImgFile">
 		INSERT
 	      INTO
@@ -181,25 +260,44 @@
 		   		QNA_NO = #{qnaNo}
 	</update>
 	
-    <update id="updateQna" parameterType="qna">
-		UPDATE
-				QNA
-		   SET
-		   		QNA_TITLE   = #{qnaTitle},
-		   		QNA_CONTENT = #{qnaContent}
-		 WHERE
-		 		QNA_NO = #{qnaNo}
-	</update>
-	
-	<update id="updateImgFile" parameterType="ImgFile">
-	    UPDATE 
-	    		IMG_FILE
-	       SET 
-	            ORIGIN_NAME = #{originName},
-	            CHANGE_NAME = #{changeName},
-	            FILE_PATH = #{imgFilePath}
-	     WHERE  BOARD_NO = #{boardNo}
-	</update>	
+    <select id="answersByQnaNo" parameterType="int" resultType="Answer">
+        <include refid="selectAnswer"/>
+         FROM
+                ANSWER
+         WHERE
+            	QNA_NO = #{qnaNo}
+         ORDER 
+         	BY
+            	ANSWER_DATE ASC
+    </select>
+
+    <insert id="insertAnswer" parameterType="Answer">
+        INSERT 
+          INTO 
+                ANSWER 
+                (
+            	ANSWER_NO,
+            	QNA_NO,
+            	ANSWER_TITLE,
+            	ANSWER_CONTENT,
+           		ANSWER_DATE,
+           		MEM_ID,
+            	STATUS,
+            	ANSWER_INDENT
+        		) 
+        VALUES 
+        		(
+            	ANSWER_SEQ.NEXTVAL,
+            	#{qnaNo},
+            	#{answerTitle},
+            	#{answerContent},
+            	SYSDATE,
+            	#{memId},
+            	'Y',
+            	#{answerIndent}
+        		)
+    </insert>
+
 	
 	
 

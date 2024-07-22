@@ -266,7 +266,7 @@ public class AdminController {
         map.put("startValue", startValue);
         map.put("endValue", endValue);
 
-        List<Qna> qnaList = qnaService.qnaFindAll(map);
+        List<Qna> qnaList = qnaService.qnaFindAllWithAnswers(map);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<Map<String, Object>> formattedQnaList = new ArrayList<>();

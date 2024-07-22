@@ -83,7 +83,7 @@
         
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="inquiry-tab" data-bs-toggle="tab" data-bs-target="#inquiry" type="button" role="tab">문의 및 답변</button>
+                <a href="${path2 }/myPage"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">문의 답변</button></a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">주문 관리</button></a>
@@ -94,10 +94,30 @@
         </ul>
         
         <div class="tab-content mt-3" id="myTabContent">
-            <div class="tab-pane fade show active my-4" id="inquiry" role="tabpanel">
+            <div class="tab-pane fade show active my-4" id="qna" role="tabpanel">
                 <h2>문의 및 답변</h2>
-                <div class="mt-3 d-flex justify-content-end">
-                    <div>
+		<div class="mt-3">
+		  <c:choose>
+		  	<c:when test="${empty artistQna}"> 
+                        <tr>
+                            <th>조회된 결과가 존재하지 않습니다.</th>
+                        </tr>
+            </c:when>
+            <c:otherwise>
+		    <c:forEach var="qna" items="${artistQna}">
+		        <div class="card mb-3">
+		            <div class="card-body">
+		                <h5 class="card-title">${qna.qnaTitle}</h5>
+		                <p class="card-text">${qna.qnaContent}</p>
+		                <p class="card-text">
+		                    <small class="text-muted">${qna.qnaDate}</small>
+		                </p>
+		            </div>
+		        </div>
+		        </c:forEach>
+		    </c:otherwise>
+		   </c:choose>
+		</div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="showDeleted">
                             <label class="form-check-label" for="showDeleted">삭제된 문의 보기</label>
@@ -113,8 +133,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div> 
     <jsp:include page="../common/footer.jsp"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

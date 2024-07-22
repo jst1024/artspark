@@ -37,6 +37,8 @@ import com.kh.artspark.member.model.vo.Interest;
 import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
+import com.kh.artspark.qna.model.service.QnaService;
+import com.kh.artspark.qna.model.vo.Qna;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,7 @@ public class MemberController {
 	private final MemberService memberService;
 	private final BCryptPasswordEncoder bcryptPasswordEncoder;
 	private final JavaMailSender sender;
+	private final QnaService qnaService; // QnaService 주입
 	
 	@GetMapping("memberList")
 	public void memberList() {
@@ -393,8 +396,16 @@ public class MemberController {
 	
 	//마이페이지 
 	@GetMapping("myPage")
-	public String myPage() {
-		return "member/myPage";
+	public String myPage(HttpSession session, Model model) {
+	    Member loginUser = (Member) session.getAttribute("loginUser");
+	    if (loginUser == null) {
+	        return "redirect:/loginPage"; // 로그인 페이지로 리다이렉트
+	    }
+	    // 판매자의 문의 목록 조회
+	    List<Qna> artistQna = qnaService.qnaForArtist(loginUser.getMemId());
+	    model.addAttribute("artistQna", artistQna);
+	    
+	    return "member/myPage";
 	}
 
 	//주문관리로 이동
