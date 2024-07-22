@@ -97,6 +97,7 @@
 	  		나중에 repository를 인터페이스로 쓰려면 여기다 넣으면됨!!! 
 	  -->
 	  <mybatis-spring:scan base-package="com.kh.artspark.member.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.kakao.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.product.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.notice.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.request.model.dao"/>
