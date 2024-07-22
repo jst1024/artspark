@@ -161,7 +161,18 @@
                $('.request-Detail').click(e => {
                    location.href = 'requestDetail?reqNo=' + $(e.currentTarget).children().eq(0).text();
                });
+               
            });
+           const isEmptyAnswers = ${empty qna.answers};
+
+           if (isEmptyAnswers) {
+               document.addEventListener('DOMContentLoaded', function() {
+                   const answerRows = document.querySelectorAll('tr.answer');
+                   answerRows.forEach(function(row) {
+                       row.style.display = 'none';
+                   });
+               });
+           }
     </script>
     
     <!-- 페이징 -->
