@@ -50,6 +50,13 @@ public class ProductController {
 	private final ProductService productService;
 	
 	// 상품 목록 전체 조회
+	/**
+	 * 
+	 * @param page	
+	 * @param session	sessionScope에 저장된 로그인 유저의 정보를 가져오기위한 객체
+	 * @param model	요청 처리 후 응답 시 requestScope에 값을 담기 위한 객체
+	 * @return
+	 */
 	@GetMapping
 	public String findAllProductList(@RequestParam(value="page", defaultValue = "1") int page,
 									HttpSession session, Model model) {
@@ -65,7 +72,7 @@ public class ProductController {
 
 		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
 		
-		// 찜테이블에 있는 멤버아이디와 로그인유저의 아이디를 비교하기위함 
+		// 찜테이블에 있는 멤버아이디와 session에 저장된 멤버아이디를 비교
 		if(session.getAttribute("loginUser") != null) {
 			Member loginUser = (Member) session.getAttribute("loginUser");
 			productList = productService.findAllProductList(loginUser.getMemId(), rowBounds);
