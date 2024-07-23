@@ -92,7 +92,7 @@ public class ProductController {
 		int listCount = productService.productCategoryCount(category);
 		int currentPage = page;
 		int pageLimit = 5;
-		int boardLimit = 1;
+		int boardLimit = 4;
 		
 		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
@@ -136,7 +136,7 @@ public class ProductController {
 		log.info("검색 수 : {}개", searchCount);
 		int currentPage = page;
 		int pageLimit = 5;
-		int boardLimit = 1;
+		int boardLimit = 4;
 		
 		PageInfo pageInfo = PageTemplate.getPageInfo(searchCount, currentPage, pageLimit, boardLimit);
 		

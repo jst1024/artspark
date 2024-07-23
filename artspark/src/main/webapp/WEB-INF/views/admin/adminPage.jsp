@@ -62,7 +62,7 @@
     <div class="content">
         <div class="dashboard-container">
             <div class="dashboard-item">
-                <h5>삭제된 회원</h5>
+                <h5>정지 회원</h5>
                 <div class="table-container">
                     <table class="table table-striped">
                         <thead>
