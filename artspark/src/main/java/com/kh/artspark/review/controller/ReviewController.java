@@ -1,0 +1,105 @@
+package com.kh.artspark.review.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kh.artspark.common.model.vo.Message;
+import com.kh.artspark.review.model.service.ReviewService;
+import com.kh.artspark.review.model.vo.Review;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("review")
+public class ReviewController {
+
+	private final ReviewService reviewService;
+	
+	@ResponseBody
+	@GetMapping("buy-product")
+	public ResponseEntity<Message> buyProduct(Model model, String loginUserId, int productNo) {
+		
+//		log.info("{}", loginUserId);
+//		log.info("{}", productNo);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("loginUserId",loginUserId);
+		map.put("productNo", productNo);
+		
+		// 구매기록이 있으면 1, 없으면 0 반환
+		int result = reviewService.buyRecord(map);
+		
+		Message responseMsg = null;
+		
+		if(result > 0) {
+			responseMsg = Message.builder().message("구매 기록 있음")
+										   .data("Y")
+										   .build();
+		} else {
+			responseMsg = Message.builder().message("구매 기록 없음")
+					   .data("N")
+					   .build();
+		}
+		
+		return ResponseEntity.ok(responseMsg);
+	}
+	
+	@PostMapping("insert-form")
+	public String insertForm(int productNo, String productTitle, Model model) {
+		
+//		log.info("{}",loginUserId);
+//		log.info("{}", productNo);
+		
+		model.addAttribute("productNo", productNo);
+		model.addAttribute("productTitle", productTitle);
+		
+		return "review/reviewInsert";
+	}
+	
+	@PostMapping("review-insert")
+	public String reviewInsert(Review review, HttpSession session, Model model) {
+		
+//		log.info("review : {}", review);
+		
+		int result = reviewService.insertReview(review);
+		
+		if(result > 0) {
+			session.setAttribute("alertMsg", "리뷰 등록 성공");
+		}
+		else {
+			session.setAttribute("alertMsg", "리뷰 등록 실패");
+		}
+		
+		return "redirect:../product/" + review.getProductNo();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

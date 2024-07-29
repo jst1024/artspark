@@ -592,6 +592,48 @@
 			    </p>
 	        </div>
 	        
+	        <form action="${path1}/review/insert-form" method="post" id="review-form">
+	        	<input type="hidden" name="productNo" value="${product.productNo}">
+	        	<input type="hidden" name="productTitle" value="${product.productTitle}">
+	        </form>
+	        
+	        <script>
+	        	$('#review-btn').on('click', function() {
+	        		const loginUserId = '${sessionScope.loginUser.memId}';
+	        		const sellerId = '${product.memId}';
+	        		const productNo = parseInt('${product.productNo}');
+	        		
+	        		if(loginUserId === sellerId) {
+	        			alertify.alert('내가 등록한 상품입니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+	        			return;
+	        		}
+	        		
+	        		if(loginUserId !== '') {
+	        			$.ajax({
+	        				url : '${path1}/review/buy-product',
+	        				type : 'get',
+	        				data : {
+	        					loginUserId : loginUserId,
+	        					productNo : productNo
+	        				},
+							success : result => {
+								if(result.data === 'N') {
+									alertify.alert('리뷰는 상품 구매 후 작성 가능합니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+									return;
+								}
+								
+								else {
+									$('#review-form').submit();
+								}
+							}	        			
+	        			});
+	        		}
+	        		else {
+	        			alertify.alert('로그인이 필요합니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+	        		}
+	        	});
+	        </script>
+	        
        		<div class="col-md-1 table-head">
            		<p style="text-align: center;">번호</p>
             </div>
