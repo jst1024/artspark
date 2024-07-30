@@ -97,7 +97,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void updatePassword(Member member) {
+	public int updatePassword(Member member) {
+		return memberMapper.updatePassword(member);
 	}
 
 	@Override

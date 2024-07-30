@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.kh.artspark.member.model.vo.Artist;
 import com.kh.artspark.member.model.vo.Interest;
@@ -45,8 +46,12 @@ public interface MemberMapper {
 
 	int sendMail(Mail mail);
 
-	Member getMember(String memId, String memNickname, String memEmail);
-
+	Member getMember(@Param("memId") String memId, 
+   		 			 @Param("memNickname") String memNickname, 
+   		 			 @Param("memEmail") String memEmail);
+	
+	int updatePassword(Member member);
+	
 	List<OrderBuyOption> orderBuyOption(String memId);
 
 	List<Interest> interest(String memId);
@@ -54,6 +59,8 @@ public interface MemberMapper {
 	List<Member> getActiveMembers(int startValue, int endValue);
 
 	int countActiveMembers();
+
+
 
 
 

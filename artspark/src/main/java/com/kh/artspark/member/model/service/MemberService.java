@@ -47,8 +47,10 @@ public interface MemberService {
 	
 	//메일인증
 	int sendMail(Mail mail);
-    void updatePassword(Member member);
-	Member getMember(String memId, String memNickname, String memEmail);
+    
+	int updatePassword(Member member);
+	
+    Member getMember(String memId, String memNickname, String memEmail);
 	
 	
 
