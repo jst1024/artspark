@@ -291,4 +291,35 @@ public class AdminController {
         return result;
     }
 
+    @ResponseBody
+    @GetMapping("/ajaxSuspendedMemberList")
+    public Map<String, Object> suspendedMemberList() {
+        List<Map<String, Object>> suspendedMemberList = memberService.suspendedMemberList();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Map<String, Object>> formattedSuspendedMemberList = new ArrayList<>();
+
+        for (Map<String, Object> member : suspendedMemberList) {
+            Map<String, Object> formattedMember = new HashMap<>();
+            formattedMember.put("memId", member.get("memId"));
+
+            // Null 체크 추가
+            if (member.get("memSuspension") != null) {
+                formattedMember.put("memSuspension", sdf.format(member.get("memSuspension")));
+            } else {
+                formattedMember.put("memSuspension", "N/A"); // 기본값 설정
+            }
+
+            formattedMember.put("memReportcount", member.get("memReportcount"));
+            formattedMember.put("reportContent", member.get("reportContent")); // 정지 사유 추가
+            formattedSuspendedMemberList.add(formattedMember);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("suspendedMemberList", formattedSuspendedMemberList);
+
+        return result;
+    }
+
+
 }

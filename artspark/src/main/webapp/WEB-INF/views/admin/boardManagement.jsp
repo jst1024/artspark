@@ -61,7 +61,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>문의 ID</th>
+                        <th>문의 번호</th>
                         <th>문의 제목</th>
                         <th>작성자</th>
                         <th>작성 날짜</th>
