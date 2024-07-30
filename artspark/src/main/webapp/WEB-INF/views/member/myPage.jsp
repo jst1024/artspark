@@ -74,6 +74,10 @@
         .form-group.text-end .form-control {
             margin-right: 10px;
         }
+        .btn-orange {
+            background-color: orange;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -83,56 +87,120 @@
         
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a href="${path2 }/myPage"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">문의 답변</button></a>
+                <a href="${path2 }/myPage"><button class="nav-link active" id="qna-tab" data-bs-toggle="tab" data-bs-target="#qna" type="button">문의 답변</button></a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="${path2 }/orderHistory"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">주문 관리</button></a>
             </li>
             <li class="nav-item" role="presentation">
-                 <a href="${path2 }/interestSeller"><button class="nav-link" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button" role="tab">관심 작가</button></a>
+                <a href="${path2 }/interestSeller"><button class="nav-link" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button">관심 작가</button></a>
             </li>
         </ul>
         
         <div class="tab-content mt-3" id="myTabContent">
             <div class="tab-pane fade show active my-4" id="qna" role="tabpanel">
-                <h2>문의 및 답변</h2>
-		<div class="mt-3">
-		  <c:choose>
-		  	<c:when test="${empty artistQna}"> 
-                        <tr>
-                            <th>조회된 결과가 존재하지 않습니다.</th>
-                        </tr>
-            </c:when>
-            <c:otherwise>
-		    <c:forEach var="qna" items="${artistQna}">
-		        <div class="card mb-3">
-		            <div class="card-body">
-		                <h5 class="card-title">${qna.qnaTitle}</h5>
-		                <p class="card-text">${qna.qnaContent}</p>
-		                <p class="card-text">
-		                    <small class="text-muted">${qna.qnaDate}</small>
-		                </p>
-		            </div>
-		        </div>
-		        </c:forEach>
-		    </c:otherwise>
-		   </c:choose>
-		</div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="showDeleted">
-                            <label class="form-check-label" for="showDeleted">삭제된 문의 보기</label>
+                <ul class="nav nav-tabs" id="innerTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="adminQuestions-tab" data-bs-toggle="tab" data-bs-target="#adminQuestions" type="button">관리자 문의</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="productQuestions-tab" data-bs-toggle="tab" data-bs-target="#productQuestions" type="button">판매자 문의</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="receivedQuestions-tab" data-bs-toggle="tab" data-bs-target="#receivedQuestions" type="button">내 상품에 대한 문의</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content mt-3" id="innerTabContent">
+                    <!-- 관리자 문의 탭 -->
+                    <div class="tab-pane fade show active" id="adminQuestions" role="tabpanel">
+                        <h2>관리자에게 문의한 내용</h2>
+                        <div class="mt-3">
+                            <c:choose>
+                                <c:when test="${empty myQna}">
+                                    <div>조회된 결과가 존재하지 않습니다.</div>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="qna" items="${myQna}">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${qna.qnaTitle}</h5>
+                                                <p class="card-text">${qna.qnaContent}</p>
+                                                <p class="card-text">
+                                                    <small class="text-muted">${qna.qnaDate}</small>
+                                                </p>
+                                                <c:if test="${qna.answerNo != null}">
+                                                    <span class="badge bg-success">답변완료</span>
+                                                </c:if>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="showAnswered">
-                            <label class="form-check-label" for="showAnswered">내용검색</label>
+                    </div>
+                    
+                    <!-- 판매자 문의 탭 -->
+                    <div class="tab-pane fade" id="productQuestions" role="tabpanel">
+                        <h2>판매자에게 문의한 내용</h2>
+                        <div class="mt-3">
+                            <c:choose>
+                                <c:when test="${empty myProductQna}">
+                                    <div>조회된 결과가 존재하지 않습니다.</div>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="productQna" items="${myProductQna}">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${productQna.qnaTitle}</h5>
+                                                <p class="card-text">${productQna.qnaContent}</p>
+                                                <p class="card-text">
+                                                    <small class="text-muted">${productQna.qnaDate}</small>
+                                                </p>
+                                                <c:if test="${productQna.answer != null}">
+                                                    <span class="badge bg-success">답변완료</span>
+                                                </c:if>
+                                                <a href="${path2}/product/${productQna.productNo}" class="btn btn-primary mt-2">해당 상품 페이지로 이동</a>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
-                        <div class="input-group w-auto d-inline-flex align-middle">
-                            <input type="text" class="form-control" placeholder="작성자/제목">
-                            <button class="btn btn-primary" type="button">검색</button>
+                    </div>
+                    
+                    <!-- 내 상품에 대한 문의 탭 -->
+                    <div class="tab-pane fade" id="receivedQuestions" role="tabpanel">
+                        <h2>내 상품에 대한 문의</h2>
+                        <div class="mt-3">
+                            <c:choose>
+                                <c:when test="${empty receivedProductQna}">
+                                    <div>조회된 결과가 존재하지 않습니다.</div>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="productQna" items="${receivedProductQna}">
+                                        <div class="card mb-3" style="cursor: pointer;" onclick="location.href='${path2}/product/${productQna.productNo}'">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${productQna.qnaTitle}</h5>
+                                                <p class="card-text">${productQna.qnaContent}</p>
+                                                <p class="card-text">
+                                                    <small class="text-muted">${productQna.qnaDate}</small>
+                                                </p>
+                                                <c:if test="${productQna.answer != null}">
+                                                    <span class="badge bg-success">답변완료</span>
+                                                </c:if>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
     <jsp:include page="../common/footer.jsp"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

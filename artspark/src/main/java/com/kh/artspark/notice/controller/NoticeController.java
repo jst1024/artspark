@@ -36,24 +36,25 @@ public class NoticeController {
 	
 	private final NoticeService noticeService;
 	
+	
+	/**
+	 * 
+	 * @param page = 요청 파라미터 page 를 컨트롤러 메서드의 page파라미터에 매핑. 기본값이 1로 작성되어 요청에 page가 없더라도 page가 기본적으로 page=1로 설정된다.
+	 * @param model = 요청 처리 후 응답시 requestScope에 값을 담기 위한 객체
+	 * @return
+	 */
 	@GetMapping("/noticelist")
 	public String forwarding(@RequestParam(value="page", defaultValue="1") int page, Model model) {
 		
-		int listCount = noticeService.noticeCount(); // 공지사항 게시글 총 개수 => NOTICE테이블로부터 SELECT COUNT(*)활용해서 조회
-		int currentPage = page; // 현재페이지(사용자가 요청한 페이지)
-		int pageLimit = 5; // 페이지 하단에 보여질 페이징바의 최대 개수 => 5개로 고정 
-		int boardLimit = 10; // 한 페이지에 보여질 게시글의 최대 개수 => 10개로 고정
+		int listCount = noticeService.noticeCount(); 
+		int currentPage = page; 
+		int pageLimit = 5; 
+		int boardLimit = 10;
 		
-		int maxPage = (int)Math.ceil((double)listCount / boardLimit); // 가장 마지막 페이지가 몇 번 페이지인지(총 페이지의 개수)
-		int startPage = ((currentPage-1) / pageLimit) * pageLimit + 1; // 그 화면상 하단에 보여질 페이징바의 시작하는 페이지넘버
-		int endPage = startPage + pageLimit - 1;; // 그 화면상 하단에 보여질 페이징바의 끝나는 페이지넘버
+		int maxPage = (int)Math.ceil((double)listCount / boardLimit); 
+		int startPage = ((currentPage-1) / pageLimit) * pageLimit + 1;
+		int endPage = startPage + pageLimit - 1;;
 		
-		/* 총 페이지
-		 *   1. listCount를 double로 변환
-		 *   2. listCount / noticeLimit => 만약 소숫점으로 떨어진다면
-		 *   3. Math.ceil()을 이용해서 결과를 올림처리
-		 *   4. 결과값을 int로 형 변환
-		 */
 		
 		if(endPage > maxPage) {
 			endPage = maxPage;
@@ -68,7 +69,7 @@ public class NoticeController {
 				.maxPage(maxPage)
 				.startPage(startPage)
 				.endPage(endPage)
-				.build(); // 각각의 필드에 객체를 담아서 빌드 (순서에 상관이 없다는 특징이 있다.)
+				.build(); 
 		
 		
 		Map<String,Integer> map = new HashMap();
@@ -84,6 +85,8 @@ public class NoticeController {
 		model.addAttribute("noticeList", noticeList);
 		model.addAttribute("pageInfo", pageInfo);
 		
+		return "notice/noticeList";
+	}
 		/*
 		// 결과를 Map에 담기
 		 Map<String, Integer> pageInfo = new HashMap<>();
@@ -107,33 +110,35 @@ public class NoticeController {
 	        
 	        return result;
 		*/
-		return "notice/noticeList";
-		}
+
+	
+	/**
+	 * 
+	 * @param condition = noticeList.jsp에서 입력한 value속성값 : 조건(제목 또는 내용)
+	 * @param page = 요청 파라미터 page 를 컨트롤러 메서드의 page파라미터에 매핑. 기본값이 1로 작성되어 요청에 page가 없더라도 page가 기본적으로 page=1로 설정된다.
+	 * @param keyword = 검색을 위해 직접 입력한 값
+	 * @param model 요청 처리 후 응답시 requestScope에 값을 담기 위한 객체
+	 * @return
+	 */
 	@GetMapping("noticeSearchCount")
 	public String noticeSearchCount(String condition, @RequestParam(value="page", defaultValue = "1") int page, String keyword, Model model) {
 		
-		//log.info(" 검색 조건 : {}", condition);
-		//log.info(" 검색 키워드 : {}", keyword);
-		
-		//map에 담기
 		Map<String, String> map = new HashMap();
 		map.put("condition", condition);
 		map.put("keyword", keyword);
-		// service로
 		
+		// 검색 결과 수
 		int searchCount = noticeService.noticeSearchCount(map);
-		// log.info("검색 조건에 부합하는 행의 수 : {}", searchCount);
+		//페이지 정보 설정
 		int currentPage = page;
 		int pageLimit = 5;
 		int boardLimit = 10;
 		
 		//pageTemplate클래스에서 가져와서(get) pageInfo에 담아줌
 		PageInfo pageInfo = PageTemplate.getPageInfo(searchCount, currentPage, pageLimit, boardLimit);
-		
-		// offset(몇번 건너뛰고 가져갈 것인지 엑셀에서의 offset을 생각x ex. offset 4 => 50개를 조회하고 앞에 40를 제외하고 나머지를 들고간다.)
+		// RowBounds 객체 생성
 		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
-
-		
+		// 조건과 페이징 정보를 사용하여 공지사항 목록 조회
 		List<Notice> noticeList = noticeService.noticeFindByConditionAndKeyword(map, rowBounds);
 		
 		model.addAttribute("noticeList", noticeList);
@@ -156,66 +161,59 @@ public class NoticeController {
 
 		ImgFile imgFile = new ImgFile();
 		
-		if(!upfile.getOriginalFilename().equals("") && upfile.getOriginalFilename() != null) {
-			
-			// 첨부파일이 존재하면.
-			// 1. 업로드 완료
-			// 2. Board객체에 originName + changeName에 담아줘야한다.
+		if(
+				!upfile.getOriginalFilename().equals("") 
+				&& upfile.getOriginalFilename() 
+				!= null) 
+		{
 			imgFile.setOriginName(upfile.getOriginalFilename());
 			imgFile.setChangeName(saveFile(upfile, session));
 			imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
 			imgFile.setBoardType("공지");
 		}
-		//log.info("{}", imgFile.getOriginName());
-		//log.info("{}", imgFile.getChangeName());
-		
-		//첨부파일이 존재하지 않을 경우 board : 제목 / 내용 / 작성자
-		// 첨부파일이 존재할 경우 board : 제목 / 내용 / 작성자 / 원봉명 / 변경된 경로와 이름
+
 		if(noticeService.insertNotice(notice, imgFile) > 0) {
 			session.setAttribute("alertMsg", "게시글 작성 성공~!");
-			return "redirect:/noticelist"; // 무조건 리다이렉트 해야함. 
-		
+			return "redirect:/noticelist"; // 무조건 리다이렉트 해야함. 	
 		}else {
 			model.addAttribute("errorMsg", "게시글 작성 실패!");
 			return "common/errorPage";
-		}
-		
+		}	
 	}
 	
     public String saveFile(MultipartFile upfile, HttpSession session) {
-		
 		String originName = upfile.getOriginalFilename();
-		
 		String ext = originName.substring(originName.lastIndexOf('.')+1, originName.length());
-		// "abc.ddd.txt" => 뒤에 . 기준
 		
-		int num = (int)(Math.random() * 900) + 100; // 값의 범위를 곱한다. 그런뒤에 시작값을 더해준다.
-		// Math.random() : 0.0 ~ 0.9999999....
+		int num = (int)(Math.random() * 900) + 100; // 날짜형식 뒤에 붙을 난수 값 설정
 		
-		// 시간메서드
-		// log.info("currentTime : {}", new Date());
+		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()); // 시간메서드 날짜형식지정
 		
-		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		
-		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/"); // /가 없으면 파일이 들어가지 않는다.
-		// 새로운 파일 명
-		String changeName = "ArtSpark_" + currentTime + "_" + num + ext;
-		
+		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/"); // 경로 지정
+
+		String changeName = "ArtSpark_" + currentTime + "_" + num + ext; 		// 새로운 파일 명
 		try {
 			upfile.transferTo(new File(savePath + changeName)); // 파일경로 + 파일이름
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		
+		}	
 		return changeName;
 	}
+    
+	// public ModelAndView findByBoardNo(HttpServletRequest request, @RequestParam(value="boardNo") int boardNo) {
+	// 리퀘스트서블릿 - 디스패처서블릿에 담아서 보내줌. 리퀘스트파람이란? HTTP 요청 파라미터를 컨트롤러 메서드의 파라미터에 바인딩하는 데 사용됩니다. 주로 GET 요청의 쿼리 스트링이나 POST 요청의 폼 데이터에서 값을 추출할 때 사용됩니다.
+	// int abc = Integer.parseInt("123"); // '파싱한다'라고 표현함. 형변환과는 다른개념임. 기본형->참조형(o). 참조형->기본형(x)
+    
+	//log.info("{}", imgFile);
+	//응답화면 지정
+    
+	//get방식이기때문에 DML(CRUD)이 성공할 수도 있고 실패할 수도 있음. 카운트가 증가되면 상제조회가 되도록.
+	// 실패여부 확인
 	@GetMapping("noticeDetail")
 	public ModelAndView noticeFindById(int noticeNo, ModelAndView mv) {
-		// public ModelAndView findByBoardNo(HttpServletRequest request, @RequestParam(value="boardNo") int boardNo) {
-		// 리퀘스트서블릿 - 디스패처서블릿에 담아서 보내줌. 리퀘스트파람이란? HTTP 요청 파라미터를 컨트롤러 메서드의 파라미터에 바인딩하는 데 사용됩니다. 주로 GET 요청의 쿼리 스트링이나 POST 요청의 폼 데이터에서 값을 추출할 때 사용됩니다.
-		// int abc = Integer.parseInt("123"); // '파싱한다'라고 표현함. 형변환과는 다른개념임. 기본형->참조형(o). 참조형->기본형(x)
+
 		Notice notice = noticeService.noticeFindById(noticeNo);
 		ImgFile imgFile = noticeService.findImgFileByNoticeNo(noticeNo);
 		
@@ -223,13 +221,11 @@ public class NoticeController {
 			mv.addObject("notice",notice);
 			mv.addObject("imgFile", imgFile);
 			mv.setViewName("notice/noticeDetail");	
-			//log.info("{}", imgFile);
-			//응답화면 지정
+
 		} else {
 			mv.addObject("errorMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");
 		}
-		//get방식이기때문에 DML(CRUD)이 성공할 수도 있고 실패할 수도 있음. 카운트가 증가되면 상제조회가 되도록.
-		// 실패여부 확인
+
 
 		return mv;
 	}
@@ -260,26 +256,23 @@ public class NoticeController {
 	    ImgFile imgFile = new ImgFile();
 	    
 	    // 새로운 첨부파일이 존재하는 경우
-	    if(!reUpFile.getOriginalFilename().equals("")) { // 빈문자열과 같지 않으면 (새로운 첨부파일이 있다.)
-	        // 새로운 파일 저장
-	        String changeName = saveFile(reUpFile, session);
+	    if(!reUpFile.getOriginalFilename().equals("") && reUpFile.getOriginalFilename() != null ) { 
+	        
+	        String changeName = saveFile(reUpFile, session); // 새로운 파일 저장
 	        imgFile.setOriginName(reUpFile.getOriginalFilename());
 	        imgFile.setChangeName(changeName);
 	        imgFile.setImgFilePath("resources/uploadFiles/" + changeName);
 	        imgFile.setBoardNo(notice.getNoticeNo());
-	        imgFile.setBoardType("공지");
-	        
-	        //log.info("{}", notice);
-	        //log.info("{}", imgFile);
-	       
+	        imgFile.setBoardType("공지");       
 	        model.addAttribute("imgFile", imgFile);
 	    }
-
 	    if (noticeService.updateNotice(notice, imgFile) > 0) {
 	        session.setAttribute("alertMsg", "수정 완료");
-	        return "redirect:noticeDetail?noticeNo=" + notice.getNoticeNo();
+	        
+	        return "redirect:noticeDetail?noticeNo=" + notice.getNoticeNo();        
 	    } else {
 	        session.setAttribute("errorMsg", "정보 수정 실패");
+	        
 	        return "common/errorPage";
 	    }
 	}

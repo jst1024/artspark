@@ -66,9 +66,6 @@
 		  FROM
 		        NOTICE
 		 WHERE  
-		  <if test="condition == 'writer'">      
-		        MEM_ID LIKE '%' || #{keyword} || '%'
-	      </if>
 		  <if test="condition == 'title'">
 		   		NOTICE_TITLE LIKE '%' || #{keyword} || '%'
 		  </if>
@@ -96,6 +93,7 @@
      	    BY
      			NOTICE_NO DESC
 	</select>
+	
 	<insert id="insertNotice" parameterType="notice">
 		INSERT
 	      INTO
@@ -180,6 +178,7 @@
 	   	 WHERE
 	   	 		NOTICE_NO = #{noticeNo}
 	</delete>
+	
 	<update id="updateNotice" parameterType="notice">
 		UPDATE
 				NOTICE

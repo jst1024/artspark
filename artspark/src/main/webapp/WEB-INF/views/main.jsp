@@ -165,8 +165,11 @@
                     <ul class="list-group">
                         <c:forEach var="notice" items="${noticeList}">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="${path2}/noticeDetail?noticeNo=${notice.noticeNo}" style="color: black; text-decoration: none;">${notice.noticeTitle}</a>
-                                <fmt:formatDate value="${notice.noticeDate}" pattern="yyyy-MM-dd"/>
+                                <a href="${path2}/noticeDetail?noticeNo=${notice.noticeNo}" 
+                                	style="color: black; text-decoration: none;">
+                                	${notice.noticeTitle}</a>
+                                <fmt:formatDate value="${notice.noticeDate}" 
+                                	pattern="yyyy-MM-dd"/>
                             </li>
                         </c:forEach>
                     </ul>

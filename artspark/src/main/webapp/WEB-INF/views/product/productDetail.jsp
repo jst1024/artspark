@@ -479,7 +479,7 @@
 		                	
 		                	// 작가 문의 페이지로 이동
 		                	function productQnaForward() {
-		                		location.href = '${path1}/productQna';
+		                		location.href = '${path1}/artistQna?productNo=${product.productNo}';
 		                	}
 		                	
 		                	// 작품삭제 버튼 클릭 시
@@ -527,44 +527,61 @@
 	    	</span>
 	    </div>
 	    
-	    <!-- 문의 및 답변 -->
-	    <div class="row" style="margin-bottom: 50px;">
-	    	<div class="col-md-2">
-	            <h3>문의 및 답변</h3>
-	        </div>
-	        <div class="col-md-10">
-	            <small style="color:red;"><i class="fas fa-exclamation-circle"></i> 글을 작성하시면 실시간으로 알림 메시지가 발송됩니다.</small>
-	        </div>
-	        
-			<div class="col-md-12">
-				<p class="d-flex justify-content-between">
-			        <span></span>
-			        <button type="button" class="small-btn" id="artist-qna-btn" onclick="productQnaForward();">작가에게 문의하기</button>
-			    </p>
-	        </div>
-	        
-       		<div class="col-md-2 table-head">
-           		<p style="text-align: center;">닉네임</p>
-            </div>
-            <div class="col-md-8 table-head">
-           		<p style="text-align: center;">문의 내용</p>
-            </div>
-            <div class="col-md-2 table-head">
-           		<p style="text-align: center;">작성 시간</p>
-            </div>
-     
-     		<c:forEach begin="1" end="5">
-	            <div class="col-md-2 table-body" style="border-bottom: 1px solid #e6e6e6;">
-	           		<p style="text-align: center;"><i class="fas fa-lock"></i>****a</p>
-	            </div>
-	            <div class="col-md-8 table-body" style="border-bottom: 1px solid #e6e6e6;">
-	           		<p>비밀글입니다. 작성자와 해당 작가만 볼 수 있습니다.</p>
-	            </div>
-	            <div class="col-md-2 table-body" style="border-bottom: 1px solid #e6e6e6;">
-	           		<p style="text-align: center;">24-06-20</p>
-	            </div>
-            </c:forEach>
-	    </div>
+<!-- 문의 및 답변 -->
+<div class="row" style="margin-bottom: 50px;">
+    <div class="col-md-2">
+        <h3>문의 및 답변</h3>
+    </div>
+    <div class="col-md-10">
+        <small style="color:red;"><i class="fas fa-exclamation-circle"></i> 글을 작성하시면 실시간으로 알림 메시지가 발송됩니다.</small>
+    </div>
+
+    <div class="col-md-12">
+        <p class="d-flex justify-content-between">
+            <span></span>
+            <button type="button" class="small-btn" id="artist-qna-btn" onclick="productQnaForward();">작가에게 문의하기</button>
+        </p>
+    </div>
+
+    <div class="col-md-2 table-head">
+        <p style="text-align: center;">닉네임</p>
+    </div>
+    <div class="col-md-8 table-head">
+        <p style="text-align: center;">문의 내용</p>
+    </div>
+    <div class="col-md-2 table-head">
+        <p style="text-align: center;">작성 시간</p>
+    </div>
+
+    <c:forEach var="productQna" items="${productQnaList}">
+        <div class="col-md-2 table-body" style="border-bottom: 1px solid #e6e6e6;">
+            <p style="text-align: center;">
+                <c:choose>
+                    <c:when test="${productQna.secret == 'Y'}">
+                        <i class="fas fa-lock"></i>${productQna.memId.substring(0, 1)}****${productQna.memId.substring(productQna.memId.length()-1)}
+                    </c:when>
+                    <c:otherwise>
+                        ${productQna.memId}
+                    </c:otherwise>
+                </c:choose>
+            </p>
+        </div>
+        <div class="col-md-8 table-body" style="border-bottom: 1px solid #e6e6e6;">
+            <c:choose>
+                <c:when test="${productQna.secret == 'Y' && sessionScope.loginUser.memId != productQna.memId && sessionScope.loginUser.memId != product.memId}">
+                    <p>비밀글입니다. 작성자와 해당 작가만 볼 수 있습니다.</p>
+                </c:when>
+                <c:otherwise>
+                    <p>${productQna.qnaContent}</p>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <div class="col-md-2 table-body" style="border-bottom: 1px solid #e6e6e6;">
+            <p style="text-align: center;"><fmt:formatDate value="${productQna.qnaDate}" pattern="yy-MM-dd" /></p>
+        </div>
+    </c:forEach>
+</div>
+
 	    
 	    <!-- 문의 페이징 -->
 	    <nav aria-label="Page navigation">
