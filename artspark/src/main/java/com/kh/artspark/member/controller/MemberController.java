@@ -38,6 +38,10 @@ import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
 
+import com.kh.artspark.qna.model.service.QnaService;
+import com.kh.artspark.qna.model.vo.ProductQna;
+import com.kh.artspark.qna.model.vo.Qna;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,6 +53,7 @@ public class MemberController {
 	private final MemberService memberService;
 	private final BCryptPasswordEncoder bcryptPasswordEncoder;
 	private final JavaMailSender sender;
+	private final QnaService qnaService; // QnaService 주입
 	
 	@GetMapping("memberList")
 	public void memberList() {
@@ -390,13 +395,6 @@ public class MemberController {
 	    return Pwd.toString();
 	}
 
-	
-	//마이페이지 
-	@GetMapping("myPage")
-	public String myPage() {
-		return "member/myPage";
-	}
-
 	//주문관리로 이동
 	@GetMapping("orderManage")
 	public String ordermanage() {
@@ -442,10 +440,29 @@ public class MemberController {
 		return "member/interest";
 	}
 	
-	
-	
-	
-	
+	// 마이페이지
+	@GetMapping("myPage")
+	public String myPage(HttpSession session, Model model) {
+	    Member loginUser = (Member) session.getAttribute("loginUser");
+	    if (loginUser == null) {
+	        return "redirect:/loginPage"; // 로그인 페이지로 리다이렉트
+	    }
+
+	    // 내가 작성한 문의 목록 조회
+	    List<Qna> myQna = qnaService.getMyQna(loginUser.getMemId());
+	    model.addAttribute("myQna", myQna);
+
+	    // 내가 작성한 상품 문의 목록 조회
+	    List<ProductQna> myProductQna = qnaService.getMyProductQna(loginUser.getMemId());
+	    model.addAttribute("myProductQna", myProductQna);
+
+	    // 내 상품에 등록된 문의 목록 조회
+	    List<ProductQna> receivedProductQna = qnaService.getReceivedProductQna(loginUser.getMemId());
+	    model.addAttribute("receivedProductQna", receivedProductQna);
+
+	    return "member/myPage";
+	}
+
 	
 	
 	

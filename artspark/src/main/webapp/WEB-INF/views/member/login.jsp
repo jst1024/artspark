@@ -73,7 +73,6 @@
               <a id="kakao-login-btn">
               	<img alt="로그인" src="resources/images/kakao_login_button.png">
               		<img src="${loginUser.thumbnailImg }"/>
-              		<button id="logout">로그아웃</button>
               </a>
 			    </div>
             </div>

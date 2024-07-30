@@ -35,10 +35,20 @@
                             <li class="nav-item"><a class="nav-link" href="${path2 }/product?category=웹툰 · 만화">웹툰·만화</a></li>
                             <li class="nav-item"><a class="nav-link" href="${path2 }/requestlist">의뢰게시판</a></li>
                         </ul>
-                        <form class="form-inline my-2 my-lg-0">
-                            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        </form>
-
+                        
+						<form class="form-inline my-2 my-lg-0" action="${path2 }/product/search" method="get">
+	                		<div class="input-group">
+		                		<c:if test="${ empty keyword }">
+			                    	<input type="text" class="form-control" name="keyword" placeholder="검색어 입력">
+			                    </c:if>
+			                    <c:if test="${ not empty keyword }">
+			                    	<input type="text" class="form-control" name="keyword" value="${ keyword }" placeholder="검색어 입력">
+			                    </c:if>
+			                    <div class="input-group-append">
+			                        <button class="btn btn-primary" type="submit" style="display: none;">검색</button>
+			                    </div>
+			                </div>
+		                </form>
                         <ul class="navbar-nav auth-links">
                             <c:choose>
                                 <c:when test="${ sessionScope.loginUser.memId eq 'admin' }">
@@ -51,12 +61,11 @@
                                 </c:when>
                                 <c:when test="${ sessionScope.loginUser.memCategory eq 'B' }">
                                     <li class="nav-item"><a class="nav-link" href="${path2 }/logout">로그아웃</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="${path2 }/updateProduct">회원정보</a></li>
                                     <li class="nav-item"><a class="nav-link" href="${path2 }/myPage">마이페이지</a></li>
                                 </c:when>
                                 <c:otherwise>
                                     <li class="nav-item"><a class="nav-link" href="${ path2 }/logout">로그아웃</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="${ path2 }/updatePage">회원정보</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="${path2 }/myPage">마이페이지</a></li>
                                 </c:otherwise>
                             </c:choose>
                         </ul>

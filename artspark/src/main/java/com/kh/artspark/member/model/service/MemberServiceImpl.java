@@ -12,6 +12,7 @@ import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
 
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -115,14 +116,22 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Member> getActiveMembers(int startValue, int endValue) {
-		return memberMapper.getActiveMembers(startValue, endValue);
+	public int memberCount() {
+		return memberMapper.memberCount();
 	}
 
 	@Override
-	public int countActiveMembers() {
-		return memberMapper.countActiveMembers();
+	public List<Member> suspendedMemberList(Map<String,Integer> map) {
+		return memberMapper.suspendedMemberList(map);
 	}
+
+	@Override
+	public int suspendedMemberCount() {
+		return memberMapper.suspendedMemberCount();
+	}
+
+
+
 	
 	
 	

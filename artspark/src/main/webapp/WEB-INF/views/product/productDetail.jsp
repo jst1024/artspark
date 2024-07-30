@@ -569,7 +569,7 @@
 		                	
 		                	// 작가 문의 페이지로 이동
 		                	function productQnaForward() {
-		                		location.href = '${path1}/productQna';
+		                		location.href = '${path1}/artistQna?productNo=${product.productNo}';
 		                	}
 		                	
 		                	// 작품삭제 버튼 클릭 시
@@ -616,7 +616,7 @@
 	    		</c:forEach>
 	    	</span>
 	    </div>
-	    
+
 	    <!-- 문의 및 답변 -->
 	    <div class="row" style="margin-bottom: 50px;">
 	    	<div class="col-md-2">

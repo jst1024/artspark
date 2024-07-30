@@ -28,12 +28,12 @@
             margin: 0 auto;
             overflow-x: auto;
         }
-        .search-form {
-            display: flex;
-            justify-content: flex-start;
-            margin-bottom: 25px;
-            margin-left : 335px;
-        }
+		.search-form {
+		    display: flex;
+		    justify-content: flex-end;
+		    margin-bottom: 25px;
+		    margin-left : 335px;
+		}
         #noticeList {text-align:center;}
         #noticeList>tbody>tr:hover {cursor:pointer;}
 
@@ -114,7 +114,6 @@
 	        
 	        <script>
 	               $(() => {
-	            	   console.dir('pagingArea');
 	            	   
 	            	   $('.notice-Detail').click(e => {
 	            		   location.href = 'noticeDetail?noticeNo=' + $(e.currentTarget).children().eq(0).text();

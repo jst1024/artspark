@@ -71,7 +71,7 @@ public class ProductController {
 		int currentPage = page;
 		int pageLimit = 5;
 		int boardLimit = 4;
-		
+    
 		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
 		
 		// 찜테이블에 있는 멤버아이디와 session에 저장된 멤버아이디를 비교
@@ -108,7 +108,7 @@ public class ProductController {
 	    } else {
 	        productList = productService.findAllProductList(map, rowBounds);
 	    }
-
+    
 		
 		// 태그 목록 불러오기
 		List<Tag> tags = productService.getTags();

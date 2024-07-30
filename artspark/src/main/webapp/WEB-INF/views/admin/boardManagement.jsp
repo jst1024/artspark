@@ -61,7 +61,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>문의 ID</th>
+                        <th>문의 번호</th>
                         <th>문의 제목</th>
                         <th>작성자</th>
                         <th>작성 날짜</th>
@@ -138,7 +138,7 @@ $(document).ready(function() {
                     pagingArea.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (pageInfo.currentPage - 1) + '">이전</a></li>');
                 }
 
-                for (var i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
+                for (var i = pageInfo.startPage; i <= Math.min(pageInfo.endPage, pageInfo.maxPage); i++) {
                     var activeClass = (i === pageInfo.currentPage) ? 'active' : '';
                     pagingArea.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
                 }
@@ -175,12 +175,13 @@ $(document).ready(function() {
                 // 페이지네이션 갱신
                 var pagingArea = $("#requestPagingArea .pagination-custom");
                 pagingArea.empty();
+                
 
                 if (pageInfo.startPage > 1) {
                     pagingArea.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (pageInfo.currentPage - 1) + '">이전</a></li>');
                 }
 
-                for (var i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
+                for (var i = pageInfo.startPage; i <= Math.min(pageInfo.endPage, pageInfo.maxPage); i++) {
                     var activeClass = (i === pageInfo.currentPage) ? 'active' : '';
                     pagingArea.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
                 }
@@ -222,7 +223,7 @@ $(document).ready(function() {
                     pagingArea.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (pageInfo.currentPage - 1) + '">이전</a></li>');
                 }
 
-                for (var i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
+                for (var i = pageInfo.startPage; i <= Math.min(pageInfo.endPage, pageInfo.maxPage); i++) {
                     var activeClass = (i === pageInfo.currentPage) ? 'active' : '';
                     pagingArea.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
                 }
@@ -264,7 +265,7 @@ $(document).ready(function() {
                     pagingArea.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (pageInfo.currentPage - 1) + '">이전</a></li>');
                 }
 
-                for (var i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
+                for (var i = pageInfo.startPage; i <= Math.min(pageInfo.endPage, pageInfo.maxPage); i++) {
                     var activeClass = (i === pageInfo.currentPage) ? 'active' : '';
                     pagingArea.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
                 }
@@ -295,7 +296,7 @@ $(document).ready(function() {
         } else if(containerId === 'productPagingArea') {
             loadProducts(page);
         } else if(containerId === 'qnaPagingArea') {
-            loadInquiries(page);
+            loadQnas(page);
         }
     });
 
@@ -324,7 +325,6 @@ $(document).ready(function() {
     });
 });
 </script>
-
 <style>
 .board-management-container {
     display: flex;
