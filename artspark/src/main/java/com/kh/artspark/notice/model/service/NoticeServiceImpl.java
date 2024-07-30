@@ -45,20 +45,21 @@ public class NoticeServiceImpl implements NoticeService {
 		 int result1 = noticeMapper.insertNotice(notice);
 		 int result2 = 1;
 		 
-		 System.out.println(imgFile);
 		 if(imgFile.getOriginName() != null && !imgFile.getOriginName().equals("")) {
-			 System.out.println(imgFile.getOriginName());
 			 result2 = noticeMapper.insertImgFile(imgFile);
-		 }
-		 
+		 } 
 		 return result1 * result2;
 	}
+	
+	
 	/*
 	@Override
 	public int noticeIncreaseCount(int noticeNo) {
 		return noticeMapper.noticeIncreaseCount(noticeNo);
 	}
     */
+	
+	
 	@Override
 	public Notice noticeFindById(int noticeNo) {
 		return noticeMapper.noticeFindById(noticeNo);
@@ -74,12 +75,13 @@ public class NoticeServiceImpl implements NoticeService {
 		 int result1 = noticeMapper.updateNotice(notice);
 		 int result2 = 1;
 		 
-		 if(imgFile.getOriginName() != null) {
+		 if(imgFile.getOriginName() != null && !imgFile.getOriginName().equals("")) {
 			  result2 = noticeMapper.updateImgFile(imgFile);
 		 }
 		 
 		 return result1 * result2;
 	}
+	
 	@Override
 	public int deleteNotice(int noticeNo) {
 		return noticeMapper.deleteNotice(noticeNo);

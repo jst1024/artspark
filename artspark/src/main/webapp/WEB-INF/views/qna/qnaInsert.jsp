@@ -66,10 +66,10 @@
                  <label class="form-check-label" for="secret">비밀글 여부</label>
              </div>
             <div class="form-group">
-                <label for="category">문의대상</label>
+                <label for="category">문의 목적</label>
                 <select class="form-control dropdown-custom" name="qnaCategory">
-                    <option value="관리자">관리자</option>
-                    <option value="판매자">판매자</option>
+                    <option value="사이트이용">사이트이용</option>
+                    <option value="결제관련">결제관련</option>
                 </select>
             </div>         
 		     <div class="form-group">
@@ -80,12 +80,9 @@
 		     
 		     <div class="form-group">
 		         <label for="editorTxt">내용</label>
-		         <textarea class="form-control" id="editorTxt" name="qnaContent" rows="10">
-		         ----------------------------------------------<br>
-		         * 판매자문의시 판매자 이름과 상품명을 작성해주세요.<br>
-		         * 판매자 : <br> 
-		         * 상품명 : <br>
-		         ----------------------------------------------<br>
+		         <textarea class="form-control" id="editorTxt" name="qnaContent" rows="10" 
+		         placeholder="----------------------------------------------<br/>
+		         * 관리자에게 판매자문의시 판매자 이름과 상품명을 작성해주세요.<br/>">
 		         </textarea>
 		         
 		     </div>

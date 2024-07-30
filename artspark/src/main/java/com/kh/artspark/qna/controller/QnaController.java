@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,8 +25,8 @@ import com.kh.artspark.common.model.vo.PageInfo;
 import com.kh.artspark.common.template.PageTemplate;
 import com.kh.artspark.qna.model.service.QnaService;
 import com.kh.artspark.qna.model.vo.Answer;
+import com.kh.artspark.qna.model.vo.ProductQna;
 import com.kh.artspark.qna.model.vo.Qna;
-import com.kh.artspark.request.model.vo.Request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +71,7 @@ public class QnaController {
 		map.put("endValue", endValue);
 		
 		List<Qna> qnaList = qnaService.qnaFindAllWithAnswers(map);
+		// log.info("{}", qnaList);
 		
 		model.addAttribute("qnaList", qnaList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -129,32 +131,34 @@ public class QnaController {
 		}
 	}
 
-	@PostMapping("/artistQna")
-	public String insertArtistQna(Qna qna, HttpSession session, Model model, MultipartFile upfile, @RequestParam("productNo") int productNo) {
-	    // productNo 가 들어오질 않아..뭐가 원인이지..
-	    log.info("Received productNo: {}", productNo);
+    @GetMapping("artistQna")
+    public String showArtistQna(@RequestParam("productNo") int productNo, Model model) {
+        model.addAttribute("productNo", productNo);
+        return "product/productQna";
+    }
 
-	    String artistMemId = qnaService.getArtistMemIdByProductNo(productNo);
-	    qna.setMemId(artistMemId);
+    @PostMapping("artistQna")
+    public String submitProductQna(ProductQna productQna, @RequestParam("upfile") MultipartFile upfile, HttpSession session) {
+        ImgFile imgFile = null;
 
-	    ImgFile imgFile = new ImgFile();
+        if (upfile != null && !upfile.isEmpty()) {
+            imgFile = new ImgFile();
+            imgFile.setOriginName(upfile.getOriginalFilename());
+            imgFile.setChangeName(saveFile(upfile, session));
+            imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
+            imgFile.setBoardType("상품문의");
+        }
 
-	    if (!upfile.getOriginalFilename().equals("") && upfile.getOriginalFilename() != null) {
-	        String changeName = saveFile(upfile, session);
-	        imgFile.setOriginName(upfile.getOriginalFilename());
-	        imgFile.setChangeName(changeName);
-	        imgFile.setImgFilePath("resources/uploadFiles/" + changeName);
-	        imgFile.setBoardType("문의");
-	    }
+        if (qnaService.insertProductQna(productQna, imgFile) > 0) {
+            session.setAttribute("alertMsg", "문의가 성공적으로 등록되었습니다.");
+            return "redirect:/product/" + productQna.getProductNo();
+        } else {
+            session.setAttribute("errorMsg", "문의 등록 실패!");
+            return "common/errorPage";
+        }
+    }
+    
 
-	    if (qnaService.insertQna(qna, imgFile) > 0) {
-	        session.setAttribute("alertMsg", "문의가 성공적으로 등록되었습니다.");
-	        return "redirect:/product/" + productNo;
-	    } else {
-	        model.addAttribute("errorMsg", "문의 등록에 실패했습니다.");
-	        return "common/errorPage";
-	    }
-	}
 
 	public String saveFile(MultipartFile upfile, HttpSession session) {
 		String originName = upfile.getOriginalFilename();
@@ -231,27 +235,50 @@ public class QnaController {
 	        return "common/errorPage";
 	    }
 	}
-	@PostMapping("insertAnswer")
-	public String insertAnswer(Answer answer, HttpSession session, Model model, MultipartFile upfile) { 
-		ImgFile imgFile = new ImgFile();
-		
-		if (!upfile.getOriginalFilename().equals("") && upfile.getOriginalFilename() != null) {
-		    imgFile.setOriginName(upfile.getOriginalFilename());
-		    imgFile.setChangeName(saveFile(upfile, session));
-		    imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
-		    imgFile.setBoardType("답변");
-		}
-
-		if (answer.getSecret() == null || answer.getSecret().isEmpty()) {
-		    answer.setSecret("N");
-		}
-
-		if (qnaService.insertAnswer(answer, imgFile) > 0) {
-		    session.setAttribute("alertMsg", "게시글 작성 성공~!");
-		    return "redirect:/qnalist";
-		} else {
-		    model.addAttribute("errorMsg", "게시글 작성 실패!");
-		    return "common/errorPage";
-		}
+	
+	@GetMapping("answerInsert")
+	public String answerInsert() {
+		return "qna/answerInsert";
 	}
+
+	@PostMapping("insertAnswer")
+	public String insertAnswer(Answer answer, HttpSession session, Model model, MultipartFile upfile, @RequestParam int qnaNo) { 
+	    ImgFile imgFile = new ImgFile();
+	    
+	    if (!upfile.getOriginalFilename().equals("") && upfile.getOriginalFilename() != null) {
+	        imgFile.setOriginName(upfile.getOriginalFilename());
+	        imgFile.setChangeName(saveFile(upfile, session));
+	        imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
+	        imgFile.setBoardType("답변");
+	    }
+
+	    if (qnaService.insertAnswer(answer, imgFile) > 0) {
+	        session.setAttribute("alertMsg", "답변 작성 성공~!");
+	        return "redirect:/qnalist";
+	    } else {
+	        model.addAttribute("errorMsg", "게시글 작성 실패!");
+	        return "common/errorPage";
+	    }
+	}
+	@GetMapping("answerDetail")
+	public ModelAndView getAnswerDetail(@RequestParam int answerNo, ModelAndView mv) {
+	    Answer answer = qnaService.findAnswerById(answerNo); // 답변을 조회하는 메서드
+	    ImgFile imgFile = qnaService.findImgFileByAnswerNo(answerNo); // 답변에 첨부된 이미지 파일 조회
+
+	    if (answer != null) {
+	        mv.addObject("answer", answer);
+	        mv.addObject("imgFile", imgFile);
+	        mv.setViewName("qna/answerDetail");
+	    } else {
+	        mv.addObject("errorMsg", "답변 상세조회에 실패했습니다.").setViewName("common/errorPage");
+	    }
+	    return mv;
+	}
+	// 마이페이지에서의 답변
+    @GetMapping("getAnswerDetail")
+    @ResponseBody
+    public Answer getAnswerDetail(@RequestParam int answerNo) {
+        Answer answer = qnaService.findAnswerById(answerNo);
+        return answer;
+    }
 }

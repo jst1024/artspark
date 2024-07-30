@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문의 글 상세보기</title>
+    <title>답변 글 상세보기</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -53,33 +53,20 @@
     <jsp:include page="../common/header.jsp" />
     <div class="container-fluid" style="max-width: 1920px;">
         <div class="container-main">
-            <h2 class="mt-5">질문 글 상세보기</h2>
+            <h2 class="mt-5">답변 글 상세보기</h2>
             <table class="table table-bordered">
                 <tbody>
                     <tr>
- 						<th>비밀 글 여부</th>
-                        <td>
-                            <c:choose>
-                                <c:when test="${qna.secret == 'Y'}" >
-                                    <i class="fas fa-lock secret-icon"></i>비밀글
-                                </c:when>
-                                <c:otherwise>
-                                    <i class="fas fa-unlock non-secret-icon"></i>일반글
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <th scope="row">글 번호</th>
-                        <td>${qna.qnaNo}</td>
+                        <th scope="row">답변 글 번호</th>
+                        <td>${answer.answerNo}</td>
                         <th scope="row">작성일</th>
-                        <td>${qna.qnaDate}</td>
-                    </tr>
-                    <tr>
-                        <th scope='row'>문의 목적</th>
-                        <td colspan="6">${qna.qnaCategory }</td>
+                        <td>${answer.answerDate}</td>
+                        <th scope="row">작성자</th>
+                        <td>${qna.answerMemId}</td>                        
                     </tr>
                     <tr>
                         <th scope="row">제목</th>
-                        <td colspan="6">${qna.qnaTitle}</td>
+                        <td colspan="6">${answer.answerTitle}</td>
                     </tr>
                     <tr>
                         <td colspan="6" class="qna-content">
@@ -91,12 +78,12 @@
                                     <span></span>
                                 </c:if>
                             </div>
-                            <p>${qna.qnaContent}</p>
+                            <p>${answer.answerContent}</p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">첨부파일</th>
-                        <td colspan="6">
+                        <td colspan="5">
                             <c:if test="${imgFile != null}">
                                 <strong>첨부파일: </strong><a href="${imgFile.imgFilePath}" target="_blank">${imgFile.originName}</a>
                             </c:if>
@@ -110,27 +97,23 @@
             <div class="memId-actions">
                 <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우나 관리자만 보여져야 함 -->
                 <c:choose>
-                	<c:when test="${sessionScope.loginUser != null && sessionScope.loginUser.memId eq qna.memId}">
-                    	<a class="btn btn-primary" onclick="postSubmit(this.innerHTML);">수정하기</a>
-                    	<a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">삭제하기</a>
+                	<c:when test="${sessionScope.loginUser != null || sessionScope.loginUser.memId == 'admin'}">
+                    	<a class="btn btn-primary" onclick="postSubmit(this.innerHTML);">답변 수정하기</a>
+                    	<a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">답변 삭제하기</a>
                     	<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
                 	</c:when>
                 	<c:otherwise>
                			<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
                 	</c:otherwise>
                 </c:choose>
-                <c:if test="${sessionScop.loginUser != null || sessionScope.loginUser.memId eq 'admin' }">
-                	<a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">삭제하기</a>
-                	<button type="button" class="btn btn-success" onclick="location.href='answerInsert?qnaNo=${qna.qnaNo}'">답변하기</button>
-                </c:if>
-                <form method="post" action="" id="QnaPostForm">
-                    <input type="hidden" name="qnaNo" value="${qna.qnaNo }" />
+                <form method="post" action="" id="AnswerPostForm">
+                    <input type="hidden" name="answerNo" value="${answer.answerNo }" />
                     <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
                 </form>
                 <script>
                     function postSubmit(el) {
-                        const attrValue = '수정하기' === el ? 'updateQna' : 'deleteQna';
-                        $('#QnaPostForm').attr('action', attrValue).submit();
+                        const attrValue = '수정하기' === el ? 'updateAnswer' : 'deleteAnswer';
+                        $('#AnswerPostForm').attr('action', attrValue).submit();
                     }
                 </script>
             </div>

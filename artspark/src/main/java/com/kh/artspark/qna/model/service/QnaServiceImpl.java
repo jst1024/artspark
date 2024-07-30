@@ -1,5 +1,6 @@
 package com.kh.artspark.qna.model.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,33 +9,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.artspark.common.model.vo.ImgFile;
+import com.kh.artspark.qna.controller.QnaController;
 import com.kh.artspark.qna.model.dao.QnaMapper;
 import com.kh.artspark.qna.model.vo.Answer;
+import com.kh.artspark.qna.model.vo.ProductQna;
 import com.kh.artspark.qna.model.vo.Qna;
-import com.kh.artspark.request.model.vo.Request;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class QnaServiceImpl implements QnaService {
 	
 	public final QnaMapper qnaMapper;
 	
 	
-	@Override
+	@Override 
 	public int qnaCount() {
 		return qnaMapper.qnaCount();
 	}
 
-	@Override
-	public List<Qna> qnaFindAllWithAnswers(Map<String, Integer> map) {
-		return qnaMapper.qnaFindAllWithAnswers(map);
-	}
-	@Override
-	public List<Qna> qnaForArtist(String memId) {
-		return qnaMapper.qnaForArtist(memId);
-	}
+    @Override
+    public List<Qna> qnaFindAllWithAnswers(Map<String, Integer> map) {
+        return qnaMapper.qnaFindAllWithAnswers(map);
+    }
+
 
 	@Override
 	public int qnaSearchCount(Map<String, String> map) {
@@ -56,8 +57,6 @@ public class QnaServiceImpl implements QnaService {
 		 if(imgFile.getOriginName() != null) {
 			  result2 = qnaMapper.insertImgFile(imgFile);
 		 }
-		
-		
 		return result1 * result2;
 	}
 	@Override
@@ -91,7 +90,25 @@ public class QnaServiceImpl implements QnaService {
 		 
 		 return result1 * result2;
 	}
+	
+    @Override
+    @Transactional
+    public int insertProductQna(ProductQna productQna, ImgFile imgFile) {
+        // 1. PRODUCT_QNA 테이블에 데이터 삽입
+        int result1 = qnaMapper.insertProductQna(productQna);
 
+        int result2 = 1;
+        if (imgFile != null && imgFile.getOriginName() != null && !imgFile.getOriginName().isEmpty()) {
+            imgFile.setBoardType("상품문의");
+            imgFile.setBoardNo(productQna.getQnaNo());  // 여기서 boardNo를 qnaNo로 설정
+            result2 = qnaMapper.insertImgFile(imgFile);
+        }
+
+        return result1 * result2;
+    }
+
+	
+	// 답변
 	@Override
 	@Transactional
 	public int insertAnswer(Answer answer, ImgFile imgFile) {
@@ -105,11 +122,46 @@ public class QnaServiceImpl implements QnaService {
 		
 		return result1 * result2;
 	}
-
-
-
-
-
+	
+	@Override
+	public List<Answer> getAnswersByQnaNo(int qnaNo) {
+	    return qnaMapper.getAnswersByQnaNo(qnaNo);
+	}
+	@Override
+	public ImgFile findImgFileByAnswerNo(int answerNo) {
+		return qnaMapper.findImgFileByAnswerNo(answerNo);
+	}
+	@Override
+	public Answer findAnswerById(int answerNo) {
+		return qnaMapper.findAnswerById(answerNo);
+	}
+	
 
 	
+	// 마이페이지
+	@Override
+	public List<Qna> qnaForArtist(String memId) {
+		return qnaMapper.qnaForArtist(memId);
+	}
+	@Override
+	public List<Qna> getMyQna(String memId) {
+		return qnaMapper.getMyQna(memId);
+	}
+	@Override
+	public List<ProductQna> getMyProductQna(String memId) {
+		return qnaMapper.getMyProductQna(memId);
+	}
+	@Override
+	public List<ProductQna> getReceivedProductQna(String memId) {
+		return qnaMapper.getReceivedProductQna((memId));
+	}
+
+
+
+
+
+
+
+
+
 }
