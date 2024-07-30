@@ -3,6 +3,7 @@ package com.kh.artspark.review.model.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 
 import com.kh.artspark.buy.model.vo.Buy;
@@ -33,5 +34,14 @@ public class ReviewServiceImpl implements ReviewService {
 	public int insertReview(Review review) {
 		return reviewMapper.insertReview(review);
 	}
-	
+
+	@Override
+	public int reviewCount(int productNo) {
+		return reviewMapper.reviewCount(productNo);
+	}
+
+	@Override
+	public List<Review> findReviewList(int productNo, RowBounds rowBounds) {
+		return reviewMapper.findReviewList(productNo, rowBounds);
+	}
 }

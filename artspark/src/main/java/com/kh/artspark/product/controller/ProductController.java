@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +29,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.artspark.common.model.vo.Message;
 import com.kh.artspark.common.model.vo.PageInfo;
 import com.kh.artspark.common.template.PageTemplate;
+import com.kh.artspark.member.model.service.MemberService;
+import com.kh.artspark.member.model.vo.Artist;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.product.model.service.ProductService;
 import com.kh.artspark.product.model.vo.Product;
@@ -48,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductController {
 	
 	private final ProductService productService;
+	private final MemberService memberService;
 	
 	// 상품 목록 전체 조회
 	/**
@@ -73,18 +75,20 @@ public class ProductController {
 		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
 		
 		// 찜테이블에 있는 멤버아이디와 session에 저장된 멤버아이디를 비교
+		Artist artist = null;
 		if(session.getAttribute("loginUser") != null) {
 			Member loginUser = (Member) session.getAttribute("loginUser");
 			productList = productService.findAllProductList(loginUser.getMemId(), rowBounds);
+			artist = memberService.getArtist(loginUser.getMemId());
 		} else {
 			productList = productService.findAllProductList("", rowBounds);
 		}
-		
 		// 태그 목록 30개 불러오기
 		List<Tag> tags = productService.getTags();
 		
 		model.addAttribute("tags", tags);
 		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("artist", artist);
 		model.addAttribute("productList", productList);
 		
 		return "product/productList";
@@ -110,11 +114,13 @@ public class ProductController {
 		Map<String, String> map = new HashMap<String, String>();
 		
 		// 찜테이블에 있는 멤버아이디와 로그인유저의 아이디를 비교하기위함 
+		Artist artist = null;
 		if(session.getAttribute("loginUser") != null) {
 			Member loginUser = (Member) session.getAttribute("loginUser");
 			map.put("loginUserId", loginUser.getMemId());
 			map.put("category", category);
 			productList = productService.findAllCategoryList(map, rowBounds);
+			artist = memberService.getArtist(loginUser.getMemId());
 		} else {
 			map.put("loginUserId", "");
 			map.put("category", category);
@@ -127,6 +133,7 @@ public class ProductController {
 		model.addAttribute("tags", tags);
 		model.addAttribute("category", category);
 		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("artist", artist);
 		model.addAttribute("productList", productList);
 		
 		return "product/productList";
@@ -154,9 +161,11 @@ public class ProductController {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("keyword", keyword);
 		
+		Artist artist = null;
 		if(session.getAttribute("loginUser") != null) {
 			Member loginUser = (Member) session.getAttribute("loginUser");
 			map.put("loginUserId", loginUser.getMemId());
+			artist = memberService.getArtist(loginUser.getMemId());
 		} else {
 			map.put("loginUserId", "");
 		}
@@ -169,6 +178,7 @@ public class ProductController {
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("tags", tags);
 		model.addAttribute("productList", productList);
+		model.addAttribute("artist", artist);
 		model.addAttribute("keyword", keyword);
 		
 		return "product/productList";

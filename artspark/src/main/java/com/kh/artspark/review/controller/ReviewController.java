@@ -1,19 +1,24 @@
 package com.kh.artspark.review.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.artspark.common.model.vo.Message;
+import com.kh.artspark.common.model.vo.PageInfo;
+import com.kh.artspark.common.template.PageTemplate;
 import com.kh.artspark.review.model.service.ReviewService;
 import com.kh.artspark.review.model.vo.Review;
 
@@ -84,6 +89,32 @@ public class ReviewController {
 		}
 		
 		return "redirect:../product/" + review.getProductNo();
+	}
+	
+	@ResponseBody
+	@GetMapping
+	public ResponseEntity<Message> reviewList(int productNo, 
+											  @RequestParam(value = "page", defaultValue = "1") int page) {
+		int listCount = reviewService.reviewCount(productNo);
+		int currentPage = page;
+		int pageLimit = 5;
+		int boardLimit = 5;
+		
+		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
+
+		List<Review> reviewList = reviewService.findReviewList(productNo, rowBounds);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("reviewList", reviewList);
+		map.put("pageInfo", pageInfo);
+		
+		Message responseMsg = Message.builder().message("리뷰 리스트")
+											   .data(map)
+											   .build();
+		
+		return ResponseEntity.ok(responseMsg);
 	}
 }
 

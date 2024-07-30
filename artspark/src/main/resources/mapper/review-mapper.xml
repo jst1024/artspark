@@ -42,6 +42,33 @@
 				)
 	</insert>
 	
+	<select id="reviewCount" parameterType="_int" resultType="_int">
+		SELECT
+				COUNT(REVIEW_NO)
+		  FROM
+		  		REVIEW
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</select>
+	
+	<select id="findReviewList" resultType="review">
+		SELECT
+				REVIEW_NO reviewNo,
+				REVIEW_TITLE reviewTitle,
+				REVIEW_CONTENT reviewContent,
+				REVIEW_DATE reviewDate,
+				REVIEW_STAR reviewStar,
+				MEM_ID memId,
+				PRODUCT_NO productNo
+		  FROM
+		  		REVIEW
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+		 ORDER
+		 	BY
+		 		REVIEW_DATE DESC
+	</select>
+	
 </mapper>
 
 
