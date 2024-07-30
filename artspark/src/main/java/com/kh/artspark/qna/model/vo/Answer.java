@@ -13,11 +13,9 @@ import lombok.ToString;
 public class Answer {
 	private int answerNo; // 답변번호
     private int qnaNo; // 문의번호
-	private int answerIndent; // 들여쓰기 
 	private String answerTitle; // 제목
 	private String answerContent; // 내용
 	private Date answerDate; // 작성일
 	private String memId; // 회원아이디
 	private String status; // 삭제여부
-	private String secret;
 }

@@ -67,14 +67,16 @@
 <body>
     <jsp:include page="../common/header.jsp" />
     
-    <form action="artistQna" method="post" enctype="multipart/form-data" onsubmit="return submitContents(this)">
+    <form action="${pageContext.request.contextPath}/artistQna" method="post" enctype="multipart/form-data" onsubmit="return submitContents(this)">
         <div class="container container-custom mt-5">
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group col-md-12">
                         <label for="title">제목</label>
                         <input type="hidden" value="${sessionScope.loginUser.memId}" name="memId">
-                    	<input type="hidden" value="${product.productNo}" name="productNo">
+                        <input type="hidden" value="${productNo}" name="productNo">
+					    <input type="hidden" value="상품문의" name="qnaCategory" >
+					    <input type="hidden" value="Y" name="status" >                        
                         <input type="text" class="form-control" name="qnaTitle" placeholder="내용을 입력해주세요">
                     </div>
 
@@ -116,7 +118,7 @@
 
     <script>
         function backpage() {
-            location.href = "productDetail";
+            location.href = "productDetail?productNo=${productNo}";
         }
     </script>
 

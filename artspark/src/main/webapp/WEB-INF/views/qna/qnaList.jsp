@@ -32,7 +32,7 @@
             display: flex;
             justify-content: flex-start;
             margin-bottom: 25px;
-            margin-left : 335px;
+            margin-left: 335px;
         }
         #qnaList {text-align:center;}
         #qnaList>tbody>tr:hover {cursor:pointer;}
@@ -54,7 +54,7 @@
                 margin-bottom: 10px;
             }
         }
-        .answer {
+        .answer-Detail {
             background-color: #f9f9f9;
         }
         .private-icon::before {
@@ -97,80 +97,104 @@
                 </tr>
             </thead>
             <tbody>
-                <c:choose>
-                    <c:when test="${empty qnaList}">
-                        <tr>
-                            <td colspan="4">조회된 결과가 존재하지 않습니다.</td>
+              <c:choose>
+                <c:when test="${empty qnaList}">
+                    <tr>
+                        <td colspan="4">조회된 결과가 존재하지 않습니다.</td>
+                    </tr>
+                </c:when>
+                <c:otherwise>
+                  <c:forEach var="qna" items="${qnaList}" varStatus="status">
+                    <tr class="qna-Detail ${qna.secret == 'Y' ? 'secret' : ''}">
+                       <td>${qna.qnaNo}</td>
+                       <td>
+                          <c:if test="${qna.secret == 'Y'}">
+                              <span class="private-icon"></span>
+                          </c:if>
+                            ${qna.qnaTitle}
+                       </td>
+                       <td>${qna.memId}</td>
+                       <td>${qna.qnaDate}</td>
+                    </tr>
+                 <c:if test="${ qna.answerNo  eq '' }">
+
+                 </c:if>
+                <c:if test="${ qna.answerNo != '' }">
+                        <tr class="answer-Detail ${qna.secret == 'Y' ? 'secret' : '' }">
+                            <td>${qna.answerNo}</td>
+                            <td>↳ [답변] ${qna.answerTitle}</td>
+                            <td>${qna.answerMemId}</td>
+                            <td>${qna.answerDate}</td>
                         </tr>
-                    </c:when>
-                    <c:otherwise>
-                        <c:forEach var="qna" items="${qnaList}" varStatus="status">
-                            <tr class="qna-Detail ${qna.secret == 'Y' ? 'secret' : ''}">
-                                <td>${qna.qnaNo}</td>
-                                <td>
-                                    <c:if test="${qna.secret == 'Y'}">
-                                        <span class="private-icon"></span>
-                                    </c:if>
-                                    ${qna.qnaTitle}
-                                </td>
-                                <td>${qna.memId}</td>
-                                <td>${qna.qnaDate}</td>
-                            </tr>
-                            <c:if test="${empty qna.answers}"/>	
-                            </c:forEach>
-                            <c:if test="${not empty qna.answers}">
-                                <c:forEach var="answer" items="${qna.answers}">
-                                    <tr class="answer">
-                                        <td></td>
-                                        <td colspan="3" style="text-indent: ${answer.answerIndent * 20}px;">
-                                            <strong>답변: </strong> ${answer.answerTitle}
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </c:if>
-                    </c:otherwise>
+                </c:if>
+            </c:forEach>
+        </c:otherwise>
                 </c:choose>
             </tbody>
         </table>
     </div>
-    
-     <script>
-           $(() => {
-               $('.qna-Detail').click(e => {
-                   const qnaNo = $(e.currentTarget).children().eq(0).text();
-                   const secret = $(e.currentTarget).hasClass('secret'); 
-                   const currentUserId = '${sessionScope.loginUser.memId}';
-                   const isAdmin = currentUserId === 'admin';
-                   const qnaMemId = $(e.currentTarget).children().eq(2).text();
-                   
-                   if (secret) {
-                       if (isAdmin || qnaMemId === currentUserId) {
-                           // 관리자 또는 작성자인 경우 접근 허용
-                           location.href = 'qnaDetail?qnaNo=' + qnaNo;
-                       } else {
-                           // 그 외의 경우 접근 불가
-                           alert('비밀글은 작성자와 관리자만 볼 수 있습니다.');
-                       }
-                   } else {
-                       // 비밀글이 아닌 경우 접근 허용
-                       location.href = 'qnaDetail?qnaNo=' + qnaNo;
-                   }
-               });
-               $('.request-Detail').click(e => {
-                   location.href = 'requestDetail?reqNo=' + $(e.currentTarget).children().eq(0).text();
-               });
-               
-           });
-           const isEmptyAnswers = ${empty qna.answers};
-
-           if (isEmptyAnswers) {
-               document.addEventListener('DOMContentLoaded', function() {
-                   const answerRows = document.querySelectorAll('tr.answer');
-                   answerRows.forEach(function(row) {
-                       row.style.display = 'none';
-                   });
-               });
-           }
+    <script>
+        $(() => {
+            $('.qna-Detail').click(e => {
+                const qnaNo = $(e.currentTarget).children().eq(0).text();
+                const secret = $(e.currentTarget).hasClass('secret'); 
+                const currentUserId = '${sessionScope.loginUser.memId}';
+                const isAdmin = currentUserId === 'admin';
+                const qnaMemId = $(e.currentTarget).children().eq(2).text();
+                
+                if (secret) {
+                    if (isAdmin || qnaMemId === currentUserId) {
+                        // 관리자 또는 작성자인 경우 접근 허용
+                        location.href = 'qnaDetail?qnaNo=' + qnaNo;
+                    } else {
+                        // 그 외의 경우 접근 불가
+                        alert('비밀글은 작성자와 관리자만 볼 수 있습니다.');
+                    }
+                } else {
+                    // 비밀글이 아닌 경우 접근 허용
+                    location.href = 'qnaDetail?qnaNo=' + qnaNo; 
+                }
+            });
+            $('.qna-Detail').click(e => {
+            	 location.href = 'qnaDetail?qnaNo=' + qnaNo;
+            });
+        });
+        
+        $(() => {
+            $('.answer-Detail').click(e => {
+                const answerNo = $(e.currentTarget).children().eq(0).text(); 
+                const secret = $(e.currentTarget).hasClass('secret'); 
+                const currentUserId = '${sessionScope.loginUser.memId}';
+                const isAdmin = currentUserId === 'admin';
+                const qnaMemId = $(e.currentTarget).prev().children().eq(2).text(); // 이전 행의 작성자를 가져옴
+                
+                if (secret) {
+                    if (isAdmin || qnaMemId === currentUserId) {
+                        // 관리자 또는 작성자인 경우 접근 허용
+                        location.href = 'answerDetail?answerNo=' + answerNo;
+                    } else {
+                        // 그 외의 경우 접근 불가
+                        alert('비밀글 답변은 작성자와 관리자만 볼 수 있습니다.');
+                    }
+                } else {
+                    // 비밀글이 아닌 경우 접근 허용
+                    location.href = 'answerDetail?answerNo=' + answerNo; 
+                }
+            });
+            $('.answer-Detail').click(e => {
+            	 location.href = 'answerDetail?answerNo=' + answerNo;
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const qnaRows = document.querySelectorAll('tr.qna-Detail');
+            qnaRows.forEach(function(row) {
+                const nextRow = row.nextElementSibling;
+                if (nextRow && nextRow.classList.contains('answer') && nextRow.innerHTML.trim() === '') {
+                    nextRow.style.display = 'none';
+                }
+            });
+        });
     </script>
     
     <!-- 페이징 -->
@@ -184,12 +208,12 @@
                     </li>
                 </c:when>
                 <c:when test="${empty condition}">
-                    <li>
+                    <li class="page-item">
                         <a class="page-link" href="qnalist?page=${pageInfo.currentPage - 1}">이전</a>
                     </li>
                 </c:when>
                 <c:otherwise>
-                    <li>
+                    <li class="page-item">
                         <a class="page-link" href="qnaSearch?page=${pageInfo.currentPage - 1}&condition=${condition}&keyword=${keyword}">이전</a>
                     </li>
                 </c:otherwise>
