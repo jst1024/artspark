@@ -11,6 +11,7 @@ import com.kh.artspark.product.model.vo.PayOption;
 import com.kh.artspark.product.model.vo.Product;
 import com.kh.artspark.product.model.vo.ProductDetail;
 import com.kh.artspark.product.model.vo.ProductFile;
+import com.kh.artspark.product.model.vo.ProductQna;
 import com.kh.artspark.product.model.vo.Tag;
 import com.kh.artspark.product.model.vo.TagCheck;
 
@@ -23,7 +24,7 @@ public interface ProductMapper {
 	
 	int productSearchCount(String keyword);
 
-	List<Map<String, Object>> findAllProductList(String loginUserId, RowBounds rowBounds);
+	List<Map<String, Object>> findAllProductList(Map<String, String> map, RowBounds rowBounds);
 	
 	List<Map<String, Object>> findAllCategoryList(Map<String, String> map, RowBounds rowBounds);
 	
@@ -72,5 +73,9 @@ public interface ProductMapper {
 	int deleteOptions(int productNo);
 
 	List<Product> productFindAll(Map<String, Integer> map);
+
+	int productQnaCount(int productNo);
+
+	List<ProductQna> findProductQnaList(int productNo, RowBounds rowBounds);
 
 }
