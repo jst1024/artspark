@@ -44,4 +44,9 @@ public class ReviewServiceImpl implements ReviewService {
 	public List<Review> findReviewList(int productNo, RowBounds rowBounds) {
 		return reviewMapper.findReviewList(productNo, rowBounds);
 	}
+
+	@Override
+	public int deleteReview(int reviewNo) {
+		return reviewMapper.deleteReview(reviewNo);
+	}
 }

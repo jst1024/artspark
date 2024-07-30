@@ -17,4 +17,6 @@ public interface ReviewService {
 
 	List<Review> findReviewList(int productNo, RowBounds rowBounds);
 
+	int deleteReview(int reviewNo);
+
 }

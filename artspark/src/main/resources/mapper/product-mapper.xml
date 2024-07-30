@@ -99,7 +99,7 @@
 	</resultMap>
 	
 	<!-- 모든 상품 목록 조회 -->
-	<select id="findAllProductList" resultMap="productResultMap">
+	<select id="findAllProductList" parameterType="map" resultMap="productResultMap">
 		SELECT
 				P.PRODUCT_NO,
 				P.PRODUCT_TITLE,
@@ -162,6 +162,9 @@
 				PF.FILE_PATH
 	     ORDER
 	     	BY
+	            <if test="sort == 'popular'">
+	                (SELECT COUNT(*) FROM JJIM WHERE PRODUCT_NO = P.PRODUCT_NO) DESC,
+	            </if>
 	     		P.PRODUCT_NO DESC
 	</select>
 	
@@ -231,6 +234,9 @@
 				PF.FILE_PATH
 	     ORDER
 	     	BY
+	     		<if test="sort == 'popular'">
+	                (SELECT COUNT(*) FROM JJIM WHERE PRODUCT_NO = P.PRODUCT_NO) DESC,
+	            </if>
 	     		P.PRODUCT_NO DESC
 	</select>
 	
@@ -315,6 +321,9 @@
 				PF.FILE_PATH
 	     ORDER
 	     	BY
+	     		<if test="sort == 'popular'">
+	                (SELECT COUNT(*) FROM JJIM WHERE PRODUCT_NO = P.PRODUCT_NO) DESC,
+	            </if>
 	     		P.PRODUCT_NO DESC
 	</select>
 	
@@ -764,6 +773,35 @@
                              PRODUCT_NO DESC))               
 	  WHERE
       		 RNUM BETWEEN #{startValue} AND #{endValue}
+	</select>
+	
+	<select id="productQnaCount" parameterType="_int" resultType="_int">
+		SELECT
+				COUNT(QNA_NO)
+		  FROM
+		  		PRODUCT_QNA
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</select>
+	
+	<select id="findProductQnaList" parameterType="_int" resultType="com.kh.artspark.product.model.vo.ProductQna">
+		SELECT
+				QNA_NO qnaNo,
+				PRODUCT_NO productNo,
+				QNA_TITLE qnaTitle,
+				QNA_CONTENT qnaContent,
+				QNA_DATE qnaDate,
+				MEM_ID memId,
+				STATUS status,
+				QNA_DELDATE qnaDeldate,
+				QNA_CATEGORY qnaCategory
+		  FROM
+		  		PRODUCT_QNA
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+		 ORDER
+		 	BY
+		 		QNA_DATE DESC
 	</select>
 </mapper>
 

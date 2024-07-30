@@ -69,6 +69,14 @@
 		 		REVIEW_DATE DESC
 	</select>
 	
+	<delete id="deleteReview" parameterType="_int">
+		DELETE
+		  FROM
+		  		REVIEW
+		 WHERE
+		 		REVIEW_NO = #{reviewNo}
+	</delete>
+	
 </mapper>
 
 

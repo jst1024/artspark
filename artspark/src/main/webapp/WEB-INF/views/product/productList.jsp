@@ -178,24 +178,32 @@
     <div class="container" style="max-width: 1200px;">
         <div class="row my-4">
             <div class="col-md-2">
-                <select class="form-control">
-                    <option>최신순</option>
-                    <option>인기순</option>
-                    <!-- Add other options here -->
+                <select class="form-control" name="sort" id="sort">
+                    <option value="latest" ${sort == 'latest' ? 'selected' : ''}>최신순</option>
+                    <option value="popular" ${sort == 'popular' ? 'selected' : ''}>인기순</option>
                 </select>
             </div>
+            
+            <script>
+            	// 정렬 방식 변경
+            	$('#sort').on('change', function() {
+            		const selectedSort = $(this).val();
+            		location.href = '${path2}/product?sort=' + selectedSort + '&category=${category}&keyword=${keyword}';
+            	});
+            </script>
+            
             <div class="col-md-4">
-	            <form action="${path2 }/product/search" method="get">
+	            <form action="${path2 }/product" method="get">
 	                <div class="input-group">
-	                		<c:if test="${ empty keyword }">
-		                    	<input type="text" class="form-control" name="keyword" placeholder="검색어 입력">
-		                    </c:if>
-		                    <c:if test="${ not empty keyword }">
-		                    	<input type="text" class="form-control" name="keyword" value="${ keyword }" placeholder="검색어 입력">
-		                    </c:if>
-		                    <div class="input-group-append">
-		                        <button class="btn btn-primary" type="submit">검색</button>
-		                    </div>
+                		<c:if test="${ empty keyword }">
+	                    	<input type="text" class="form-control" name="keyword" placeholder="검색어 입력">
+	                    </c:if>
+	                    <c:if test="${ not empty keyword }">
+	                    	<input type="text" class="form-control" name="keyword" value="${ keyword }" placeholder="검색어 입력">
+	                    </c:if>
+	                    <div class="input-group-append">
+	                        <button class="btn btn-primary" type="submit">검색</button>
+	                    </div>
 	                </div>
                 </form>
             </div>
@@ -219,7 +227,7 @@
             <div class="col">
                 <div id="hashtags">
                 	<c:forEach items="${ tags }" var="tag">
-                		<a href="${path2 }/product/search?keyword=${ tag.tagName }">
+                		<a href="${path2 }/product?keyword=${ tag.tagName }">
                     		<button class="tagbtn" style="margin-bottom: 10px;">#${ tag.tagName }</button>
                     	</a>
                     </c:forEach>
@@ -329,108 +337,55 @@
         
         <!-- 페이징 처리 -->
         <div id="pagingArea">
-	        <ul class="pagination">
-	        
-	        	<c:if test="${ category eq null }"> 
-	        		<c:choose>
-		        		<c:when test="${ pageInfo.currentPage eq 1 }">
-			            	<li class="page-item"><a class="page-link" href="#">이전</a></li>
-		            	</c:when>
-		            	<c:otherwise>
-		            		<c:if test="${ empty keyword }">
-		            			<li class="page-item"><a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage - 1 }">이전</a></li>
-		            		</c:if>
-		            		<c:if test="${ not empty keyword }">
-		            			<li class="page-item"><a class="page-link" href="${path2 }/product/search/?page=${ pageInfo.currentPage - 1 }&keyword=${keyword}">이전</a></li>
-		            		</c:if>
-		            	</c:otherwise>
-		            </c:choose>
-		            <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
-		            	<c:choose>
-			            	<c:when test="${ pageInfo.currentPage == p }">
-			            		<li class="page-item active">
-			            			<a class="page-link" href="#">${ p }</a>
-			            		</li>
-			            	</c:when>
-			            	<c:otherwise>
-			            		<c:if test="${ empty keyword }">
-				            		<li class="page-item">
-				            			<a class="page-link" href="${path2 }/product?page=${ p }">${ p }</a>
-				            		</li>
-			            		</c:if>
-			            		<c:if test="${ not empty keyword }">
-				            		<li class="page-item">
-				            			<a class="page-link" href="${path2 }/product/search?page=${ p }&keyword=${keyword}">${ p }</a>
-				            		</li>
-			            		</c:if>
-			            	</c:otherwise>
-		            	</c:choose>
-		            </c:forEach>
-		            
+		    <ul class="pagination">
+		        <c:choose>
+		            <c:when test="${ pageInfo.currentPage eq 1 }">
+		                <li class="page-item"><a class="page-link" href="#">이전</a></li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item">
+		                    <a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage - 1 }
+		                        <c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
+		                        이전
+		                    </a>
+		                </li>
+		            </c:otherwise>
+		        </c:choose>
+		
+		        <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
 		            <c:choose>
-			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
-			            	<li class="page-item">
-			            		<a class="page-link" href="#">다음</a>
-			            	</li>
-			            </c:when>
-			            <c:otherwise>
-			            	<c:if test="${ empty keyword }">
-				            	<li class="page-item">
-				            		<a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage + 1 }">다음</a>
-				            	</li>
-			            	</c:if>
-			            	<c:if test="${ not empty keyword }">
-				            	<li class="page-item">
-				            		<a class="page-link" href="${path2 }/product/search?page=${ pageInfo.currentPage + 1 }&keyword=${keyword}">다음</a>
-				            	</li>
-			            	</c:if>
-			            </c:otherwise>
+		                <c:when test="${ pageInfo.currentPage == p }">
+		                    <li class="page-item active">
+		                        <a class="page-link" href="#">${ p }</a>
+		                    </li>
+		                </c:when>
+		                <c:otherwise>
+		                    <li class="page-item">
+		                        <a class="page-link" href="${path2 }/product?page=${ p }
+		                            <c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
+		                            ${ p }
+		                        </a>
+		                    </li>
+		                </c:otherwise>
 		            </c:choose>
-	            </c:if>
-	            
-	            <c:if test="${ category != null }">
-	            	<c:choose>
-		        		<c:when test="${ pageInfo.currentPage eq 1 }">
-			            	<li class="page-item">
-			            		<a class="page-link" href="#">이전</a>
-			            	</li>
-		            	</c:when>
-		            	<c:otherwise>
-		            		<li class="page-item">
-		            			<a class="page-link" href="category?page=${ pageInfo.currentPage - 1 }&category=${ category }">이전</a>
-		            		</li>
-		            	</c:otherwise>
-		            </c:choose>
-		            <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
-		            	<c:choose>
-			            	<c:when test="${ pageInfo.currentPage == p }">
-			            		<li class="page-item active">
-			            			<a class="page-link" href="#">${ p }</a>
-			            		</li>
-			            	</c:when>
-			            	<c:otherwise>
-			            		<li class="page-item">
-			            			<a class="page-link" href="category?page=${ p }&category=${ category }">${ p }</a>
-			            		</li>
-			            	</c:otherwise>
-		            	</c:choose>
-		            </c:forEach>
-		            
-		            <c:choose>
-			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
-			            	<li class="page-item">
-			            		<a class="page-link" href="#">다음</a>
-			            	</li>
-			            </c:when>
-			            <c:otherwise>
-			            	<li class="page-item">
-			            		<a class="page-link" href="category?page=${ pageInfo.currentPage + 1 }&category=${ category }">다음</a>
-			            	</li>
-			            </c:otherwise>
-		            </c:choose>
-	            </c:if>
-	        </ul>
-	    </div>
+		        </c:forEach>
+		
+		        <c:choose>
+		            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
+		                <li class="page-item">
+		                    <a class="page-link" href="#">다음</a>
+		                </li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item">
+		                    <a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage + 1 }<c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
+		                        다음
+		                    </a>
+		                </li>
+		            </c:otherwise>
+		        </c:choose>
+		    </ul>
+		</div>
     </div>
     <jsp:include page="../common/footer.jsp" />
 </body>

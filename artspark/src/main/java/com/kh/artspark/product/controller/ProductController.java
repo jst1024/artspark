@@ -37,6 +37,7 @@ import com.kh.artspark.product.model.vo.Product;
 import com.kh.artspark.product.model.vo.ProductDetail;
 import com.kh.artspark.product.model.vo.ProductFile;
 import com.kh.artspark.product.model.vo.ProductForm;
+import com.kh.artspark.product.model.vo.ProductQna;
 import com.kh.artspark.product.model.vo.Tag;
 
 import lombok.RequiredArgsConstructor;
@@ -61,125 +62,64 @@ public class ProductController {
 	 */
 	@GetMapping
 	public String findAllProductList(@RequestParam(value="page", defaultValue = "1") int page,
-									HttpSession session, Model model) {
+									 @RequestParam(value="sort", defaultValue = "latest") String sort,
+									 @RequestParam(value="category", required = false) String category,
+		                              @RequestParam(value="keyword", required = false) String keyword,
+									 HttpSession session, Model model) {
 		
-		int listCount = productService.productAllCount();
+		int listCount = 0;
 		int currentPage = page;
 		int pageLimit = 5;
 		int boardLimit = 4;
 		
-		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
-		
-		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
-
 		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
 		
 		// 찜테이블에 있는 멤버아이디와 session에 저장된 멤버아이디를 비교
+		Map<String, String> map = new HashMap<String, String>();
 		Artist artist = null;
-		if(session.getAttribute("loginUser") != null) {
-			Member loginUser = (Member) session.getAttribute("loginUser");
-			productList = productService.findAllProductList(loginUser.getMemId(), rowBounds);
-			artist = memberService.getArtist(loginUser.getMemId());
-		} else {
-			productList = productService.findAllProductList("", rowBounds);
-		}
-		// 태그 목록 30개 불러오기
-		List<Tag> tags = productService.getTags();
 		
-		model.addAttribute("tags", tags);
-		model.addAttribute("pageInfo", pageInfo);
-		model.addAttribute("artist", artist);
-		model.addAttribute("productList", productList);
-		
-		return "product/productList";
-	}
-	
-	// 카테고리별 상품 목록 조회
-	@GetMapping("category")
-	public String findCategoryList(@RequestParam(value="page", defaultValue = "1") int page,
-									@RequestParam(value="category") String category,
-									HttpSession session, Model model) {
-		
-		int listCount = productService.productCategoryCount(category);
-		int currentPage = page;
-		int pageLimit = 5;
-		int boardLimit = 1;
+		if (category != null && !category.isEmpty()) {
+	        listCount = productService.productCategoryCount(category);
+	        map.put("category", category);
+	    } else if (keyword != null && !keyword.isEmpty()) {
+	        listCount = productService.productSearchCount(keyword);
+	        map.put("keyword", keyword);
+	    } else {
+	        listCount = productService.productAllCount();
+	    }
+		map.put("sort", sort);
 		
 		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
 		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
+		
+		if(session.getAttribute("loginUser") != null) {
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			map.put("loginUserId", loginUser.getMemId());
+			artist = memberService.getArtist(loginUser.getMemId());
+		} else {
+			map.put("loginUserId", "");
+		}
+		
+		if (category != null && !category.isEmpty()) {
+	        productList = productService.findAllCategoryList(map, rowBounds);
+	    } else if (keyword != null && !keyword.isEmpty()) {
+	        productList = productService.productSearchList(map, rowBounds);
+	    } else {
+	        productList = productService.findAllProductList(map, rowBounds);
+	    }
 
-		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
 		
-		Map<String, String> map = new HashMap<String, String>();
-		
-		// 찜테이블에 있는 멤버아이디와 로그인유저의 아이디를 비교하기위함 
-		Artist artist = null;
-		if(session.getAttribute("loginUser") != null) {
-			Member loginUser = (Member) session.getAttribute("loginUser");
-			map.put("loginUserId", loginUser.getMemId());
-			map.put("category", category);
-			productList = productService.findAllCategoryList(map, rowBounds);
-			artist = memberService.getArtist(loginUser.getMemId());
-		} else {
-			map.put("loginUserId", "");
-			map.put("category", category);
-			productList = productService.findAllCategoryList(map, rowBounds);
-		}
-		
-		// 태그 목록 30개 불러오기
+		// 태그 목록 불러오기
 		List<Tag> tags = productService.getTags();
 		
 		model.addAttribute("tags", tags);
+		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("artist", artist);
+		model.addAttribute("sort", sort);
 		model.addAttribute("category", category);
-		model.addAttribute("pageInfo", pageInfo);
-		model.addAttribute("artist", artist);
-		model.addAttribute("productList", productList);
-		
-		return "product/productList";
-	}
-	
-	// keyword 검색(작가명, 작품제목, 태그) 기능
-	@GetMapping("search")
-	public String searchProduct(String keyword,
-								@RequestParam(value="page", defaultValue = "1") int page,
-								HttpSession session,
-								Model model) {
-		log.info("키워드 : {}", keyword);
-		int searchCount = productService.productSearchCount(keyword);
-		log.info("검색 수 : {}개", searchCount);
-		int currentPage = page;
-		int pageLimit = 5;
-		int boardLimit = 1;
-		
-		PageInfo pageInfo = PageTemplate.getPageInfo(searchCount, currentPage, pageLimit, boardLimit);
-		
-		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
-		
-		List<Map<String, Object>> productList = new ArrayList<Map<String,Object>>();
-		
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("keyword", keyword);
-		
-		Artist artist = null;
-		if(session.getAttribute("loginUser") != null) {
-			Member loginUser = (Member) session.getAttribute("loginUser");
-			map.put("loginUserId", loginUser.getMemId());
-			artist = memberService.getArtist(loginUser.getMemId());
-		} else {
-			map.put("loginUserId", "");
-		}
-		
-		productList = productService.productSearchList(map, rowBounds);
-		
-		// 태그 목록 30개 불러오기
-		List<Tag> tags = productService.getTags();
-		
-		model.addAttribute("pageInfo", pageInfo);
-		model.addAttribute("tags", tags);
-		model.addAttribute("productList", productList);
-		model.addAttribute("artist", artist);
 		model.addAttribute("keyword", keyword);
+		model.addAttribute("productList", productList);
 		
 		return "product/productList";
 	}
@@ -516,6 +456,32 @@ public class ProductController {
 		model.addAttribute("errorMsg", "상품 수정 실패..ㅠ");
 		return "error/errorPage";
 		
+	}
+	
+	@ResponseBody
+	@GetMapping("productQna")
+	public ResponseEntity<Message> productQna(int productNo, int page) {
+		
+		int listCount = productService.productQnaCount(productNo);
+		int currentPage = page;
+		int pageLimit = 5;
+		int boardLimit = 5;
+		
+		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
+		
+		List<ProductQna> productQnaList = productService.findProductQnaList(productNo, rowBounds);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("pageInfo", pageInfo);
+		map.put("productQnaList", productQnaList);
+		
+		Message responseMsg = Message.builder().data(map)
+											   .message("상품 문의 조회 성공")
+											   .build();
+		
+		return ResponseEntity.ok(responseMsg);
 	}
 }
 

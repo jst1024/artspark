@@ -10,7 +10,9 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -113,6 +115,26 @@ public class ReviewController {
 		Message responseMsg = Message.builder().message("리뷰 리스트")
 											   .data(map)
 											   .build();
+		
+		return ResponseEntity.ok(responseMsg);
+	}
+	
+	@ResponseBody
+	@DeleteMapping("/{reviewNo}")
+	public ResponseEntity<Message> deleteReview(@PathVariable("reviewNo") int reviewNo) {
+		
+		int result = reviewService.deleteReview(reviewNo);
+
+		Message responseMsg = null;
+		if(result > 0) {
+			responseMsg = Message.builder().message("리뷰가 삭제되었습니다.")
+										   .data(result)
+										   .build();
+		} else {
+			responseMsg = Message.builder().message("리뷰 삭제에 실패하였습니다.")
+										   .data(result)
+										   .build();
+		}
 		
 		return ResponseEntity.ok(responseMsg);
 	}
