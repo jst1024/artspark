@@ -97,28 +97,28 @@
                 </tr>
             </thead>
             <tbody>
-                <c:choose>
-                    <c:when test="${empty qnaList}">
-                        <tr>
-                            <td colspan="4">조회된 결과가 존재하지 않습니다.</td>
-                        </tr>
-                    </c:when>
-                            <c:otherwise>
-            <c:forEach var="qna" items="${qnaList}" varStatus="status">
-                <tr class="qna-Detail ${qna.secret == 'Y' ? 'secret' : ''}">
-                    <td>${qna.qnaNo}</td>
-                    <td>
-                        <c:if test="${qna.secret == 'Y'}">
-                            <span class="private-icon"></span>
-                        </c:if>
-                        ${qna.qnaTitle}
-                    </td>
-                    <td>${qna.memId}</td>
-                    <td>${qna.qnaDate}</td>
-                </tr>
-                <c:if test="${ qna.answerNo  eq '' }">
+              <c:choose>
+                <c:when test="${empty qnaList}">
+                    <tr>
+                        <td colspan="4">조회된 결과가 존재하지 않습니다.</td>
+                    </tr>
+                </c:when>
+                <c:otherwise>
+                  <c:forEach var="qna" items="${qnaList}" varStatus="status">
+                    <tr class="qna-Detail ${qna.secret == 'Y' ? 'secret' : ''}">
+                       <td>${qna.qnaNo}</td>
+                       <td>
+                          <c:if test="${qna.secret == 'Y'}">
+                              <span class="private-icon"></span>
+                          </c:if>
+                            ${qna.qnaTitle}
+                       </td>
+                       <td>${qna.memId}</td>
+                       <td>${qna.qnaDate}</td>
+                    </tr>
+                 <c:if test="${ qna.answerNo  eq '' }">
 
-                </c:if>
+                 </c:if>
                 <c:if test="${ qna.answerNo != '' }">
                         <tr class="answer-Detail ${qna.secret == 'Y' ? 'secret' : '' }">
                             <td>${qna.answerNo}</td>
@@ -133,7 +133,6 @@
             </tbody>
         </table>
     </div>
-    
     <script>
         $(() => {
             $('.qna-Detail').click(e => {

@@ -49,6 +49,8 @@
 				COUNT(REQ_NO)
 		  FROM
 		  		REQUEST
+		 WHERE
+		 		STATUS = 'Y' 
 	</select>	
 	
 	<!-- 검색 시 행의 개수 -->

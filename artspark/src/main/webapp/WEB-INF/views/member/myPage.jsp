@@ -95,6 +95,16 @@
             <li class="nav-item" role="presentation">
                 <a href="${path2 }/interestSeller"><button class="nav-link" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button">관심 작가</button></a>
             </li>
+            <c:if test="${ sessionScope.loginUser.memCategory == 'A' }">
+             <li class="nav-item" role="presentation">
+                <a href="${path2 }/updatePage"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">회원 정보</button></a>
+            </li>
+            </c:if>
+            <c:if test="${ sessionScope.loginUser.memCategory != 'A' }">
+             <li class="nav-item" role="presentation">
+                <a href="${path2 }/updateProduct"><button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button">회원 정보</button></a>
+            </li>
+            </c:if>
         </ul>
         
         <div class="tab-content mt-3" id="myTabContent">

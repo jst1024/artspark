@@ -128,7 +128,7 @@ public class AdminController {
         int pageLimit = 5;
         int boardLimit = 5;
 
-        int maxPage = (int) Math.ceil((double) listCount / boardLimit);
+        int maxPage = (int) Math.ceil((double)listCount / boardLimit);
         int startPage = ((currentPage - 1) / pageLimit) * pageLimit + 1;
         int endPage = startPage + pageLimit - 1;
 
@@ -147,9 +147,12 @@ public class AdminController {
                 .build();
 
         Map<String, Integer> map = new HashMap<>();
-
         int startValue = (currentPage - 1) * boardLimit + 1;
         int endValue = startValue + boardLimit - 1;
+
+        if (endValue > listCount) {
+            endValue = listCount;
+        }
 
         map.put("startValue", startValue);
         map.put("endValue", endValue);
@@ -158,7 +161,7 @@ public class AdminController {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<Map<String, Object>> formattedRequestList = new ArrayList<>();
-        
+
         for (Request request : requestList) {
             Map<String, Object> formattedRequest = new HashMap<>();
             formattedRequest.put("reqNo", request.getReqNo());
@@ -174,6 +177,7 @@ public class AdminController {
 
         return result;
     }
+
 
     
     @ResponseBody
@@ -238,7 +242,7 @@ public class AdminController {
         int listCount = qnaService.qnaCount(); 
         int currentPage = page; // 현재페이지(사용자가 요청한 페이지)
         int pageLimit = 5; // 페이지 하단에 보여질 페이징바의 최대 개수 => 5개로 고정 
-        int boardLimit = 10; // 한 페이지에 보여질 게시글의 최대 개수 => 10개로 고정
+        int boardLimit = 5; // 한 페이지에 보여질 게시글의 최대 개수 => 5개로 고정
 
         int maxPage = (int)Math.ceil((double)listCount / boardLimit); // 가장 마지막 페이지가 몇 번 페이지인지(총 페이지의 개수)
         int startPage = ((currentPage-1) / pageLimit) * pageLimit + 1; // 그 화면상 하단에 보여질 페이징바의 시작하는 페이지넘버
