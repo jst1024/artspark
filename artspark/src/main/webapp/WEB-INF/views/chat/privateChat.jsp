@@ -364,7 +364,7 @@
 			});
 			
 			// 소켓 연결
-			const uri = 'ws://192.168.20.222/artspark/chat';
+			const uri = 'ws://localhost/artspark/chat';
     		chat = new WebSocket(uri);
     		
     		chat.onopen = () => {	// 소켓 연결 시 수행되는 핸들러
