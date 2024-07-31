@@ -18,7 +18,8 @@ public class Interest {
 	private String memNickname;  // 사용자 닉네임
 	private List<String> filePaths;		//파일 경로
 	private String productTitle;  // 상품 제목
-	private String reviewStar;   //평점
+	private double avgStar;   //평점
+	
 	
 
 	
