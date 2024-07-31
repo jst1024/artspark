@@ -149,6 +149,11 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.deleteJjim(map);
 	}
 
+	@Override
+	public List<Map<String, Object>> getPopularWriters() {
+		return memberMapper.getPopularWriters();
+	}
+
 
 
 

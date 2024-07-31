@@ -2,7 +2,7 @@
 <div class="dashboard-item">
     <h5>배너 설정</h5>
     <div class="table-container">
-        <table class="table table-striped">
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th>배너 ID</th>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.artspark.common.model.vo.PageInfo;
+import com.kh.artspark.member.model.service.MemberService;
 import com.kh.artspark.notice.model.service.NoticeService;
 import com.kh.artspark.notice.model.vo.Notice;
 import com.kh.artspark.request.model.service.RequestService;
@@ -25,7 +26,8 @@ public class MainController {
 
     private final NoticeService noticeService;
     private final RequestService requestService;
-
+    private final MemberService memberService;
+    
     @GetMapping("/")
     public String mainPage(@RequestParam(value="page", defaultValue="1") int page, Model model) {
         // 공지사항 설정
@@ -40,14 +42,19 @@ public class MainController {
         Map<String, Integer> requestMap = getPageMap(requestPageInfo);
         List<Request> requestList = requestService.requestFindAll(requestMap);
 
+        // 인기 작가 설정
+        List<Map<String, Object>> popularWriters = memberService.getPopularWriters();
+
         // 모델에 데이터 추가
         model.addAttribute("noticeList", noticeList);
         model.addAttribute("noticePageInfo", noticePageInfo);
         model.addAttribute("requestList", requestList);
         model.addAttribute("requestPageInfo", requestPageInfo);
+        model.addAttribute("popularWriters", popularWriters);
 
         return "main"; // main.jsp로 포워딩
     }
+
 
     private PageInfo getPageInfo(int listCount, int currentPage, int pageLimit, int boardLimit) {
         int maxPage = (int)Math.ceil((double)listCount / boardLimit);

@@ -468,4 +468,44 @@
     	 WHERE 
     	 		MEM_ID = #{memberId}
 	</update>
+	
+	<select id="getPopularWriters" >
+		 SELECT
+		    *
+		   FROM 
+		   		(
+		    	SELECT
+		        P.PRODUCT_NO,
+		        M.MEM_ID,
+		        M.MEM_NICKNAME,
+		        PF.FILE_PATH,
+		        (SELECT COUNT(*) FROM BUY WHERE PRODUCT_NO = P.PRODUCT_NO) AS BUY_COUNT,
+		        ROWNUM AS RNUM
+		   FROM
+		        PRODUCT P
+		        JOIN 
+		        	 MEMBER M ON P.MEM_ID = M.MEM_ID
+		        JOIN 
+		        	 PRODUCTFILE PF ON P.PRODUCT_NO = PF.PRODUCT_NO
+		        JOIN 
+		        	 (
+		             SELECT
+	                 PRODUCT_NO,
+	                 MIN(FILE_NO) AS FIRST_NO
+	            FROM
+	                 PRODUCTFILE
+               GROUP 
+               	  BY
+	                 PRODUCT_NO
+		        	 ) 
+		        	 PF_MIN ON PF.FILE_NO = PF_MIN.FIRST_NO
+		       WHERE
+		        	 P.STATUS = 'Y'
+		       ORDER 
+		    	  BY
+		        	 BUY_COUNT DESC,
+		        	 P.PRODUCT_NO DESC
+				)
+				WHERE RNUM <= 6;
+	</select>
 </mapper>
