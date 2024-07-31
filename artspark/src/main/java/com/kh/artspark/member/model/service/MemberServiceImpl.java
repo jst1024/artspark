@@ -102,7 +102,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void updatePassword(Member member) {
+	public int updatePassword(Member member) {
+		return memberMapper.updatePassword(member);
 	}
 
 	@Override
@@ -142,6 +143,16 @@ public class MemberServiceImpl implements MemberService {
         params.put("status", status);
         return memberMapper.updateMemberStatus(params);
 	}
+
+
+	public int deleteJjim(Map<String, Object> map) {
+		return memberMapper.deleteJjim(map);
+	}
+
+
+
+
+
 
 
 

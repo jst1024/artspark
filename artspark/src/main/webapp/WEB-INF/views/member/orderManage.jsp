@@ -125,9 +125,11 @@
                             <td>${order.memNickname}</td>
                             
                             <td>
-                            	${ order.productPurpose } / ${ order.productTitle }<br>
+                            	<strong>${ order.productPurpose } /${ order.productTitle }</strong><br>
                             	<c:forEach items="${order.buyOptionList }" var="buyOptionList">
-                            		${ buyOptionList.buyOptionName}/${buyOptionList.buyDetailOptionName}/${ buyOptionList.buyOptionPrice }/${ buyOptionList.buyOptionAmount }<br>
+                            		<p>
+                            		   ${ buyOptionList.buyOptionName}/${buyOptionList.buyDetailOptionName}/${ buyOptionList.buyOptionPrice }/${ buyOptionList.buyOptionAmount }<br>
+                            		</p>
                             	</c:forEach>
                             </td>
                             <td><fmt:formatNumber value="${order.totalAmount }" type="currency" currencySymbol="₩" /></td>

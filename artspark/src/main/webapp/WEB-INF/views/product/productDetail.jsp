@@ -27,11 +27,6 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        .star-rating {
-            color: gold;
-            margin-bottom: 10px;
-            text-aligh: right;
-        }
         .price-option-select {
         	width: 150px;
         }
@@ -86,7 +81,6 @@
         #review-btn:hover {
         	background-image: linear-gradient(rgba(255,255,255,0.2),rgba(255,255,255,0.2));	
         }
-        #
         
         .table-head {
         	border-top: 1px solid #e6e6e6; 
@@ -97,14 +91,22 @@
         .table-body {
         	border-top: 1px solid #e6e6e6; 
         	padding-top:14px;
+        	border-bottom: 1px solid #e6e6e6;
         }
+        
+        .table-body p {
+        	text-align: center;
+        }
+        
         .pagination .page-link {
 		    color: #007bff;
+		    cursor: pointer;
 		}
 		
 		.pagination .page-item.active .page-link {
 		    background-color: #007bff;
 		    border-color: #007bff;
+		    cursor: pointer;
 		}
 		
 		.plusoption {
@@ -137,6 +139,91 @@
 		    color: red;
 		    font-size: 1.5rem;
 		}
+		.review-content {
+	        margin: 40px 0;
+	        padding: 0 20px;
+	        border: none;
+	        display: none;
+	    }
+	    .review-content p {
+	        margin: 0;
+	    }
+        .rating-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px; 
+            width: 310px; 
+        }
+		.star-rating {
+            display: inline-block;
+            font-size: 0;
+            position: relative;
+            width: 100px;
+            height: 20px;
+            background: url('${path1}/resources/images/star-empty.png') repeat-x;
+        }
+        .star-rating::before {
+            content: '';
+            display: block;
+            width: 0;
+            height: 100%;
+            background: url('${path1}/resources/images/star-full.png') repeat-x;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .star-rating[data-rating="0"]::before { width: 0%; }
+        .star-rating[data-rating="0.1"]::before { width: 2%; }
+        .star-rating[data-rating="0.2"]::before { width: 4%; }
+        .star-rating[data-rating="0.3"]::before { width: 6%; }
+        .star-rating[data-rating="0.4"]::before { width: 8%; }
+        .star-rating[data-rating="0.5"]::before { width: 10%; }
+        .star-rating[data-rating="0.6"]::before { width: 12%; }
+        .star-rating[data-rating="0.7"]::before { width: 14%; }
+        .star-rating[data-rating="0.8"]::before { width: 16%; }
+        .star-rating[data-rating="0.9"]::before { width: 18%; }
+        .star-rating[data-rating="1"]::before { width: 20%; }
+        .star-rating[data-rating="1.1"]::before { width: 22%; }
+        .star-rating[data-rating="1.2"]::before { width: 24%; }
+        .star-rating[data-rating="1.3"]::before { width: 26%; }
+        .star-rating[data-rating="1.4"]::before { width: 28%; }
+        .star-rating[data-rating="1.5"]::before { width: 30%; }
+        .star-rating[data-rating="1.6"]::before { width: 32%; }
+        .star-rating[data-rating="1.7"]::before { width: 34%; }
+        .star-rating[data-rating="1.8"]::before { width: 36%; }
+        .star-rating[data-rating="1.9"]::before { width: 38%; }
+        .star-rating[data-rating="2"]::before { width: 40%; }
+        .star-rating[data-rating="2.1"]::before { width: 42%; }
+        .star-rating[data-rating="2.2"]::before { width: 44%; }
+        .star-rating[data-rating="2.3"]::before { width: 46%; }
+        .star-rating[data-rating="2.4"]::before { width: 48%; }
+        .star-rating[data-rating="2.5"]::before { width: 50%; }
+        .star-rating[data-rating="2.6"]::before { width: 52%; }
+        .star-rating[data-rating="2.7"]::before { width: 54%; }
+        .star-rating[data-rating="2.8"]::before { width: 56%; }
+        .star-rating[data-rating="2.9"]::before { width: 58%; }
+        .star-rating[data-rating="3"]::before { width: 60%; }
+        .star-rating[data-rating="3.1"]::before { width: 62%; }
+        .star-rating[data-rating="3.2"]::before { width: 64%; }
+        .star-rating[data-rating="3.3"]::before { width: 66%; }
+        .star-rating[data-rating="3.4"]::before { width: 68%; }
+        .star-rating[data-rating="3.5"]::before { width: 70%; }
+        .star-rating[data-rating="3.6"]::before { width: 72%; }
+        .star-rating[data-rating="3.7"]::before { width: 74%; }
+        .star-rating[data-rating="3.8"]::before { width: 76%; }
+        .star-rating[data-rating="3.9"]::before { width: 78%; }
+        .star-rating[data-rating="4"]::before { width: 80%; }
+        .star-rating[data-rating="4.1"]::before { width: 82%; }
+        .star-rating[data-rating="4.2"]::before { width: 84%; }
+        .star-rating[data-rating="4.3"]::before { width: 86%; }
+        .star-rating[data-rating="4.4"]::before { width: 88%; }
+        .star-rating[data-rating="4.5"]::before { width: 90%; }
+        .star-rating[data-rating="4.6"]::before { width: 92%; }
+        .star-rating[data-rating="4.7"]::before { width: 94%; }
+        .star-rating[data-rating="4.8"]::before { width: 96%; }
+        .star-rating[data-rating="4.9"]::before { width: 98%; }
+        .star-rating[data-rating="5"]::before { width: 100%; }
     </style>
 </head>
 <body>
@@ -195,8 +282,11 @@
 	                	<p><img id="profileImg" src="${path1 }/resources/images/profile.png" alt=""></p><br>
 	                    <p>${ product.memNickname } 작가</p>
 	                    <p><small>${ product.artistIntro }</small><p><br><br>
-	                    <div class="star-rating"><p>★★★★★ <span style="color:black;"> 별점 ${ product.avgStar }</span></p></div>
-	                    <p>문의 답변율 n%</p><br><br>
+	                    <div class="rating-container">
+	                    	<div class="star-rating" data-rating="${ product.avgStar }"></div>
+	                    	<p style="margin-top:5px; margin-left: 10px; font-size:14px;">평점 (${ product.avgStar })</p>
+	                    </div>
+	                    <br><br>
 	                    <p><small style="color:red;"><i class="fas fa-exclamation-circle"></i> 채팅</small></p>
 	                    <p><small>채팅은 결제 후에 이용하실 수 있습니다.<br>결제 전에는 작가 문의 및 답변을 이용해주세요.</small></p>
 	                </div>
@@ -526,71 +616,31 @@
 	    		</c:forEach>
 	    	</span>
 	    </div>
-	    
-<!-- 문의 및 답변 -->
-<div class="row" style="margin-bottom: 50px;">
-    <div class="col-md-2">
-        <h3>문의 및 답변</h3>
-    </div>
-    <div class="col-md-10">
-        <small style="color:red;"><i class="fas fa-exclamation-circle"></i> 글을 작성하시면 실시간으로 알림 메시지가 발송됩니다.</small>
-    </div>
 
-    <div class="col-md-12">
-        <p class="d-flex justify-content-between">
-            <span></span>
-            <button type="button" class="small-btn" id="artist-qna-btn" onclick="productQnaForward();">작가에게 문의하기</button>
-        </p>
-    </div>
 
-    <div class="col-md-2 table-head">
-        <p style="text-align: center;">닉네임</p>
-    </div>
-    <div class="col-md-8 table-head">
-        <p style="text-align: center;">문의 내용</p>
-    </div>
-    <div class="col-md-2 table-head">
-        <p style="text-align: center;">작성 시간</p>
-    </div>
-
-    <c:forEach var="productQna" items="${productQnaList}">
-        <div class="col-md-2 table-body" style="border-bottom: 1px solid #e6e6e6;">
-            <p style="text-align: center;">
-                <c:choose>
-                    <c:when test="${productQna.secret == 'Y'}">
-                        <i class="fas fa-lock"></i>${productQna.memId.substring(0, 1)}****${productQna.memId.substring(productQna.memId.length()-1)}
-                    </c:when>
-                    <c:otherwise>
-                        ${productQna.memId}
-                    </c:otherwise>
-                </c:choose>
-            </p>
-        </div>
-        <div class="col-md-8 table-body" style="border-bottom: 1px solid #e6e6e6;">
-            <c:choose>
-                <c:when test="${productQna.secret == 'Y' && sessionScope.loginUser.memId != productQna.memId && sessionScope.loginUser.memId != product.memId}">
-                    <p>비밀글입니다. 작성자와 해당 작가만 볼 수 있습니다.</p>
-                </c:when>
-                <c:otherwise>
-                    <p>${productQna.qnaContent}</p>
-                </c:otherwise>
-            </c:choose>
-        </div>
-        <div class="col-md-2 table-body" style="border-bottom: 1px solid #e6e6e6;">
-            <p style="text-align: center;"><fmt:formatDate value="${productQna.qnaDate}" pattern="yy-MM-dd" /></p>
-        </div>
-    </c:forEach>
-</div>
-
+	    <!-- 문의 및 답변 -->
+	    <div class="row" style="margin-bottom: 50px;">
+	    	<div class="col-md-2">
+	            <h3>문의 및 답변</h3>
+	        </div>
+	        <div class="col-md-10">
+	            <small style="color:red;"><i class="fas fa-exclamation-circle"></i> 글을 작성하시면 실시간으로 알림 메시지가 발송됩니다.</small>
+	        </div>
+	        
+			<div class="col-md-12">
+				<p class="d-flex justify-content-between">
+			        <span></span>
+			        <button type="button" class="small-btn" id="artist-qna-btn" onclick="productQnaForward();">작가에게 문의하기</button>
+			    </p>
+	        </div>
+	        
+	        <!-- 문의 테이블 -->
+	        <div class="row col-md-12" id="productQna-div" style="margin:0;">
+            </div>
+	    </div>
 	    
 	    <!-- 문의 페이징 -->
-	    <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-            </ul>
+	    <nav aria-label="Page navigation" id="productQna-paging">
         </nav>      
 	    
 	    <!-- 이용 후기 -->
@@ -609,69 +659,259 @@
 			    </p>
 	        </div>
 	        
-       		<div class="col-md-1 table-head">
-           		<p style="text-align: center;">번호</p>
+	        <form action="${path1}/review/insert-form" method="post" id="review-form">
+	        	<input type="hidden" name="productNo" value="${product.productNo}">
+	        	<input type="hidden" name="productTitle" value="${product.productTitle}">
+	        </form>
+	        
+	        <script>
+	        	$('#review-btn').on('click', function() {
+	        		const loginUserId = '${sessionScope.loginUser.memId}';
+	        		const sellerId = '${product.memId}';
+	        		const productNo = parseInt('${product.productNo}');
+	        		
+	        		if(loginUserId === sellerId) {
+	        			alertify.alert('내가 등록한 상품입니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+	        			return;
+	        		}
+	        		
+	        		if(loginUserId !== '') {
+	        			$.ajax({
+	        				url : '${path1}/review/buy-product',
+	        				type : 'get',
+	        				data : {
+	        					loginUserId : loginUserId,
+	        					productNo : productNo
+	        				},
+							success : result => {
+								if(result.data === 'N') {
+									alertify.alert('리뷰는 상품 구매 후 작성 가능합니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+									return;
+								}
+								
+								else {
+									$('#review-form').submit();
+								}
+							}	        			
+	        			});
+	        		}
+	        		else {
+	        			alertify.alert('로그인이 필요합니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+	        		}
+	        	});
+	        </script>
+	        
+	        <!-- 후기 테이블 -->
+	        <div class="row col-md-12" id="review-div" style="margin:0;">
             </div>
-            <div class="col-md-2 table-head">
-           		<p>평점</p>
-            </div>
-            <div class="col-md-6 table-head">
-           		<p>내용</p>
-            </div>
-            <div class="col-md-1 table-head">
-           		<p style="text-align: center;">작성자</p>
-            </div>
-            <div class="col-md-2 table-head">
-           		<p style="text-align: center;">작성일</p>
-            </div>
-     
-     		<c:forEach begin="1" end="5">
-	            <div class="col-md-1 table-body" style="border-bottom: 1px solid #e6e6e6;">
-	           		<p style="text-align: center;">5</p>
-	            </div>
-	            <div class="col-md-2 table-body" style="border-bottom: 1px solid #e6e6e6;">
-	           		<p>★★★★★</p>
-	            </div>
-	            <div class="col-md-6 table-body" style="border-bottom: 1px solid #e6e6e6;">
-	           		<p>본문 테스트용 임다 ㅋㅋㅋㅋㅋㅋㅋㅋ큐ㅠㅠㅠㅠㅠㅠㅠ</p>
-	            </div>
-	            <div class="col-md-1 table-body" style="border-bottom: 1px solid #e6e6e6;">
-	           		<p style="text-align: center;">********a</p>
-	            </div>
-	            <div class="col-md-2 table-body" style="border-bottom: 1px solid #e6e6e6;">
-	           		<p style="text-align: center;">24-06-20</p>
-	            </div>
-            </c:forEach>
 	    </div>
 	    
-	    <!--  상품 리뷰 ajax 요청
+	    <!-- 후기 페이징 -->
+	    <nav aria-label="Page navigation" id="review-paging" style="margin-bottom: 200px;">
+        </nav>
+	    
 	    <script>
 	    	const productNo = parseInt('${product.productNo}');
 	    
+	    	// 문의, 리뷰 로딩
 	    	$(() => {
+	    		loadReview(1);
+	    		loadProductQna(1);
+	    	});
+	    	
+	    	// 문의 테이블 / 페이지
+	    	function loadProductQna(page) {
 	    		$.ajax({
-	    			url : '${path1}/product/review',
+	    			url : '${path1}/product/productQna',
 	    			type : 'get',
 	    			data : {
-	    				productNo : productNo
+	    				productNo : productNo,
+	    				page : page
 	    			},
 	    			success : result => {
-	    				console.log(result);
+	    				const productQnaList = result.data.productQnaList;
+	    				const pageInfo = result.data.pageInfo;
+
+	    				$('#productQna-div').append('<div class="col-md-2 table-head"><p style="text-align: center;">닉네임</p></div>'
+	    											+'<div class="col-md-8 table-head"><p style="text-align: center;">문의 내용</p></div>'
+	    											+'<div class="col-md-2 table-head"><p style="text-align: center;">작성 시간</p></div>');
+		            
+		            	if(productQnaList.length !== 0) {
+		            		productQnaList.map((qna, i) => {
+		            			let str = '';
+		            			str += '<div class="col-md-2 table-body">';
+		            			if(qna.memId === '${sessionScope.loginUser.memId}' || 
+		            				'${product.memId}' === '${sessionScope.loginUser.memId}') {
+		            				str += '<p>' + qna.memId + '</p></div>'
+		            					 + '<div class="col-md-8 table-body">'
+		            					 + '<p style="text-align:left;">' + qna.qnaTitle + '</p></div>';
+		            			} else {
+		            				str += '<p><i class="fas fa-lock"></i>*****</p></div>'
+		            					 + '<div class="col-md-8 table-body">'
+		            					 + '<p style="text-align:left;">비밀글입니다. 작성자와 해당 작가만 볼 수 있습니다.</p></div>'
+		            			}
+		            			str += '<div class="col-md-2 table-body">'
+		            				 + '<p>' + qna.qnaDate + '</p><div>';
+		            			
+		            			$('#productQna-div').append(str);
+		            		});
+		            		
+		            		let pagingStr = '';
+		    				pagingStr += '<ul class="pagination justify-content-center"';
+		    				
+							if(pageInfo.currentPage === 1) {
+								pagingStr += '<li class="page-item"><a class="page-link">이전</a></li>';
+							} else {
+								pagingStr += '<li class="page-item"><a class="page-link" onclick="moveQnaPage(' + (pageInfo.currentPage - 1) + ');">이전</a></li>'
+							}
+							
+							for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+								if(pageInfo.currentPage === i) {
+									pagingStr += '<li class="page-item active"><a class="page-link">' + i + '</a></li>';
+								} else {
+									pagingStr += '<li class="page-item"><a class="page-link" onclick="moveQnaPage(' + i + ');">' + i + '</a></li>';
+								}
+							}
+							
+							if(pageInfo.currentPage === pageInfo.endPage) {
+								pagingStr += '<li class="page-item"><a class="page-link">다음</a></li>';
+							} else {
+								pagingStr += '<li class="page-item"><a class="page-link" onclick="moveQnaPage(' + (pageInfo.currentPage + 1) + ');">다음</a></li>'
+							}
+							
+							pagingStr += '</ul>';
+							
+							$('#productQna-paging').append(pagingStr);
+		            	} 
+		            	else {
+	    					$('#productQna-div').append('<div class="col-md-12 table-body"><p>등록된 문의가 없습니다.</p></div>');
+	    				}				
 	    			}
 	    		});
-	    	});
+	    	}
+	    	
+	    	// 문의 페이징 처리
+	    	function moveQnaPage(page) {
+	    		$('#productQna-div').empty();
+	    		$('#productQna-paging').empty();
+	    		
+	    		loadProductQna(page);
+	    	}
+	    	
+	    	// 리뷰 테이블 / 페이지
+	    	function loadReview(page) {
+	    		$.ajax({
+	    			url : '${path1}/review',
+	    			type : 'get',
+	    			data : {
+	    				productNo : productNo,
+	    				page : page
+	    			},
+	    			success : result => {
+	    				const reviewList = result.data.reviewList;
+	    				const pageInfo = result.data.pageInfo;
+	    				
+		            	$('#review-div').append('<div class="col-md-1 table-head"><p style="text-align: center;">번호</p></div>'
+		            						   +'<div class="col-md-2 table-head"><p>평점</p></div>'
+		            						   +'<div class="col-md-6 table-head"><p>제목</p></div>'
+		            						   +'<div class="col-md-1 table-head"><p style="text-align: center;">작성자</p></div>'
+		            						   +'<div class="col-md-2 table-head"><p style="text-align: center;">작성일</p></div>');
+	    				
+	    				if(reviewList.length !== 0) {
+		    				reviewList.map((review, i) => {
+		    					let str = '';
+		    					str += '<div class="col-md-1 table-body">'
+		    						 + '<p>' + review.reviewNo + '</p>'
+		    						 + '</div>'
+		    						 + '<div class="col-md-2 table-body">'
+		    						 + '<div class="star-rating" data-rating="' + review.reviewStar + '"></div>'
+		    						 + '</div>'
+		    						 + '<div class="col-md-6 table-body" style="cursor: pointer;" onclick="toggleReviewContent(' + review.reviewNo + ');">'
+		    						 + '<p style="text-align:left;">' + review.reviewTitle + '</p>'
+		    						 + '</div>'
+		    						 + '<div class="col-md-1 table-body">'
+		    						 + '<p>' + review.memId + '</p>'
+		    						 + '</div>'
+		    						 + '<div class="col-md-2 table-body">'
+		    						 + '<p>' + review.reviewDate + '</p>'
+		    						 + '</div>'
+		    						 + '<div class="col-md-10 table-body review-content" id="review-content-' + review.reviewNo + '" style="display: none;">'
+		                             + '<p style="text-align:left;">' + review.reviewContent + '</p>'
+		                             + '</div>'
+		                             + '<div class="col-md-2 table-body review-content" id="review-delbtn-' + review.reviewNo + '" style="display: none; text-align:center;">';
+		                    	if(review.memId === '${sessionScope.loginUser.memId}') {
+		                        	str += '<button type="button" class="btn btn-danger" onclick="deleteReview(' + review.reviewNo + ');">리뷰 삭제</button>';
+		                    	}
+		                            str += '</div>';
+		    					
+		    					$('#review-div').append(str);
+		    				});
+		    				
+		    				let pagingStr = '';
+		    				pagingStr += '<ul class="pagination justify-content-center"';
+		    				
+							if(pageInfo.currentPage === 1) {
+								pagingStr += '<li class="page-item"><a class="page-link">이전</a></li>';
+							} else {
+								pagingStr += '<li class="page-item"><a class="page-link" onclick="moveReviewPage(' + (pageInfo.currentPage - 1) + ');">이전</a></li>'
+							}
+							
+							for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+								if(pageInfo.currentPage === i) {
+									pagingStr += '<li class="page-item active"><a class="page-link">' + i + '</a></li>';
+								} else {
+									pagingStr += '<li class="page-item"><a class="page-link" onclick="moveReviewPage(' + i + ');">' + i + '</a></li>';
+								}
+							}
+							
+							if(pageInfo.currentPage === pageInfo.endPage) {
+								pagingStr += '<li class="page-item"><a class="page-link">다음</a></li>';
+							} else {
+								pagingStr += '<li class="page-item"><a class="page-link" onclick="moveReviewPage(' + (pageInfo.currentPage + 1) + ');">다음</a></li>'
+							}
+							
+							pagingStr += '</ul>';
+							
+							$('#review-paging').append(pagingStr);
+	    				}
+	    				else {
+	    					$('#review-div').append('<div class="col-md-12 table-body"><p>등록된 후기가 없습니다.</p></div>');
+	    				}
+	    			}
+	    		});
+	    	}
+	    	
+	    	// 리뷰 페이징 처리
+	    	function moveReviewPage(page) {
+	    		$('#review-div').empty();
+	    		$('#review-paging').empty();
+	    		
+	    		loadReview(page);
+	    	}
+	    	
+	    	// 리뷰 본문 토글 처리
+	    	function toggleReviewContent(reviewNo) {
+	    		const content = $('#review-content-' + reviewNo);
+	    		const delbtn = $('#review-delbtn-' + reviewNo);
+	    		content.slideToggle();
+	    		delbtn.slideToggle();
+	    	}
+	    	
+	    	// 리뷰 삭제
+	    	function deleteReview(reviewNo) {
+	    		$.ajax({
+	    			url : '${path1}/review/' + reviewNo,
+	    			type : 'delete',
+	    			success : result => {
+	    				alertify.alert(result.message).setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+	    				if(result.data === 1) {
+	    					moveReviewPage(1);
+	    				}
+	    			}
+	    		});
+	    	}
 	    </script>
-	    -->
 	    
-	    <!-- 후기 페이징 -->
-	    <nav aria-label="Page navigation" style="margin-bottom: 200px;">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-            </ul>
-        </nav>  
 	</div>
 
     <jsp:include page="../common/footer.jsp" />

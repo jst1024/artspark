@@ -62,8 +62,6 @@
         <h2>답변 글 등록(Answer)</h2>
         <form action="insertAnswer" method="post" enctype="multipart/form-data" onsubmit="return submitContents(this)">
             <input type="hidden" name="qnaNo" value="${param.qnaNo}">
-            <input type="hidden" name="secret" value="${qna.secret}">
-            <input type="hidden" name="answerNo" value="${param.answerNo}">
             <div class="form-group">
                 <label for="title">제목</label>
                 <input type="hidden" value="${sessionScope.loginUser.memId}" name="memId">
@@ -86,7 +84,7 @@
             <button type="submit" class="btn btn-primary" style="float: right;">등록하기</button>
         </form>
     </div>
-    
+
     <script type="text/javascript">
         var oEditors = [];
         
@@ -113,14 +111,14 @@
             }
         }
     </script>        
-                
+
     <script>
         function updateFileName(input) {
             var fileName = input.files[0].name;
             document.getElementById('file-name').textContent = fileName;
         }
     </script>
-     
+
     <jsp:include page="../common/footer.jsp" />
 </body>
 </html>

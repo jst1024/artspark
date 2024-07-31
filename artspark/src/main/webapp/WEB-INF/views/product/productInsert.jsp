@@ -416,6 +416,10 @@
 		            }
 		        }
 		        
+		        function goBack() {
+		        	location.href = '${ path1 }/product';
+		        }
+		        
 		        /*
 		        $(document).on('click', '.btn-primary', function(e) {
         			e.preventDefault();
@@ -457,9 +461,9 @@
 		        */
 		    </script>
             
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin:50px 0;">
 				<button type="button" class="btn-lg btn-primary me-md-2" onclick="submitContents(this);">작품 등록</button>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="${ path1 }/product" class="btn-lg btn-danger" type="button">취소</a>
+				<button type="button" class="btn-lg btn-danger me-md-2" onclick="goBack();">취소</button>
 			</div>
         </form>
     </div>

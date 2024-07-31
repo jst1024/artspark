@@ -47,8 +47,10 @@ public interface MemberService {
 	
 	//메일인증
 	int sendMail(Mail mail);
-    void updatePassword(Member member);
-	Member getMember(String memId, String memNickname, String memEmail);
+    
+	int updatePassword(Member member);
+	
+    Member getMember(String memId, String memNickname, String memEmail);
 	
 	
 
@@ -75,7 +77,14 @@ public interface MemberService {
 	//정지 회원 정지상태변경 기능
 	int updateMemberStatus(String memberId, String status);
 
+	
+	int deleteJjim(Map<String, Object> map);
 
+
+
+
+	
+	//정지
 
 
 

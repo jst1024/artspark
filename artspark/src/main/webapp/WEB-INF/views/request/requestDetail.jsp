@@ -1,14 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="path2" value="${pageContext.servletContext.contextPath }" />
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>의뢰게시판 상세보기</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <jsp:include page="../common/head.jsp"></jsp:include>
     <style>
         .container-main {
             max-width: 1200px;
@@ -100,10 +98,29 @@
                     <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
                 </form>
                 <button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+                <c:choose>
+                	<c:when test="${ sessionScope.loginUser.memId == request.memId }">
+                		<button type="button" class="btn btn-warning" style="color:white;" onclick="writerAlert();">신고하기</button>
+                	</c:when>
+                	<c:when test="${ sessionScope.loginUser.memId == null }">
+                		<button type="button" class="btn btn-warning" style="color:white;" onclick="loginAlert();">신고하기</button>
+                	</c:when>
+                	<c:otherwise>
+                		<button type="button" class="btn btn-warning" style="color:white;" data-toggle="modal" data-target="#reportModal">신고하기</button>
+                	</c:otherwise>
+                </c:choose>
                 <script>
                     function postSubmit(el) {
                         const attrValue = '수정하기' === el ? 'updateRequest' : 'deleteRequest';
                         $('#postForm').attr('action', attrValue).submit();
+                    }
+                    
+                    function loginAlert() {
+                    	alertify.alert('로그인 후 이용가능합니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+                    }
+                    
+                    function writerAlert() {
+                    	alertify.alert('나를 신고할순 없어용').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
                     }
                 </script>
             </div>
@@ -218,6 +235,44 @@
 
 
         </script>
+    </div>
+    
+    <!-- 신고 모달 창 -->
+    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">신고하기</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="reportForm" action="${path2 }/report" method="post">
+                        <div class="form-group">
+                            <label for="reportTitle">의뢰글 제목</label>
+                            <input type="hidden" name="reqNo" value="${request.reqNo }">
+                            <input type="hidden" name="memId" value="${request.memId }">
+                            <input type="hidden" name="memId2" value="${sessionScope.loginUser.memId }">
+                            <input type="text" class="form-control" id="reportTitle" value="${request.reqTitle}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportReason">신고 이유</label>
+                            <select class="form-control" id="reportReason" name="reportCategory">
+                                <option value="욕설">욕설</option>
+                                <option value="부적절한 내용">부적절한 내용</option>
+                                <option value="선정적">선정적</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportDetail">신고 상세 이유</label>
+                            <textarea class="form-control" name="reportContent" id="reportDetail" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">신고 제출</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
     <jsp:include page="../common/footer.jsp" />
 
