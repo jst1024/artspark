@@ -90,7 +90,6 @@ public class ProductController {
 		map.put("sort", sort);
 		
 		PageInfo pageInfo = PageTemplate.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
-		
 		RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
 		
 		if(session.getAttribute("loginUser") != null) {
