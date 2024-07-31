@@ -19,6 +19,7 @@ public class Interest {
 	private List<String> filePaths;		//파일 경로
 	private String productTitle;  // 상품 제목
 	private double avgStar;   //평점
+	private int productNo;
 	
 	
 

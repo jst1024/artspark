@@ -63,6 +63,9 @@ public interface MemberMapper {
 
 	int suspendedMemberCount();
 
+	int deleteJjim(Map<String, Object> map);
+
+
 
 
 

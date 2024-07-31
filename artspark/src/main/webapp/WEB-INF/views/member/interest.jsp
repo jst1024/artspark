@@ -180,6 +180,7 @@
                         <div class="d-flex">
                             <div class="profile-image">
                                 <img src="${seller.artistPath}" alt="작가 프로필" style="width: 100%; height: 100%; object-fit: cover;">
+                                <input type="hidden" value="${seller.productNo }" id="pno"/> 
                             </div>
                             <div class="artist-info ml-3">
                                 <div class="artist-name">작가 이름: ${seller.memNickname}</div>
@@ -198,12 +199,29 @@
                             </div>
                             <div class="image-caption">${seller.productTitle}</div>
                         </div>
-                        <div class="remove-button ml-3">X</div>
+                        <div class="remove-button ml-3" onclick="remove('${seller.productNo}');">X</div>
                     </div>
                 </c:forEach>
             </div>
         </div>
     <jsp:include page="../common/footer.jsp"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+	    function remove(productNo) {
+	 		console.log(productNo);
+
+	        $.ajax({
+	            url: '${path2}/removeInterest',
+	            type: 'POST',
+	            data: {
+	                productNo : productNo
+	            },
+	            success: response => {
+	            	location.href="${path2 }/interestSeller";
+	               
+	            }
+	        });
+	    };
+	</script>
 </body>
 </html>
