@@ -344,8 +344,7 @@
 		            </c:when>
 		            <c:otherwise>
 		                <li class="page-item">
-		                    <a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage - 1 }
-		                        <c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
+		                    <a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage - 1 }<c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
 		                        이전
 		                    </a>
 		                </li>
@@ -361,8 +360,7 @@
 		                </c:when>
 		                <c:otherwise>
 		                    <li class="page-item">
-		                        <a class="page-link" href="${path2 }/product?page=${ p }
-		                            <c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
+		                        <a class="page-link" href="${path2 }/product?page=${ p }<c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
 		                            ${ p }
 		                        </a>
 		                    </li>
