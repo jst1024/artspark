@@ -17,6 +17,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,7 +39,7 @@ import com.kh.artspark.member.model.vo.Interest;
 import com.kh.artspark.member.model.vo.Mail;
 import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
-
+import com.kh.artspark.product.model.service.ProductService;
 import com.kh.artspark.qna.model.service.QnaService;
 import com.kh.artspark.qna.model.vo.ProductQna;
 import com.kh.artspark.qna.model.vo.Qna;
@@ -51,6 +53,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 	
 	private final MemberService memberService;
+	private final ProductService productService;
 	private final BCryptPasswordEncoder bcryptPasswordEncoder;
 	private final JavaMailSender sender;
 	private final QnaService qnaService; // QnaService 주입
@@ -127,6 +130,7 @@ public class MemberController {
 	    Member loginUser = (Member) session.getAttribute("loginUser");
 	    if (loginUser != null) {
 	        loginUser.setMemCategory("B");
+	        
 	        
 	        // 데이터베이스 업데이트
 	        if (memberService.update(loginUser) > 0) {
@@ -432,13 +436,33 @@ public class MemberController {
 	public String interestSeller(HttpSession session, Model model) {
 		Member member = (Member)session.getAttribute("loginUser");
 		List<Interest> interestThing = memberService.interest(member.getMemId()); 
-		log.info("가 : {}",interestThing);
 		
 		model.addAttribute("interestThing", interestThing);
-		log.info("관심: {} ", interestThing);
 		
 		
 		return "member/interest";
+	}
+	
+	//관심 판매자 삭제
+	@PostMapping("/removeInterest")
+	@ResponseBody
+	public ResponseEntity<String> removeInterestSeller(@RequestParam("productNo") int productNo,HttpSession session) {
+		
+		Member loginUser = (Member) session.getAttribute("loginUser");
+		String loginId = loginUser.getMemId();
+		
+		Map<String, Object> map = new HashMap<>();
+			map.put("loginId", loginId);
+			map.put("productNo", productNo);
+		
+			log.info("성공 :{}",productNo);
+			if(memberService.deleteJjim(map) > 0) {
+			
+				return ResponseEntity.ok("성공");
+				
+			
+			}
+		 return null;
 	}
 	
 	// 마이페이지

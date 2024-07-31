@@ -75,6 +75,11 @@ public interface MemberService {
 	int suspendedMemberCount();
 
 
+	int deleteJjim(Map<String, Object> map);
+
+
+
+
 	
 	//정지
 

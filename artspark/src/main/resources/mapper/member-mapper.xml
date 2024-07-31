@@ -38,6 +38,7 @@
 	<result property="memNickname" column="MEM_NICKNAME"/>
 	<result property="productTitle" column="PRODUCT_TITLE"/>
 	<result property="avgStar" column="AVG_STAR"/>
+	<result property="productNo" column="PRODUCT_NO"/>
 	    <collection property="filePaths" ofType="string">
         <result column="FILE_PATH"/>
     </collection>
@@ -127,7 +128,8 @@
 				MEMBER
 		   SET
 		   		MEM_NICKNAME=#{memNickname},
-		   		MEM_EMAIL=#{memEmail}
+		   		MEM_EMAIL=#{memEmail},
+		   		MEM_CATEGORY ='B'
 		 WHERE
 				MEM_ID= #{memId}
 	</update>
@@ -296,18 +298,26 @@
 	  
 	  
     <update id="updatePassword">
-        UPDATE MEMBER
-        SET MEM_PWD = #{memPwd}
-        WHERE MEM_EMAIL = #{memEmail}
+        UPDATE 
+        		MEMBER
+           SET 
+        		MEM_PWD = #{memPwd}
+         WHERE 
+        		MEM_EMAIL = #{memEmail}
     </update>
    	
    	<select id="getMember" resultMap="memberResultSet">
-	    SELECT *
-	    FROM MEMBER
-	    WHERE MEM_ID = #{memId}
-	    AND MEM_NICKNAME = #{memNickname}
-	    AND MEM_EMAIL = #{memEmail}
-</select>
+	    SELECT 
+	    		*
+	     FROM
+	      		MEMBER
+	    WHERE
+	    		MEM_ID = #{memId}
+	      AND 
+	    		MEM_NICKNAME = #{memNickname}
+	      AND 
+	    		MEM_EMAIL = #{memEmail}
+	</select>
 
 
 	
@@ -355,29 +365,44 @@
 		<!-- 관심 판매자 목록 -->
 	<select id="interest" parameterType="String" resultMap="interest">
 		SELECT
-       A.ARTIST_PATH,
-       M.MEM_NICKNAME,
-       PF.FILE_PATH,
-       P.PRODUCT_TITLE,
-       ROUND(NVL(AVG(R.REVIEW_STAR), 0), 1) AS AVG_STAR
-FROM
-       PRODUCT P
-       JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
-       JOIN PRODUCTFILE PF ON PF.PRODUCT_NO = P.PRODUCT_NO
-       LEFT JOIN REVIEW R ON P.PRODUCT_NO = R.PRODUCT_NO
-       LEFT JOIN ARTIST A ON A.MEM_ID = M.MEM_ID
-       JOIN JJIM J ON J.PRODUCT_NO = P.PRODUCT_NO
-           
-WHERE
-        J.MEM_ID = #{mem_id}
-GROUP
-   BY
-        A.ARTIST_PATH,
-        M.MEM_NICKNAME,
-        PF.FILE_PATH,
-        P.PRODUCT_TITLE
+			        A.ARTIST_PATH,
+			        M.MEM_NICKNAME,
+			        PF.FILE_PATH,
+			        P.PRODUCT_TITLE,
+			        P.PRODUCT_NO,
+			        ROUND(NVL(AVG(R.REVIEW_STAR), 0), 1) AS AVG_STAR
+		 FROM
+			        PRODUCT P
+			        JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
+			        JOIN PRODUCTFILE PF ON PF.PRODUCT_NO = P.PRODUCT_NO
+			        LEFT JOIN REVIEW R ON P.PRODUCT_NO = R.PRODUCT_NO
+			        LEFT JOIN ARTIST A ON A.MEM_ID = M.MEM_ID
+			        JOIN JJIM J ON J.PRODUCT_NO = P.PRODUCT_NO
+			           
+	    WHERE
+			        J.MEM_ID = #{mem_id}
+		GROUP
+		   BY
+			        A.ARTIST_PATH,
+			        M.MEM_NICKNAME,
+			        PF.FILE_PATH,
+			        P.PRODUCT_TITLE,
+			        P.PRODUCT_NO
 	</select>
 	
+	<!-- 관심 판매자 삭제 -->
+	<!-- 찜 삭제 -->
+	<delete id="deleteJjim" parameterType="map">
+		DELETE
+		  FROM
+		  		JJIM
+		 WHERE
+		 		MEM_ID = #{loginId}
+		   AND
+		   		PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<!-- 별점  -->
 	<select id="reviewStar" parameterType="String">
 		SELECT
 				AVG(REVIEW_STAR)
@@ -414,6 +439,7 @@ GROUP
     </resultMap>
 
     <!-- 조인 쿼리 -->
+    <!-- 
     <select id="suspendedMemberList" resultMap="suspendedMemberResultMap">
         SELECT
             	M.MEM_ID,
@@ -431,7 +457,7 @@ GROUP
             	M.MEM_REPORTCOUNT
            		
     </select>
-
+	 -->
 </mapper>
 
 

@@ -131,6 +131,15 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.suspendedMemberCount();
 	}
 
+	@Override
+	public int deleteJjim(Map<String, Object> map) {
+		return memberMapper.deleteJjim(map);
+	}
+
+
+
+
+
 
 
 	
