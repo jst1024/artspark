@@ -5,7 +5,6 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>답변 글 상세보기</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -62,7 +61,7 @@
                         <th scope="row">작성일</th>
                         <td>${answer.answerDate}</td>
                         <th scope="row">작성자</th>
-                        <td>${qna.answerMemId}</td>                        
+                        <td>${loginUser.memId}</td>                        
                     </tr>
                     <tr>
                         <th scope="row">제목</th>
@@ -97,7 +96,7 @@
             <div class="memId-actions">
                 <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우나 관리자만 보여져야 함 -->
                 <c:choose>
-                	<c:when test="${sessionScope.loginUser != null || sessionScope.loginUser.memId == 'admin'}">
+                	<c:when test="${sessionScope.loginUser != null && sessionScope.loginUser.memId == 'admin'}">
                     	<a class="btn btn-primary" onclick="postSubmit(this.innerHTML);">답변 수정하기</a>
                     	<a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">답변 삭제하기</a>
                     	<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
@@ -121,7 +120,5 @@
     </div>
     <jsp:include page="../common/footer.jsp" />
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

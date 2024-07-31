@@ -115,14 +115,15 @@
                     	<a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">삭제하기</a>
                     	<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
                 	</c:when>
+                	<c:when test="${sessionScop.loginUser != null || sessionScope.loginUser.memId eq 'admin' }">
+	                	<a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">삭제하기</a>
+	                	<button type="button" class="btn btn-success" onclick="location.href='answerInsert?qnaNo=${qna.qnaNo}'">답변하기</button>
+                	</c:when>
                 	<c:otherwise>
                			<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
                 	</c:otherwise>
                 </c:choose>
-                <c:if test="${sessionScop.loginUser != null || sessionScope.loginUser.memId eq 'admin' }">
-                	<a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">삭제하기</a>
-                	<button type="button" class="btn btn-success" onclick="location.href='answerInsert?qnaNo=${qna.qnaNo}'">답변하기</button>
-                </c:if>
+                
                 <form method="post" action="" id="QnaPostForm">
                     <input type="hidden" name="qnaNo" value="${qna.qnaNo }" />
                     <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
@@ -138,7 +139,5 @@
     </div>
     <jsp:include page="../common/footer.jsp" />
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

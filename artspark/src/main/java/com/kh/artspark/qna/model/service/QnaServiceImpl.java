@@ -161,7 +161,7 @@ public class QnaServiceImpl implements QnaService {
 
 	@Override
 	public Answer findAnswerById(int answerNo) {
-		return qnaMapper.findAnserById(answerNo);
+		return qnaMapper.findAnswerById(answerNo);
 	}
 
 
