@@ -125,7 +125,7 @@
                             <td>${order.memNickname}</td>
                             
                             <td>
-                            	${ order.productPurpose } / <strong>${ order.productTitle }</strong><br>
+                            	<strong>${ order.productPurpose } /${ order.productTitle }</strong><br>
                             	<c:forEach items="${order.buyOptionList }" var="buyOptionList">
                             		<p>
                             		   ${ buyOptionList.buyOptionName}/${buyOptionList.buyDetailOptionName}/${ buyOptionList.buyOptionPrice }/${ buyOptionList.buyOptionAmount }<br>

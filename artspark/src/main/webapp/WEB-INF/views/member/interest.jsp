@@ -199,7 +199,7 @@
 					        </c:if>
 					    </c:forEach>
                           </div>
-                          <div class="image-caption">${seller.productTitle}</div>
+                          <div class="image-caption" style="font-weight: bold; font-size: 18px;">${seller.productTitle}</div>
                       </div>
                       <div class="remove-button ml-3" onclick="remove('${seller.productNo}');">X</div>
                   </div>
