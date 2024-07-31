@@ -439,7 +439,7 @@
     </resultMap>
 
     <!-- 조인 쿼리 -->
-    <!-- 
+
     <select id="suspendedMemberList" resultMap="suspendedMemberResultMap">
         SELECT
             	M.MEM_ID,
@@ -457,7 +457,7 @@
             	M.MEM_REPORTCOUNT
            		
     </select>
-	 -->
+
 </mapper>
 
 
