@@ -39,6 +39,7 @@ import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.member.model.vo.OrderBuyOption;
 
 import com.kh.artspark.qna.model.service.QnaService;
+import com.kh.artspark.qna.model.vo.Answer;
 import com.kh.artspark.qna.model.vo.ProductQna;
 import com.kh.artspark.qna.model.vo.Qna;
 
@@ -462,7 +463,6 @@ public class MemberController {
 
 	    return "member/myPage";
 	}
-
 	
 	
 	

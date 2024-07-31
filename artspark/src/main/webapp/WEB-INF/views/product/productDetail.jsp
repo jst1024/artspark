@@ -526,8 +526,9 @@
 	    		</c:forEach>
 	    	</span>
 	    </div>
+	
 	    
-<!-- 문의 및 답변 -->
+<!-- 
 <div class="row" style="margin-bottom: 50px;">
     <div class="col-md-2">
         <h3>문의 및 답변</h3>
@@ -581,7 +582,7 @@
         </div>
     </c:forEach>
 </div>
-
+문의 및 답변 -->
 	    
 	    <!-- 문의 페이징 -->
 	    <nav aria-label="Page navigation">

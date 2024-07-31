@@ -7,6 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import com.kh.artspark.common.model.vo.ImgFile;
 import com.kh.artspark.qna.model.vo.Answer;
+import com.kh.artspark.qna.model.vo.ProductAnswer;
 import com.kh.artspark.qna.model.vo.ProductQna;
 import com.kh.artspark.qna.model.vo.Qna;
 
@@ -39,18 +40,19 @@ public interface QnaService {
 	
 	
     // 답변 등록
-    int insertAnswer(Answer answer, ImgFile imgFile);
+    int insertAnswer(Answer answer, ImgFile imgFile); // 관리자답변
+    int insertProductAnswer(ProductAnswer productAnswer, ImgFile imgFile); // 판매자답변
       
     // 답변 상세보기
 	ImgFile findImgFileByAnswerNo(int answerNo);
 	Answer findAnswerById(int answerNo);
-	List<Answer> getAnswersByQnaNo(int qnaNo);
 
-	// 마이페이지 문의답변
+	// 마이페이지 문의
 	List<Qna> getMyQna(String memId); // 관리자에게
 	List<ProductQna> getMyProductQna(String memId); // 판매자에게
-
 	List<ProductQna> getReceivedProductQna(String memId); // 판매자로서 받은
+
+	
 
 	
 
