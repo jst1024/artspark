@@ -69,17 +69,7 @@
        			#{startValue} AND #{endValue}
     </select>
 
-	<!--전체 조회 -->
-	<select id="memberList" resultType="member">
-		SELECT
-				MEM_ID memId,
-				MEM_PWD memPwd,
-				MEM_NICKNAME memNickname,
-				MEM_EMAIL memEmail,
-				MEM_ENROLL memEnroll
-		  FROM
-				MEMBER
-	</select>
+	
 	
 	
 	
