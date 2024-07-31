@@ -14,6 +14,7 @@
 		<typeAlias type="com.kh.artspark.member.model.vo.BuyOption" alias="buyOptionOrder"/>
 		<typeAlias type="com.kh.artspark.member.model.vo.Interest" alias="interest"/>
 		<typeAlias type="com.kh.artspark.member.model.vo.Artist" alias="artist" />
+		<typeAlias type="com.kh.artspark.member.model.vo.Report" alias="report" />
 		<typeAlias type="com.kh.artspark.notice.model.vo.Notice" alias="notice" />	
 		<typeAlias type="com.kh.artspark.request.model.vo.Request" alias="request" />	
 		<typeAlias type="com.kh.artspark.request.model.vo.Reply" alias="reply" />	

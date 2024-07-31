@@ -45,32 +45,27 @@
 	
 	
 	
-	<!--전체 조회 -->
-	<select id="memberList" resultType="member">
-		SELECT
-				MEM_ID memId,
-				MEM_PWD memPwd,
-				MEM_NICKNAME memNickname,
-				MEM_EMAIL memEmail,
-				MEM_ENROLL memEnroll
-		  FROM
-				MEMBER
-	</select>
-	
-	<!-- 정지된 회원 조회 -->
-	<select id="suspendedMemberList" resultType="member">
-		SELECT
-				MEM_ID memId,
-				MEM_SUSPENSION memSuspension,
-				MEM_REPORTCOUNT memReportcount
-		  FROM
-		  		MEMBER
-		 WHERE
-		 		STATUS = 'N'
-		 ORDER
-		    BY
-		    	MEM_REPORTCOUNT DESC
-	</select>
+	<!-- 페이징 처리를 위한 회원 리스트 조회 -->
+    <select id="memberList" resultType="member">
+        SELECT
+            	MEM_ID as memId,
+            	MEM_NICKNAME as memNickname,
+           		MEM_EMAIL as memEmail,
+            	STATUS as status
+          FROM
+            	(SELECT 
+                ROW_NUMBER() OVER (ORDER BY MEM_ID) AS rnum,
+                MEM_ID,
+                MEM_NICKNAME,
+                MEM_EMAIL,
+                STATUS
+          FROM 
+                MEMBER) 
+         WHERE 
+            	rnum 
+       BETWEEN 
+       			#{startValue} AND #{endValue}
+    </select>
 	
 	<!-- 회원가입 -->
 	<insert id="insert" parameterType="member">
@@ -400,7 +395,7 @@
         <result property="memId" column="MEM_ID"/>
         <result property="memSuspension" column="MEM_SUSPENSION"/>
         <result property="memReportcount" column="MEM_REPORTCOUNT"/>
-        <result property="reportContent" column="REPORT_CONTENT"/>
+        <result property="reportCategory" column="REPORT_CATEGORY"/>
     </resultMap>
 
     <!-- 조인 쿼리 -->
@@ -409,7 +404,7 @@
             	M.MEM_ID,
             	M.MEM_SUSPENSION,
             	M.MEM_REPORTCOUNT,
-            	R.REPORT_CONTENT
+            	R.REPORT_CATEGORY
           FROM
             	MEMBER M
           JOIN
@@ -418,10 +413,20 @@
             	M.STATUS = 'N'
          ORDER
             BY
-            	M.MEM_REPORTCOUNT
+            	M.MEM_REPORTCOUNT DESC
            		
     </select>
 
+	<!-- 정지기능 온오프 -->
+	<update id="updateMemberStatus" parameterType="map">
+    	UPDATE 
+    			MEMBER
+    	   SET 
+    			STATUS = #{status},
+    			MEM_ENROLL = SYSDATE
+    	 WHERE 
+    	 		MEM_ID = #{memberId}
+	</update>
 </mapper>
 
 

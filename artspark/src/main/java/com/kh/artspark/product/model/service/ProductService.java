@@ -66,4 +66,13 @@ public interface ProductService {
 	// 어드민에 쓸 리스트
 	List<Product> productFindAll(Map<String, Integer> map);
 
+	// 이것도 어드민에서 상품의 상태관리를 위한 기능
+	int updateProductStatus(String productNo, String newStatus);
+
+	// 삭제된 상품수
+	int deletedProductCount();
+
+	// 삭제된 상품리스트
+	List<Product> deletedProductFindAll(Map<String, Integer> map);
+
 }

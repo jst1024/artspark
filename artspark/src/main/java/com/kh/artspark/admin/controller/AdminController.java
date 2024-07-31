@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
-import org.apache.ibatis.session.RowBounds;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/admin")
 public class AdminController {
 
-	private final ProductService productService;
+    private final ProductService productService;
     private final NoticeService noticeService;
     private final MemberService memberService;
     private final RequestService requestService;
@@ -128,7 +128,7 @@ public class AdminController {
         int pageLimit = 5;
         int boardLimit = 5;
 
-        int maxPage = (int) Math.ceil((double)listCount / boardLimit);
+        int maxPage = (int) Math.ceil((double) listCount / boardLimit);
         int startPage = ((currentPage - 1) / pageLimit) * pageLimit + 1;
         int endPage = startPage + pageLimit - 1;
 
@@ -178,77 +178,75 @@ public class AdminController {
         return result;
     }
 
-
-    
     @ResponseBody
     @GetMapping("/ajaxProductManagement")
     public Map<String, Object> getProductListAjax(@RequestParam(value = "page", defaultValue = "1") int page) {
-    	int listCount = productService.productAllCount();
-    	int currentPage = page;
-    	int pageLimit = 5;
-    	int boardLimit = 5;
-    	
-    	int maxPage = (int) Math.ceil((double) listCount / boardLimit);
-    	int startPage = ((currentPage - 1) / pageLimit) * pageLimit + 1;
-    	int endPage = startPage + pageLimit - 1;
-    	
-    	if (endPage > maxPage) {
-    		endPage = maxPage;
-    	}
-    	
-    	PageInfo pageInfo = PageInfo.builder()
-    			.listCount(listCount)
-    			.currentPage(currentPage)
-    			.pageLimit(pageLimit)
-    			.boardLimit(boardLimit)
-    			.maxPage(maxPage)
-    			.startPage(startPage)
-    			.endPage(endPage)
-    			.build();
-    	
-    	Map<String, Integer> map = new HashMap<>();
-    	
-    	int startValue = (currentPage - 1) * boardLimit + 1;
-    	int endValue = startValue + boardLimit - 1;
-    	
-    	map.put("startValue", startValue);
-    	map.put("endValue", endValue);
-    	
-    	List<Product> productList = productService.productFindAll(map);
-    	
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    	List<Map<String, Object>> formattedProductList = new ArrayList<>();
-    	
-    	for (Product product : productList) {
-    		Map<String, Object> formattedProduct = new HashMap<>();
-    		formattedProduct.put("productNo", product.getProductNo());
-    		formattedProduct.put("productTitle", product.getProductTitle());
-    		formattedProduct.put("productDate", sdf.format(product.getProductDate()));
-    		formattedProduct.put("memId", product.getMemId());
-    		formattedProductList.add(formattedProduct);
-    	}
-    	
-    	Map<String, Object> result = new HashMap<>();
-    	result.put("productList", formattedProductList);
-    	result.put("pageInfo", pageInfo);
-    	
-    	return result;
+        int listCount = productService.productAllCount();
+        int currentPage = page;
+        int pageLimit = 5;
+        int boardLimit = 5;
+
+        int maxPage = (int) Math.ceil((double) listCount / boardLimit);
+        int startPage = ((currentPage - 1) / pageLimit) * pageLimit + 1;
+        int endPage = startPage + pageLimit - 1;
+
+        if (endPage > maxPage) {
+            endPage = maxPage;
+        }
+
+        PageInfo pageInfo = PageInfo.builder()
+                .listCount(listCount)
+                .currentPage(currentPage)
+                .pageLimit(pageLimit)
+                .boardLimit(boardLimit)
+                .maxPage(maxPage)
+                .startPage(startPage)
+                .endPage(endPage)
+                .build();
+
+        Map<String, Integer> map = new HashMap<>();
+
+        int startValue = (currentPage - 1) * boardLimit + 1;
+        int endValue = startValue + boardLimit - 1;
+
+        map.put("startValue", startValue);
+        map.put("endValue", endValue);
+
+        List<Product> productList = productService.productFindAll(map);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Map<String, Object>> formattedProductList = new ArrayList<>();
+
+        for (Product product : productList) {
+            Map<String, Object> formattedProduct = new HashMap<>();
+            formattedProduct.put("productNo", product.getProductNo());
+            formattedProduct.put("productTitle", product.getProductTitle());
+            formattedProduct.put("productDate", sdf.format(product.getProductDate()));
+            formattedProduct.put("memId", product.getMemId());
+            formattedProductList.add(formattedProduct);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("productList", formattedProductList);
+        result.put("pageInfo", pageInfo);
+
+        return result;
     }
 
     @ResponseBody
     @GetMapping("/ajaxQnaManagement")
     public Map<String, Object> getQnaListAjax(@RequestParam(value = "page", defaultValue = "1") int page) {
 
-        int listCount = qnaService.qnaCount(); 
-        int currentPage = page; // 현재페이지(사용자가 요청한 페이지)
-        int pageLimit = 5; // 페이지 하단에 보여질 페이징바의 최대 개수 => 5개로 고정 
-        int boardLimit = 5; // 한 페이지에 보여질 게시글의 최대 개수 => 5개로 고정
+        int listCount = qnaService.qnaCount();
+        int currentPage = page;
+        int pageLimit = 5;
+        int boardLimit = 5;
 
-        int maxPage = (int)Math.ceil((double)listCount / boardLimit); // 가장 마지막 페이지가 몇 번 페이지인지(총 페이지의 개수)
-        int startPage = ((currentPage-1) / pageLimit) * pageLimit + 1; // 그 화면상 하단에 보여질 페이징바의 시작하는 페이지넘버
-        int endPage = startPage + pageLimit - 1;; // 그 화면상 하단에 보여질 페이징바의 끝나는 페이지넘버
+        int maxPage = (int) Math.ceil((double) listCount / boardLimit);
+        int startPage = ((currentPage - 1) / pageLimit) * pageLimit + 1;
+        int endPage = startPage + pageLimit - 1;
 
-        if(endPage > maxPage) {
+        if (endPage > maxPage) {
             endPage = maxPage;
         }
 
@@ -293,8 +291,40 @@ public class AdminController {
 
     @ResponseBody
     @GetMapping("/ajaxSuspendedMemberList")
-    public Map<String, Object> suspendedMemberList() {
-        List<Map<String, Object>> suspendedMemberList = memberService.suspendedMemberList();
+    public Map<String, Object> suspendedMemberList(@RequestParam(value = "page", defaultValue = "1") int page) {
+
+        int listCount = memberService.suspendedMemberCount();
+        int currentPage = page;
+        int pageLimit = 5;
+        int boardLimit = 5;
+
+        int maxPage = (int) Math.ceil((double) listCount / boardLimit);
+        int startPage = ((currentPage - 1) / pageLimit) * pageLimit + 1;
+        int endPage = startPage + pageLimit - 1;
+
+        if (endPage > maxPage) {
+            endPage = maxPage;
+        }
+
+        PageInfo pageInfo = PageInfo.builder()
+                .listCount(listCount)
+                .currentPage(currentPage)
+                .pageLimit(pageLimit)
+                .boardLimit(boardLimit)
+                .maxPage(maxPage)
+                .startPage(startPage)
+                .endPage(endPage)
+                .build();
+
+        Map<String, Integer> map = new HashMap<>();
+
+        int startValue = (currentPage - 1) * boardLimit + 1;
+        int endValue = startValue + boardLimit - 1;
+
+        map.put("startValue", startValue);
+        map.put("endValue", endValue);
+
+        List<Map<String, Object>> suspendedMemberList = memberService.suspendedMemberList(map);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<Map<String, Object>> formattedSuspendedMemberList = new ArrayList<>();
@@ -302,24 +332,165 @@ public class AdminController {
         for (Map<String, Object> member : suspendedMemberList) {
             Map<String, Object> formattedMember = new HashMap<>();
             formattedMember.put("memId", member.get("memId"));
-
-            // Null 체크 추가
+            
             if (member.get("memSuspension") != null) {
                 formattedMember.put("memSuspension", sdf.format(member.get("memSuspension")));
             } else {
-                formattedMember.put("memSuspension", "N/A"); // 기본값 설정
+                formattedMember.put("memSuspension", "N/A");
             }
-
+            
+            formattedMember.put("reportCategory", member.get("reportCategory"));
             formattedMember.put("memReportcount", member.get("memReportcount"));
-            formattedMember.put("reportContent", member.get("reportContent")); // 정지 사유 추가
             formattedSuspendedMemberList.add(formattedMember);
         }
 
         Map<String, Object> result = new HashMap<>();
         result.put("suspendedMemberList", formattedSuspendedMemberList);
+        result.put("pageInfo", pageInfo);
 
         return result;
     }
 
+    @ResponseBody
+    @PostMapping("/updateMemberStatus")
+    public Map<String, Object> updateMemberStatus(@RequestBody Map<String, String> request) {
+        String memberId = request.get("memberId");
+        String newStatus = request.get("status");
+        
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int result = memberService.updateMemberStatus(memberId, newStatus);
+            if (result > 0) {
+                response.put("message", "정지상태가 성공적으로 변경되었습니다.");
+            } else {
+                response.put("message", "정지상태 변경에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("message", "정지상태 변경 중 오류가 발생했습니다.");
+        }
+        return response;
+    }
 
+    @ResponseBody
+    @GetMapping("/ajaxMemberList")
+    public Map<String, Object> getMemberListAjax(@RequestParam(value = "page", defaultValue = "1") int page) {
+        int listCount = memberService.memberCount();
+        int currentPage = page;
+        int pageLimit = 5;
+        int boardLimit = 5;
+
+        int maxPage = (int) Math.ceil((double) listCount / boardLimit);
+        int startPage = ((currentPage - 1) / pageLimit) * pageLimit + 1;
+        int endPage = startPage + pageLimit - 1;
+
+        if (endPage > maxPage) {
+            endPage = maxPage;
+        }
+
+        PageInfo pageInfo = PageInfo.builder()
+                .listCount(listCount)
+                .currentPage(currentPage)
+                .pageLimit(pageLimit)
+                .boardLimit(boardLimit)
+                .maxPage(maxPage)
+                .startPage(startPage)
+                .endPage(endPage)
+                .build();
+
+        Map<String, Integer> map = new HashMap<>();
+
+        int startValue = (currentPage - 1) * boardLimit + 1;
+        int endValue = startValue + boardLimit - 1;
+
+        map.put("startValue", startValue);
+        map.put("endValue", endValue);
+
+        List<Member> memberList = memberService.memberList(map);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("memberList", memberList);
+        result.put("pageInfo", pageInfo);
+
+        return result;
+    }
+
+    @ResponseBody
+    @GetMapping("/ajaxDeletedProducts")
+    public Map<String, Object> getDeletedProducts(@RequestParam(value = "page", defaultValue = "1") int page) {
+        int listCount = productService.deletedProductCount();
+        int currentPage = page;
+        int pageLimit = 5;
+        int boardLimit = 5;
+
+        int maxPage = (int) Math.ceil((double) listCount / boardLimit);
+        int startPage = ((currentPage - 1) / pageLimit) * pageLimit + 1;
+        int endPage = startPage + pageLimit - 1;
+
+        if (endPage > maxPage) {
+            endPage = maxPage;
+        }
+
+        PageInfo pageInfo = PageInfo.builder()
+                .listCount(listCount)
+                .currentPage(currentPage)
+                .pageLimit(pageLimit)
+                .boardLimit(boardLimit)
+                .maxPage(maxPage)
+                .startPage(startPage)
+                .endPage(endPage)
+                .build();
+
+        Map<String, Integer> map = new HashMap<>();
+        int startValue = (currentPage - 1) * boardLimit + 1;
+        int endValue = startValue + boardLimit - 1;
+
+        map.put("startValue", startValue);
+        map.put("endValue", endValue);
+
+        log.info("Fetching deleted products for page: {}, endValue: {}", page, endValue);
+        List<Product> deletedProductList = productService.deletedProductFindAll(map);
+        log.info("Fetched deleted products: {}", deletedProductList);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Map<String, Object>> formattedDeletedProductList = new ArrayList<>();
+
+        for (Product product : deletedProductList) {
+            if (product != null) {
+                Map<String, Object> formattedProduct = new HashMap<>();
+                formattedProduct.put("productNo", product.getProductNo());
+                formattedProduct.put("productTitle", product.getProductTitle());
+                formattedProduct.put("productDate", sdf.format(product.getProductDate()));
+                formattedProduct.put("memId", product.getMemId());
+                formattedDeletedProductList.add(formattedProduct);
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("deletedProductList", formattedDeletedProductList);
+        result.put("pageInfo", pageInfo);
+
+        return result;
+    }
+
+    @ResponseBody
+    @PostMapping("/updateProductStatus")
+    public Map<String, Object> updateProductStatus(@RequestBody Map<String, String> request) {
+        String productNo = request.get("productNo");
+        String newStatus = request.get("status");
+
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int result = productService.updateProductStatus(productNo, newStatus);
+            if (result > 0) {
+                response.put("message", "상품 상태가 성공적으로 변경되었습니다.");
+            } else {
+                response.put("message", "상품 상태 변경에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("message", "상품 상태 변경 중 오류가 발생했습니다.");
+        }
+        return response;
+    }
 }

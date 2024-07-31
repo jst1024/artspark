@@ -12,8 +12,8 @@ import com.kh.artspark.member.model.vo.OrderBuyOption;
 
 public interface MemberService {
 	
-	List<Member> memberList();
-		
+	// 전체회원 조회
+	List<Member> memberList(Map<String, Integer> map);
 	
 	// 로그인(SELECT)
 	Member login(Member member);
@@ -64,7 +64,7 @@ public interface MemberService {
 	
 	
 	//정지회원 리스트
-	List<Member> suspendedMemberList(Map<String,Integer> map);
+	List<Map<String, Object>> suspendedMemberList(Map<String,Integer> map);
 
 	//전체 회원수
 	int memberCount();
@@ -72,9 +72,11 @@ public interface MemberService {
 	//정지 회원수
 	int suspendedMemberCount();
 
+	//정지 회원 정지상태변경 기능
+	int updateMemberStatus(String memberId, String status);
 
-	
-	//정지
+
+
 
 
 

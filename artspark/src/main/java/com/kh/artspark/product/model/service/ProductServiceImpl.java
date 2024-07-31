@@ -246,6 +246,21 @@ private final ProductMapper productMapper;
 	public List<Product> productFindAll(Map<String, Integer> map) {
 		return productMapper.productFindAll(map);
 	}
+
+	@Override
+	public int updateProductStatus(String productNo, String newStatus) {
+		return productMapper.updateProductStatus(productNo, newStatus);
+	}
+
+	@Override
+	public int deletedProductCount() {
+		return productMapper.deletedProductCount();
+	}
+
+	@Override
+	public List<Product> deletedProductFindAll(Map<String, Integer> map) {
+		return productMapper.deletedProductFindAll(map);
+	}
 	
 }
 

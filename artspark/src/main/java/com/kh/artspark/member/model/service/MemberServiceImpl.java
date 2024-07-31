@@ -1,5 +1,6 @@
 package com.kh.artspark.member.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,12 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberMapper memberMapper;
 
 	@Override
-	public List<Member> memberList() {
-		return null;
+	public List<Member> memberList(Map<String, Integer> map) {
+	    // 디버깅 로그 추가
+	    System.out.println("Fetching members with params: " + map);
+	    List<Member> members = memberMapper.memberList(map);
+	    System.out.println("Fetched members: " + members);
+	    return members;
 	}
 
 	@Override
@@ -121,13 +126,21 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Member> suspendedMemberList(Map<String,Integer> map) {
+	public List<Map<String, Object>> suspendedMemberList(Map<String,Integer> map) {
 		return memberMapper.suspendedMemberList(map);
 	}
 
 	@Override
 	public int suspendedMemberCount() {
 		return memberMapper.suspendedMemberCount();
+	}
+
+	@Override
+	public int updateMemberStatus(String memberId, String status) {
+		Map<String, Object> params = new HashMap<>();
+        params.put("memberId", memberId);
+        params.put("status", status);
+        return memberMapper.updateMemberStatus(params);
 	}
 
 

@@ -16,7 +16,7 @@ import com.kh.artspark.member.model.vo.OrderBuyOption;
 public interface MemberMapper {
 
 
-	List<Member> memberList();
+	List<Member> memberList(Map<String, Integer> map);
 
 	Member login(Member member);
 
@@ -52,11 +52,15 @@ public interface MemberMapper {
 
 	List<Interest> interest(String memId);
 
-	List<Member> suspendedMemberList(Map<String,Integer> map);
+	List<Map<String, Object>> suspendedMemberList(Map<String,Integer> map);
 
 	int memberCount();
 
 	int suspendedMemberCount();
+
+	int updateMemberStatus(String memberId, String status);
+
+	int updateMemberStatus(Map<String, Object> params);
 
 
 }

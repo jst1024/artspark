@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
 import com.kh.artspark.product.model.vo.DetailOption;
@@ -72,5 +73,11 @@ public interface ProductMapper {
 	int deleteOptions(int productNo);
 
 	List<Product> productFindAll(Map<String, Integer> map);
+
+	int updateProductStatus(@Param("productNo") String productNo, @Param("status") String status);
+
+	int deletedProductCount();
+
+	List<Product> deletedProductFindAll(Map<String, Integer> map);
 
 }

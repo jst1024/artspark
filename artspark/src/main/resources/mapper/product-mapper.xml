@@ -765,6 +765,49 @@
 	  WHERE
       		 RNUM BETWEEN #{startValue} AND #{endValue}
 	</select>
+	
+	<!-- 상품상태 변경 -->
+	<update id="updateProductStatus">
+	    UPDATE 
+	    		PRODUCT
+	       SET 
+	       		STATUS = #{status}
+	     WHERE 
+	     		PRODUCT_NO = #{productNo}
+	</update>
+	
+	<!-- 삭제된 상품 수 조회 -->
+    <select id="deletedProductCount" resultType="int">
+        SELECT COUNT(*) 
+        FROM PRODUCT 
+        WHERE STATUS = 'N'
+    </select>
+
+    <!-- 삭제된 상품 목록 조회 -->
+    <resultMap id="ProductResultMap" type="com.kh.artspark.product.model.vo.Product">
+        <result property="productNo" column="PRODUCT_NO"/>
+        <result property="productCategory" column="PRODUCT_CATEGORY"/>
+        <result property="productTitle" column="PRODUCT_TITLE"/>
+        <result property="productContent" column="PRODUCT_CONTENT"/>
+        <result property="productDate" column="PRODUCT_DATE"/>
+        <result property="productDeldate" column="PRODUCT_DELDATE"/>
+        <result property="memId" column="MEM_ID"/>
+    </resultMap>
+
+    <select id="deletedProductFindAll" resultMap="ProductResultMap">
+        SELECT *
+        FROM (
+            SELECT ROWNUM AS RNUM, A.*
+            FROM (
+                SELECT PRODUCT_NO, PRODUCT_CATEGORY, PRODUCT_TITLE, PRODUCT_CONTENT, PRODUCT_DATE, PRODUCT_DELDATE, MEM_ID
+                FROM PRODUCT
+                WHERE STATUS = 'N'
+                ORDER BY PRODUCT_DATE DESC
+            ) A
+        )
+        WHERE RNUM BETWEEN #{startValue} AND #{endValue}
+    </select>
+    
 </mapper>
 
 
