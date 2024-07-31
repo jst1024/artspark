@@ -16,6 +16,7 @@ import com.kh.artspark.product.model.vo.Product;
 import com.kh.artspark.product.model.vo.ProductDetail;
 import com.kh.artspark.product.model.vo.ProductFile;
 import com.kh.artspark.product.model.vo.ProductForm;
+import com.kh.artspark.product.model.vo.ProductQna;
 import com.kh.artspark.product.model.vo.Tag;
 import com.kh.artspark.product.model.vo.TagCheck;
 
@@ -43,8 +44,8 @@ private final ProductMapper productMapper;
 	}
 
 	@Override
-	public List<Map<String, Object>> findAllProductList(String loginUserId, RowBounds rowBounds) {
-		return productMapper.findAllProductList(loginUserId, rowBounds);
+	public List<Map<String, Object>> findAllProductList(Map<String, String> map, RowBounds rowBounds) {
+		return productMapper.findAllProductList(map, rowBounds);
 	}
 	
 	@Override
@@ -245,6 +246,32 @@ private final ProductMapper productMapper;
 	@Override
 	public List<Product> productFindAll(Map<String, Integer> map) {
 		return productMapper.productFindAll(map);
+	}
+
+	@Override
+
+	public int updateProductStatus(String productNo, String newStatus) {
+		return productMapper.updateProductStatus(productNo, newStatus);
+	}
+
+	@Override
+	public int deletedProductCount() {
+		return productMapper.deletedProductCount();
+	}
+
+	@Override
+	public List<Product> deletedProductFindAll(Map<String, Integer> map) {
+		return productMapper.deletedProductFindAll(map);
+	}
+	
+	public int productQnaCount(int productNo) {
+		return productMapper.productQnaCount(productNo);
+	}
+
+	@Override
+	public List<ProductQna> findProductQnaList(int productNo, RowBounds rowBounds) {
+		return productMapper.findProductQnaList(productNo, rowBounds);
+
 	}
 	
 }

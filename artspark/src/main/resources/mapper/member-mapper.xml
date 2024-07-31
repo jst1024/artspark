@@ -37,7 +37,8 @@
 	<result property="artistPath" column="ARTIST_PATH"/>
 	<result property="memNickname" column="MEM_NICKNAME"/>
 	<result property="productTitle" column="PRODUCT_TITLE"/>
-	<result property="reviewStar" column="REVIEW_STAR"/>
+	<result property="avgStar" column="AVG_STAR"/>
+	<result property="productNo" column="PRODUCT_NO"/>
 	    <collection property="filePaths" ofType="string">
         <result column="FILE_PATH"/>
     </collection>
@@ -45,18 +46,32 @@
 	
 	
 	
-	<select id="memberList" resultType="member">
-		SELECT
-				MEM_ID memId,
-				MEM_PWD memPwd,
-				MEM_NICKNAME memNickname,
-				MEM_EMAIL memEmail,
-				MEM_ENROLL memEnroll
-		  FROM
-				MEMBER
-	</select>
+
+	<!-- 페이징 처리를 위한 회원 리스트 조회 -->
+    <select id="memberList" resultType="member">
+        SELECT
+            	MEM_ID as memId,
+            	MEM_NICKNAME as memNickname,
+           		MEM_EMAIL as memEmail,
+            	STATUS as status
+          FROM
+            	(SELECT 
+                ROW_NUMBER() OVER (ORDER BY MEM_ID) AS rnum,
+                MEM_ID,
+                MEM_NICKNAME,
+                MEM_EMAIL,
+                STATUS
+          FROM 
+                MEMBER) 
+         WHERE 
+            	rnum 
+       BETWEEN 
+       			#{startValue} AND #{endValue}
+    </select>
+
 	
-	<!--전체 조회 -->
+	
+	
 	
 	<!-- 회원가입 -->
 	<insert id="insert" parameterType="member">
@@ -70,7 +85,6 @@
 		  		MEM_EMAIL
 		  		)
 		VALUES
-				
 				(
 				#{memId},
 				#{memPwd},
@@ -114,7 +128,8 @@
 				MEMBER
 		   SET
 		   		MEM_NICKNAME=#{memNickname},
-		   		MEM_EMAIL=#{memEmail}
+		   		MEM_EMAIL=#{memEmail},
+		   		MEM_CATEGORY ='B'
 		 WHERE
 				MEM_ID= #{memId}
 	</update>
@@ -169,6 +184,7 @@
 	             MEM_EMAIL = #{memEmail}
 	     WHERE 
 	             MEM_ID = #{memId}
+
 	</update>
 	<select id="getArtist" parameterType="string" resultType="artist">
 	    SELECT  
@@ -282,18 +298,26 @@
 	  
 	  
     <update id="updatePassword">
-        UPDATE MEMBER
-        SET MEM_PWD = #{memPwd}
-        WHERE MEM_EMAIL = #{memEmail}
+        UPDATE 
+        		MEMBER
+           SET 
+        		MEM_PWD = #{memPwd}
+         WHERE 
+        		MEM_EMAIL = #{memEmail}
     </update>
    	
    	<select id="getMember" resultMap="memberResultSet">
-	    SELECT *
-	    FROM MEMBER
-	    WHERE MEM_ID = #{memId}
-	    AND MEM_NICKNAME = #{memNickname}
-	    AND MEM_EMAIL = #{memEmail}
-</select>
+	    SELECT 
+	    		*
+	     FROM
+	      		MEMBER
+	    WHERE
+	    		MEM_ID = #{memId}
+	      AND 
+	    		MEM_NICKNAME = #{memNickname}
+	      AND 
+	    		MEM_EMAIL = #{memEmail}
+	</select>
 
 
 	
@@ -321,6 +345,7 @@
 			        BO.BUY_OPTION_PRICE,
 			        BO.BUY_OPTION_AMOUNT,
 			        P.PRODUCT_TITLE
+			      
  		FROM
                     BUY B
 			        JOIN PAYMENT PM ON B.BUY_NO = PM.BUY_NO
@@ -340,21 +365,44 @@
 		<!-- 관심 판매자 목록 -->
 	<select id="interest" parameterType="String" resultMap="interest">
 		SELECT
-					A.ARTIST_PATH,
-					M.MEM_NICKNAME,
-					PF.FILE_PATH,
-					P.PRODUCT_TITLE,
-					R.REVIEW_STAR
+			        A.ARTIST_PATH,
+			        M.MEM_NICKNAME,
+			        PF.FILE_PATH,
+			        P.PRODUCT_TITLE,
+			        P.PRODUCT_NO,
+			        ROUND(NVL(AVG(R.REVIEW_STAR), 0), 1) AS AVG_STAR
 		 FROM
-					PRODUCT P
-					JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
-					JOIN PRODUCTFILE PF ON PF.PRODUCT_NO = P.PRODUCT_NO
-					JOIN REVIEW R ON R.MEM_ID = P.MEM_ID
-					JOIN ARTIST A ON A.MEM_ID = M.MEM_ID
+			        PRODUCT P
+			        JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
+			        JOIN PRODUCTFILE PF ON PF.PRODUCT_NO = P.PRODUCT_NO
+			        LEFT JOIN REVIEW R ON P.PRODUCT_NO = R.PRODUCT_NO
+			        LEFT JOIN ARTIST A ON A.MEM_ID = M.MEM_ID
+			        JOIN JJIM J ON J.PRODUCT_NO = P.PRODUCT_NO
+			           
 	    WHERE
-	    			M.MEM_ID = #{memId}
+			        J.MEM_ID = #{mem_id}
+		GROUP
+		   BY
+			        A.ARTIST_PATH,
+			        M.MEM_NICKNAME,
+			        PF.FILE_PATH,
+			        P.PRODUCT_TITLE,
+			        P.PRODUCT_NO
 	</select>
 	
+	<!-- 관심 판매자 삭제 -->
+	<!-- 찜 삭제 -->
+	<delete id="deleteJjim" parameterType="map">
+		DELETE
+		  FROM
+		  		JJIM
+		 WHERE
+		 		MEM_ID = #{loginId}
+		   AND
+		   		PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<!-- 별점  -->
 	<select id="reviewStar" parameterType="String">
 		SELECT
 				AVG(REVIEW_STAR)
@@ -364,5 +412,111 @@
 		 		MEM_ID = #{memId}
 	</select>
 	
+	<!-- 전체 회원수 조회 -->
+	<select id="memberCount" resultType="_int">
+		SELECT
+				COUNT(*)
+		  FROM
+		  		MEMBER
+	</select>
 
-</mapper>
+	<!-- 전체 정지회원수 조회 -->
+	<select id="suspendedMemberCount" resultType="_int">
+		SELECT
+				COUNT(*)
+		  FROM
+		  		MEMBER
+		 WHERE
+		 		STATUS = 'N'
+	</select>
+	
+	<!-- resultMap 정의 -->
+    <resultMap id="suspendedMemberResultMap" type="hashmap">
+        <result property="memId" column="MEM_ID"/>
+        <result property="memSuspension" column="MEM_SUSPENSION"/>
+        <result property="memReportcount" column="MEM_REPORTCOUNT"/>
+        <result property="reportCategory" column="REPORT_CATEGORY"/>
+    </resultMap>
+
+    <!-- 조인 쿼리 -->
+
+    <select id="suspendedMemberList" resultMap="suspendedMemberResultMap">
+        SELECT
+            	M.MEM_ID,
+            	M.MEM_SUSPENSION,
+            	M.MEM_REPORTCOUNT,
+            	R.REPORT_CATEGORY
+          FROM
+            	MEMBER M
+          JOIN
+            	REPORT R ON M.MEM_ID = R.MEM_ID
+         WHERE
+            	M.STATUS = 'N'
+         ORDER
+            BY
+            	M.MEM_REPORTCOUNT DESC
+           		
+    </select>
+
+	<!-- 정지기능 온오프 -->
+	<update id="updateMemberStatus" parameterType="map">
+    	UPDATE 
+    			MEMBER
+    	   SET 
+    			STATUS = #{status},
+    			MEM_ENROLL = SYSDATE
+    	 WHERE 
+    	 		MEM_ID = #{memberId}
+	</update>
+	
+	<!-- 인기 작가 조회 resultMap -->
+	<resultMap id="popularWriterResultMap" type="hashmap">
+	    <result property="productNo" column="PRODUCT_NO"/>
+	    <result property="memId" column="MEM_ID"/>
+	    <result property="memNickname" column="MEM_NICKNAME"/>
+	    <result property="filePath" column="FILE_PATH"/>
+	    <result property="buyCount" column="BUY_COUNT"/>
+	</resultMap>
+	
+	<!-- 인기 작가 조회 쿼리 -->
+	<select id="getPopularWriters" resultMap="popularWriterResultMap">
+	    SELECT
+	            *
+	      FROM
+	            (
+	            SELECT
+	                    P.PRODUCT_NO,
+	                    M.MEM_ID,
+	                    M.MEM_NICKNAME,
+	                    PF.FILE_PATH,
+	                    (SELECT COUNT(*) FROM BUY WHERE PRODUCT_NO = P.PRODUCT_NO) AS BUY_COUNT,
+	                    ROWNUM AS RNUM
+	              FROM
+	                    PRODUCT P
+	              JOIN 
+	                    MEMBER M ON P.MEM_ID = M.MEM_ID
+	              JOIN 
+	                    PRODUCTFILE PF ON P.PRODUCT_NO = PF.PRODUCT_NO
+	              JOIN 
+	                    (
+	                    SELECT
+	                            PRODUCT_NO,
+	                            MIN(FILE_NO) AS FIRST_NO
+	                      FROM
+	                            PRODUCTFILE
+	                      GROUP 
+	                            BY
+	                            PRODUCT_NO
+	                    ) PF_MIN ON PF.FILE_NO = PF_MIN.FIRST_NO
+	              WHERE
+	                    P.STATUS = 'Y'
+	              ORDER 
+	                 BY
+	                    BUY_COUNT DESC,
+	                    P.PRODUCT_NO DESC
+	            )
+	      WHERE
+	            RNUM <= 6
+	</select>
+    
+    </mapper>

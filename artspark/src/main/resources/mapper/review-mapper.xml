@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.artspark.review.model.dao.ReviewMapper">
+	
+	<select id="buyRecord" parameterType="map" resultType="buy">
+		SELECT
+				BUY_NO buyNo,
+				MEM_ID memId,
+				PRODUCT_NO productNo
+		  FROM
+		  		BUY
+		 WHERE
+		 		MEM_ID = #{loginUserId}
+		   AND
+		   		PRODUCT_NO = #{productNo}
+	</select>
+	
+	<insert id="insertReview" parameterType="review">
+		INSERT
+		  INTO
+		  		REVIEW
+		  		(
+		  		REVIEW_NO,
+		  		REVIEW_TITLE,
+		  		REVIEW_CONTENT,
+		  		REVIEW_DATE,
+		  		REVIEW_STAR,
+		  		MEM_ID,
+		  		PRODUCT_NO
+		  		)
+		VALUES
+				(
+				REVIEW_SEQ.NEXTVAL,
+				#{reviewTitle},
+				#{reviewContent},
+				DEFAULT,
+				#{reviewStar},
+				#{memId},
+				#{productNo}
+				)
+	</insert>
+	
+	<select id="reviewCount" parameterType="_int" resultType="_int">
+		SELECT
+				COUNT(REVIEW_NO)
+		  FROM
+		  		REVIEW
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</select>
+	
+	<select id="findReviewList" resultType="review">
+		SELECT
+				REVIEW_NO reviewNo,
+				REVIEW_TITLE reviewTitle,
+				REVIEW_CONTENT reviewContent,
+				REVIEW_DATE reviewDate,
+				REVIEW_STAR reviewStar,
+				MEM_ID memId,
+				PRODUCT_NO productNo
+		  FROM
+		  		REVIEW
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+		 ORDER
+		 	BY
+		 		REVIEW_DATE DESC
+	</select>
+	
+	<delete id="deleteReview" parameterType="_int">
+		DELETE
+		  FROM
+		  		REVIEW
+		 WHERE
+		 		REVIEW_NO = #{reviewNo}
+	</delete>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+

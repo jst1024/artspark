@@ -9,6 +9,7 @@ import com.kh.artspark.product.model.vo.Product;
 import com.kh.artspark.product.model.vo.ProductDetail;
 import com.kh.artspark.product.model.vo.ProductFile;
 import com.kh.artspark.product.model.vo.ProductForm;
+import com.kh.artspark.product.model.vo.ProductQna;
 import com.kh.artspark.product.model.vo.Tag;
 
 public interface ProductService {
@@ -23,7 +24,7 @@ public interface ProductService {
 	int productSearchCount(String keyword);
 
 	// 모든 상품 목록 조회
-	List<Map<String, Object>> findAllProductList(String loginUserId, RowBounds rowBounds);
+	List<Map<String, Object>> findAllProductList(Map<String, String> map, RowBounds rowBounds);
 	
 	// 카테고리별 상품 목록 조회
 	List<Map<String, Object>> findAllCategoryList(Map<String, String> map, RowBounds rowBounds);
@@ -65,5 +66,20 @@ public interface ProductService {
 	
 	// 어드민에 쓸 리스트
 	List<Product> productFindAll(Map<String, Integer> map);
+
+
+	// 이것도 어드민에서 상품의 상태관리를 위한 기능
+	int updateProductStatus(String productNo, String newStatus);
+
+	// 삭제된 상품수
+	int deletedProductCount();
+
+	// 삭제된 상품리스트
+	List<Product> deletedProductFindAll(Map<String, Integer> map);
+
+	int productQnaCount(int productNo);
+
+	List<ProductQna> findProductQnaList(int productNo, RowBounds rowBounds);
+
 
 }

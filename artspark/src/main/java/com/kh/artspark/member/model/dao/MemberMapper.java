@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.kh.artspark.member.model.vo.Artist;
 import com.kh.artspark.member.model.vo.Interest;
@@ -15,7 +16,8 @@ import com.kh.artspark.member.model.vo.OrderBuyOption;
 @Mapper
 public interface MemberMapper {
 
-	List<Member> memberList();
+
+	List<Member> memberList(Map<String, Integer> map);
 
 	Member login(Member member);
 
@@ -45,15 +47,33 @@ public interface MemberMapper {
 
 	int sendMail(Mail mail);
 
-	Member getMember(String memId, String memNickname, String memEmail);
-
+	Member getMember(@Param("memId") String memId, 
+   		 			 @Param("memNickname") String memNickname, 
+   		 			 @Param("memEmail") String memEmail);
+	
+	int updatePassword(Member member);
+	
 	List<OrderBuyOption> orderBuyOption(String memId);
 
 	List<Interest> interest(String memId);
 
-	List<Member> getActiveMembers(int startValue, int endValue);
+	List<Map<String, Object>> suspendedMemberList(Map<String,Integer> map);
 
-	int countActiveMembers();
+	int memberCount();
+
+	int suspendedMemberCount();
+
+
+	int updateMemberStatus(String memberId, String status);
+
+	int updateMemberStatus(Map<String, Object> params);
+
+	int deleteJjim(Map<String, Object> map);
+
+	List<Map<String, Object>> getPopularWriters();
+
+
+
 
 
 
