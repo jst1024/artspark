@@ -23,8 +23,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.artspark.common.model.vo.ImgFile;
 import com.kh.artspark.common.model.vo.PageInfo;
 import com.kh.artspark.common.template.PageTemplate;
+import com.kh.artspark.member.model.vo.Member;
 import com.kh.artspark.qna.model.service.QnaService;
 import com.kh.artspark.qna.model.vo.Answer;
+import com.kh.artspark.qna.model.vo.ProductAnswer;
 import com.kh.artspark.qna.model.vo.ProductQna;
 import com.kh.artspark.qna.model.vo.Qna;
 
@@ -71,7 +73,6 @@ public class QnaController {
 		map.put("endValue", endValue);
 		
 		List<Qna> qnaList = qnaService.qnaFindAllWithAnswers(map);
-		// log.info("{}", qnaList);
 		
 		model.addAttribute("qnaList", qnaList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -241,6 +242,7 @@ public class QnaController {
 		return "qna/answerInsert";
 	}
 
+	// 기존 insertAnswer 메서드
 	@PostMapping("insertAnswer")
 	public String insertAnswer(Answer answer, HttpSession session, Model model, MultipartFile upfile, @RequestParam int qnaNo) { 
 	    ImgFile imgFile = new ImgFile();
@@ -251,7 +253,6 @@ public class QnaController {
 	        imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
 	        imgFile.setBoardType("답변");
 	    }
-
 	    if (qnaService.insertAnswer(answer, imgFile) > 0) {
 	        session.setAttribute("alertMsg", "답변 작성 성공~!");
 	        return "redirect:/qnalist";
@@ -260,6 +261,45 @@ public class QnaController {
 	        return "common/errorPage";
 	    }
 	}
+	// 판매자문의-답변
+	 @GetMapping("productAnswerInsert")
+	    public String productAnswerInsert(@RequestParam int qnaNo, Model model) {
+	        model.addAttribute("qnaNo", qnaNo);
+	        return "qna/productAnswer";
+	    }
+
+	    // 판매자 답변 저장
+	    @PostMapping("productInsertAnswer")
+	    public String productInsertAnswer(ProductAnswer productAnswer, HttpSession session, Model model,
+	                                      @RequestParam("upfile") MultipartFile upfile) {
+	    	
+	        Member loginUser = (Member) session.getAttribute("loginUser");
+	        
+	        if (loginUser == null) {
+	            return "redirect:/loginPage"; // 로그인 페이지로 리다이렉트
+	        }
+
+	        ImgFile imgFile = null;
+
+	        if (!upfile.isEmpty()) {
+	            imgFile = new ImgFile();
+	            imgFile.setOriginName(upfile.getOriginalFilename());
+	            imgFile.setChangeName(saveFile(upfile, session));
+	            imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
+	            imgFile.setBoardType("답변");
+	        }
+
+	        productAnswer.setMemId(loginUser.getMemId());
+
+	        if (qnaService.insertProductAnswer(productAnswer, imgFile) > 0) {
+	            session.setAttribute("alertMsg", "답변 작성 성공~!");
+	            return "redirect:/myPage";
+	        } else {
+	            model.addAttribute("errorMsg", "답변 작성 실패!");
+	            return "common/errorPage";
+	        }
+	    }
+	
 	@GetMapping("answerDetail")
 	public ModelAndView getAnswerDetail(@RequestParam int answerNo, ModelAndView mv) {
 	    Answer answer = qnaService.findAnswerById(answerNo); // 답변을 조회하는 메서드

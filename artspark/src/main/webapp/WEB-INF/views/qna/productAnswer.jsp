@@ -1,10 +1,12 @@
+<!-- productAnswer.jsp -->
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>답변 글 등록</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품답변 글 등록</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@naver/wysiwyg@1.0.0/dist/ndt.min.js"></script>
@@ -57,11 +59,10 @@
 </head>
 <body>
     <jsp:include page="../common/header.jsp" />
-
     <div class="container mt-5">
-        <h2>답변 글 등록(Answer)</h2>
-        <form action="insertAnswer" method="post" enctype="multipart/form-data" onsubmit="return submitContents(this)">
-            <input type="hidden" name="qnaNo" value="${param.qnaNo}">
+        <h2>상품답변 글 등록</h2>
+        <form action="productInsertAnswer" method="post" enctype="multipart/form-data" onsubmit="return submitContents(this)">
+            <input type="hidden" name="qnaNo" value="${qnaNo}">
             <div class="form-group">
                 <label for="title">제목</label>
                 <input type="hidden" value="${sessionScope.loginUser.memId}" name="memId">
@@ -69,8 +70,7 @@
             </div>
             <div class="form-group">
                 <label for="editorTxt">내용</label>
-                <textarea class="form-control" id="editorTxt" name="answerContent" rows="10">
-                </textarea>
+                <textarea class="form-control" id="editorTxt" name="answerContent" rows="10"></textarea>
             </div>
             <div class="form-group">
                 <label for="file">첨부파일</label>
@@ -87,30 +87,30 @@
 
     <script type="text/javascript">
         var oEditors = [];
-        
+
         nhn.husky.EZCreator.createInIFrame({
             oAppRef: oEditors,
             elPlaceHolder: "editorTxt",
             sSkinURI: "${pageContext.request.contextPath}/resources/naver-editor/SmartEditor2Skin.html",
             fCreator: "createSEditor2"
         });
-        
+
         function submitContents(e) {
             oEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", []);
-            
+
             var title = document.getElementById("answerTitle").value;
             if (title.trim() === "") {
                 alert("제목을 입력해주세요.");
                 return false;
             }
-            
+
             try {
                 e.form.submit();
             } catch (e) {
                 console.log(e);
             }
         }
-    </script>        
+    </script>
 
     <script>
         function updateFileName(input) {

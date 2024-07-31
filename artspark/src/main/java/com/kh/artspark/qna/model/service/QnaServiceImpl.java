@@ -12,6 +12,7 @@ import com.kh.artspark.common.model.vo.ImgFile;
 import com.kh.artspark.qna.controller.QnaController;
 import com.kh.artspark.qna.model.dao.QnaMapper;
 import com.kh.artspark.qna.model.vo.Answer;
+import com.kh.artspark.qna.model.vo.ProductAnswer;
 import com.kh.artspark.qna.model.vo.ProductQna;
 import com.kh.artspark.qna.model.vo.Qna;
 
@@ -108,7 +109,7 @@ public class QnaServiceImpl implements QnaService {
     }
 
 	
-	// 답변
+	// 관리자 답변
 	@Override
 	@Transactional
 	public int insertAnswer(Answer answer, ImgFile imgFile) {
@@ -122,21 +123,23 @@ public class QnaServiceImpl implements QnaService {
 		
 		return result1 * result2;
 	}
-	
-	@Override
-	public List<Answer> getAnswersByQnaNo(int qnaNo) {
-	    return qnaMapper.getAnswersByQnaNo(qnaNo);
-	}
+	// 판매자 답변
+    @Override
+    @Transactional
+    public int insertProductAnswer(ProductAnswer productAnswer, ImgFile imgFile) {
+        int result1 = qnaMapper.insertProductAnswer(productAnswer);
+        int result2 = 1;
+        if (imgFile != null && imgFile.getOriginName() != null && !imgFile.getOriginName().isEmpty()) {
+            imgFile.setBoardType("답변");
+            imgFile.setBoardNo(productAnswer.getAnswerNo());  // 여기서 boardNo를 answerNo로 설정
+            result2 = qnaMapper.insertImgFile(imgFile);
+        }
+        return result1 * result2;
+    }
 	@Override
 	public ImgFile findImgFileByAnswerNo(int answerNo) {
 		return qnaMapper.findImgFileByAnswerNo(answerNo);
 	}
-	@Override
-	public Answer findAnswerById(int answerNo) {
-		return qnaMapper.findAnswerById(answerNo);
-	}
-	
-
 	
 	// 마이페이지
 	@Override
@@ -153,8 +156,15 @@ public class QnaServiceImpl implements QnaService {
 	}
 	@Override
 	public List<ProductQna> getReceivedProductQna(String memId) {
-		return qnaMapper.getReceivedProductQna((memId));
+		return qnaMapper.getReceivedProductQna(memId);
 	}
+
+	@Override
+	public Answer findAnswerById(int answerNo) {
+		return qnaMapper.findAnserById(answerNo);
+	}
+
+
 
 
 

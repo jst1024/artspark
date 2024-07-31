@@ -64,6 +64,24 @@
 	    </collection>
 	</resultMap>
 	
+	<resultMap id="ProductQnaWithAnswer" type="com.kh.artspark.qna.model.vo.ProductQna">
+	    <id property="qnaNo" column="qnaNo"/>
+	    <result property="productNo" column="productNo"/>
+	    <result property="qnaTitle" column="qnaTitle"/>
+	    <result property="qnaContent" column="qnaContent"/>
+	    <result property="qnaDate" column="qnaDate"/>
+	    <result property="memId" column="memId"/>
+	    <result property="status" column="status"/>
+	    <result property="qnaCategory" column="qnaCategory"/>
+	    <association property="productAnswer" javaType="com.kh.artspark.qna.model.vo.ProductAnswer">
+	        <id property="answerNo" column="answerNo"/>
+	        <result property="answerTitle" column="answerTitle"/>
+	        <result property="answerContent" column="answerContent"/>
+	        <result property="answerDate" column="answerDate"/>
+	        <result property="memId" column="answerMemId"/>
+	    </association>
+	</resultMap>
+	
 	<select id="qnaCount" resultType="_int">
 	SELECT 
 			COUNT(QNA_NO)
@@ -173,7 +191,7 @@
 	</select>
 
 	<!-- 내가 작성한 PRODUCT_QNA 조회 -->
-	<select id="getMyProductQna" parameterType="string" resultType="productQna">
+	<select id="getMyProductQna" parameterType="string" resultMap="ProductQnaWithAnswer">
     	SELECT
 		        PQ.QNA_NO qnaNo,
 		        PQ.PRODUCT_NO productNo,
@@ -183,27 +201,27 @@
 		        PQ.MEM_ID memId,
 		        PQ.STATUS status,
 		        PQ.QNA_CATEGORY qnaCategory,
-		        A.ANSWER_NO answerNo,
-		        A.ANSWER_TITLE answerTitle,
-		        A.ANSWER_CONTENT answerContent,
-		        A.ANSWER_DATE answerDate,
-		        A.MEM_ID answerMemId
+		        PA.ANSWER_NO answerNo,
+		        PA.ANSWER_TITLE answerTitle,
+		        PA.ANSWER_CONTENT answerContent,
+		        PA.ANSWER_DATE answerDate,
+		        PA.MEM_ID answerMemId
     	  FROM
         		PRODUCT_QNA PQ
-    	  LEFT 
-    	  JOIN
-        		ANSWER A ON PQ.QNA_NO = A.QNA_NO
+          LEFT 
+          JOIN
+        		PRODUCT_ANSWER PA ON PQ.QNA_NO = PA.QNA_NO
     	 WHERE
-       			PQ.MEM_ID = #{memId}
+        		PQ.MEM_ID = #{memId}
            AND 
            		PQ.STATUS = 'Y'
-    	 ORDER 
-    	    BY
+         ORDER
+            BY
         		PQ.QNA_DATE DESC
 	</select>
 	
 	<!-- 내가 받은 PRODUCT_QNA 조회 -->
-	<select id="getReceivedProductQna" parameterType="string" resultType="productQna">
+	<select id="getReceivedProductQna" parameterType="string" resultMap="ProductQnaWithAnswer">
 	    SELECT
 		        PQ.QNA_NO qnaNo,
 		        PQ.PRODUCT_NO productNo,
@@ -213,23 +231,23 @@
 		        PQ.MEM_ID memId,
 		        PQ.STATUS status,
 		        PQ.QNA_CATEGORY qnaCategory,
-		        A.ANSWER_NO answerNo, 
-		        A.ANSWER_CONTENT answerContent,
-		        A.ANSWER_DATE answerDate,
-		        A.MEM_ID answerMemId,
-		        A.STATUS answerStatus
+		        PA.ANSWER_NO answerNo,
+		        PA.ANSWER_TITLE answerTitle,
+		        PA.ANSWER_CONTENT answerContent,
+		        PA.ANSWER_DATE answerDate,
+		        PA.MEM_ID answerMemId
 	      FROM
 	        	PRODUCT_QNA PQ
 	      JOIN
 	        	PRODUCT P ON PQ.PRODUCT_NO = P.PRODUCT_NO
 	      LEFT 
 	      JOIN
-	        	ANSWER A ON PQ.QNA_NO = A.QNA_NO
+	        	PRODUCT_ANSWER PA ON PQ.QNA_NO = PA.QNA_NO
 	     WHERE
 	        	P.MEM_ID = #{memId}
 	       AND 
-	       		PQ.STATUS = 'Y'
-	     ORDER 
+	        	PQ.STATUS = 'Y'
+	     ORDER
 	        BY
 	        	PQ.QNA_DATE DESC
 	</select>
@@ -439,6 +457,29 @@
 	    		)
 	</insert>
 	
+	<insert id="insertProductAnswer" parameterType="com.kh.artspark.qna.model.vo.ProductAnswer">
+	    INSERT 
+	      INTO 
+	    		PRODUCT_ANSWER 
+	    		(
+	        	ANSWER_NO,
+	        	ANSWER_TITLE,
+	        	ANSWER_CONTENT,
+	        	ANSWER_DATE,
+	        	MEM_ID,
+	        	QNA_NO
+	    		) 
+	    VALUES 
+	     		(
+	        	ANSWER_SEQ.NEXTVAL,
+	        	#{answerTitle},
+	        	#{answerContent},
+	        	SYSDATE,
+	        	#{memId},
+	        	#{qnaNo}
+	    		)
+	</insert>
+	
     <!-- 답변 조회 -->
     <select id="findAnswerById" parameterType="int" resultType="com.kh.artspark.qna.model.vo.Answer">
         SELECT 
@@ -454,6 +495,20 @@
          WHERE 
         		ANSWER_NO = #{answerNo}
     </select>
+    <!-- product_answer 조회 쿼리 -->
+	<select id="findProductAnswerById" parameterType="int" resultType="com.kh.artspark.qna.model.vo.Answer">
+    	SELECT
+		        ANSWER_NO,
+		        ANSWER_TITLE,
+		        ANSWER_CONTENT,
+		        ANSWER_DATE,
+		        MEM_ID,
+		        QNA_NO
+    	  FROM 
+    			PRODUCT_ANSWER
+   		 WHERE 
+   		 		ANSWER_NO = #{answerNo}
+	</select>
 	
 	<select id="findImgFileByAnswerNo" parameterType="int" resultType="com.kh.artspark.common.model.vo.ImgFile">
 	<include refid="selectImgFile"/>
@@ -464,7 +519,7 @@
            AND       
                 BOARD_TYPE = '답변'
 	</select>
-	
+
 	<!-- 새로운 답변 조회 -->
 	<select id="getAnswersByQnaNo" parameterType="int" resultType="Answer">
 	    SELECT 
@@ -480,8 +535,28 @@
 	     WHERE 
 	     		QNA_NO = #{qnaNo}
 	</select>
+	<!-- qnaNo로 product_answer 조회 -->
+	<select id="getProductQnaWithAnswers" parameterType="string" resultType="com.kh.artspark.qna.model.vo.ProductQna">
+    	SELECT
+		        pq.QNA_NO,
+		        pq.QNA_TITLE,
+		        pq.QNA_CONTENT,
+		        pq.QNA_DATE,
+		        pq.MEM_ID,
+		        pa.ANSWER_NO,
+		        pa.ANSWER_TITLE,
+		        pa.ANSWER_CONTENT,
+		        pa.ANSWER_DATE,
+		        pa.MEM_ID AS ANSWER_MEM_ID
+    	  FROM 
+    	 		PRODUCT_QNA pq
+    	  LEFT 
+    	  JOIN 
+    	  		PRODUCT_ANSWER pa ON pq.QNA_NO = pa.QNA_NO
+    	 WHERE 
+    	 		pq.MEM_ID = #{memId}
+	</select>
 
-	
 	
 
 </mapper>
