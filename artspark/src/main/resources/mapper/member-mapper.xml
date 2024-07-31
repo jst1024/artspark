@@ -37,7 +37,7 @@
 	<result property="artistPath" column="ARTIST_PATH"/>
 	<result property="memNickname" column="MEM_NICKNAME"/>
 	<result property="productTitle" column="PRODUCT_TITLE"/>
-	<result property="reviewStar" column="REVIEW_STAR"/>
+	<result property="avgStar" column="AVG_STAR"/>
 	    <collection property="filePaths" ofType="string">
         <result column="FILE_PATH"/>
     </collection>
@@ -182,6 +182,7 @@
 	             MEM_EMAIL = #{memEmail}
 	     WHERE 
 	             MEM_ID = #{memId}
+
 	</update>
 	<select id="getArtist" parameterType="string" resultType="artist">
 	    SELECT  
@@ -334,6 +335,7 @@
 			        BO.BUY_OPTION_PRICE,
 			        BO.BUY_OPTION_AMOUNT,
 			        P.PRODUCT_TITLE
+			      
  		FROM
                     BUY B
 			        JOIN PAYMENT PM ON B.BUY_NO = PM.BUY_NO
@@ -353,19 +355,27 @@
 		<!-- 관심 판매자 목록 -->
 	<select id="interest" parameterType="String" resultMap="interest">
 		SELECT
-					A.ARTIST_PATH,
-					M.MEM_NICKNAME,
-					PF.FILE_PATH,
-					P.PRODUCT_TITLE,
-					R.REVIEW_STAR
-		 FROM
-					PRODUCT P
-					JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
-					JOIN PRODUCTFILE PF ON PF.PRODUCT_NO = P.PRODUCT_NO
-					JOIN REVIEW R ON R.MEM_ID = P.MEM_ID
-					JOIN ARTIST A ON A.MEM_ID = M.MEM_ID
-	    WHERE
-	    			M.MEM_ID = #{memId}
+       A.ARTIST_PATH,
+       M.MEM_NICKNAME,
+       PF.FILE_PATH,
+       P.PRODUCT_TITLE,
+       ROUND(NVL(AVG(R.REVIEW_STAR), 0), 1) AS AVG_STAR
+FROM
+       PRODUCT P
+       JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
+       JOIN PRODUCTFILE PF ON PF.PRODUCT_NO = P.PRODUCT_NO
+       LEFT JOIN REVIEW R ON P.PRODUCT_NO = R.PRODUCT_NO
+       LEFT JOIN ARTIST A ON A.MEM_ID = M.MEM_ID
+       JOIN JJIM J ON J.PRODUCT_NO = P.PRODUCT_NO
+           
+WHERE
+        J.MEM_ID = #{mem_id}
+GROUP
+   BY
+        A.ARTIST_PATH,
+        M.MEM_NICKNAME,
+        PF.FILE_PATH,
+        P.PRODUCT_TITLE
 	</select>
 	
 	<select id="reviewStar" parameterType="String">

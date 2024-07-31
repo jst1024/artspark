@@ -76,6 +76,75 @@
         .form-group.text-end .form-control {
             margin-right: 10px;
         }
+        .star-rating {
+            display: inline-block;
+            font-size: 0;
+            position: relative;
+            width: 100px;
+            height: 20px; 
+            background: url('${path2}/resources/images/star-empty.png') repeat-x;
+        }
+        .star-rating::before {
+            content: '';
+            display: block;
+            width: 0;
+            height: 100%;
+            background: url('${path2}/resources/images/star-full.png') repeat-x;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .star-rating[data-rating="0"]::before { width: 0%; }
+        .star-rating[data-rating="0.1"]::before { width: 2%; }
+        .star-rating[data-rating="0.2"]::before { width: 4%; }
+        .star-rating[data-rating="0.3"]::before { width: 6%; }
+        .star-rating[data-rating="0.4"]::before { width: 8%; }
+        .star-rating[data-rating="0.5"]::before { width: 10%; }
+        .star-rating[data-rating="0.6"]::before { width: 12%; }
+        .star-rating[data-rating="0.7"]::before { width: 14%; }
+        .star-rating[data-rating="0.8"]::before { width: 16%; }
+        .star-rating[data-rating="0.9"]::before { width: 18%; }
+        .star-rating[data-rating="1"]::before { width: 20%; }
+        .star-rating[data-rating="1.1"]::before { width: 22%; }
+        .star-rating[data-rating="1.2"]::before { width: 24%; }
+        .star-rating[data-rating="1.3"]::before { width: 26%; }
+        .star-rating[data-rating="1.4"]::before { width: 28%; }
+        .star-rating[data-rating="1.5"]::before { width: 30%; }
+        .star-rating[data-rating="1.6"]::before { width: 32%; }
+        .star-rating[data-rating="1.7"]::before { width: 34%; }
+        .star-rating[data-rating="1.8"]::before { width: 36%; }
+        .star-rating[data-rating="1.9"]::before { width: 38%; }
+        .star-rating[data-rating="2"]::before { width: 40%; }
+        .star-rating[data-rating="2.1"]::before { width: 42%; }
+        .star-rating[data-rating="2.2"]::before { width: 44%; }
+        .star-rating[data-rating="2.3"]::before { width: 46%; }
+        .star-rating[data-rating="2.4"]::before { width: 48%; }
+        .star-rating[data-rating="2.5"]::before { width: 50%; }
+        .star-rating[data-rating="2.6"]::before { width: 52%; }
+        .star-rating[data-rating="2.7"]::before { width: 54%; }
+        .star-rating[data-rating="2.8"]::before { width: 56%; }
+        .star-rating[data-rating="2.9"]::before { width: 58%; }
+        .star-rating[data-rating="3"]::before { width: 60%; }
+        .star-rating[data-rating="3.1"]::before { width: 62%; }
+        .star-rating[data-rating="3.2"]::before { width: 64%; }
+        .star-rating[data-rating="3.3"]::before { width: 66%; }
+        .star-rating[data-rating="3.4"]::before { width: 68%; }
+        .star-rating[data-rating="3.5"]::before { width: 70%; }
+        .star-rating[data-rating="3.6"]::before { width: 72%; }
+        .star-rating[data-rating="3.7"]::before { width: 74%; }
+        .star-rating[data-rating="3.8"]::before { width: 76%; }
+        .star-rating[data-rating="3.9"]::before { width: 78%; }
+        .star-rating[data-rating="4"]::before { width: 80%; }
+        .star-rating[data-rating="4.1"]::before { width: 82%; }
+        .star-rating[data-rating="4.2"]::before { width: 84%; }
+        .star-rating[data-rating="4.3"]::before { width: 86%; }
+        .star-rating[data-rating="4.4"]::before { width: 88%; }
+        .star-rating[data-rating="4.5"]::before { width: 90%; }
+        .star-rating[data-rating="4.6"]::before { width: 92%; }
+        .star-rating[data-rating="4.7"]::before { width: 94%; }
+        .star-rating[data-rating="4.8"]::before { width: 96%; }
+        .star-rating[data-rating="4.9"]::before { width: 98%; }
+        .star-rating[data-rating="5"]::before { width: 100%; }
     </style>
 </head>
 <body>
@@ -106,7 +175,7 @@
         </ul>
         
         <div class="tab-content mt-3" id="myTabContent">
-                <c:forEach items="${interestThing}" var="seller" varStatus="status" step="3">
+                <c:forEach items="${interestThing}" var="seller" varStatus="status">
                     <div class="artist-card">
                         <div class="d-flex">
                             <div class="profile-image">
@@ -114,7 +183,7 @@
                             </div>
                             <div class="artist-info ml-3">
                                 <div class="artist-name">작가 이름: ${seller.memNickname}</div>
-                                <div class="rating">별점: ${seller.reviewStar}</div>
+                                <div class="star-rating" data-rating="${ seller.avgStar }"></div>
                             </div>
                         </div>
                         <div class="d-flex flex-column align-items-center">

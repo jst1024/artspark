@@ -21,7 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class KakaoService {
-	@Value("${kakao.client_id}") 
+	
+	@Value("${kakao.id}") 
 	private String kakaoLogin;
 	
 public String getToken(String code)throws IOException, ParseException{
@@ -39,7 +40,7 @@ public String getToken(String code)throws IOException, ParseException{
 		BufferedWriter bw= new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("client_id=kakaoLogin");
+		sb.append("client_id="+kakaoLogin);
 		sb.append("&grant_type=authorization_code");
 		sb.append("&redirect_uri=http://localhost/artspark/oauth");
 		sb.append("&code=");
