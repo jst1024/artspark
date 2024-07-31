@@ -175,33 +175,35 @@
         </ul>
         
         <div class="tab-content mt-3" id="myTabContent">
-                <c:forEach items="${interestThing}" var="seller" varStatus="status">
-                    <div class="artist-card">
-                        <div class="d-flex">
-                            <div class="profile-image">
-                                <img src="${seller.artistPath}" alt="작가 프로필" style="width: 100%; height: 100%; object-fit: cover;">
-                                <input type="hidden" value="${seller.productNo }" id="pno"/> 
-                            </div>
-                            <div class="artist-info ml-3">
-                                <div class="artist-name">작가 이름: ${seller.memNickname}</div>
-                                <div class="star-rating" data-rating="${ seller.avgStar }"></div>
-                            </div>
-                        </div>
-                        <div class="d-flex flex-column align-items-center">
-                            <div class="image-placeholder-wrapper">
-                                  <c:forEach var="filePath" items="${seller.filePaths}" varStatus="status">
-							        <c:if test="${status.index < 3}">
-							            <div class="image-placeholder">
-							                <img src="${filePath}" alt="작품 이미지" style="width: 100%; height: 100%; object-fit: cover;">
-							            </div>
-							        </c:if>
-							    </c:forEach>
-                            </div>
-                            <div class="image-caption">${seller.productTitle}</div>
-                        </div>
-                        <div class="remove-button ml-3" onclick="remove('${seller.productNo}');">X</div>
-                    </div>
-                </c:forEach>
+              <c:forEach items="${interestThing}" var="seller" varStatus="status">
+                  <div class="artist-card">
+                      <div class="d-flex">
+                          <div class="profile-image">
+                              <img src="${seller.artistPath}" alt="작가 프로필" style="width: 100%; height: 100%; object-fit: cover;">
+                              <input type="hidden" value="${seller.productNo }" id="pno"/> 
+                          </div>
+                          <div class="artist-info ml-3">
+                              <div class="artist-name">작가 이름: ${seller.memNickname}</div>
+                              <div class="star-rating" data-rating="${ seller.avgStar }"></div>
+                          </div>
+                      </div>
+                      <div class="d-flex flex-column align-items-center">
+                          <div class="image-placeholder-wrapper">
+                                <c:forEach var="filePath" items="${seller.filePaths}" varStatus="status">
+					        <c:if test="${status.index < 3}">
+					            <div class="image-placeholder">
+					            <a href="${path2}/product/${seller.productNo}" style="display: block; width: 100%; height: 100%;">
+			                    <img src="${filePath}" alt="작품 이미지" style="width: 100%; height: 100%; object-fit: cover;">
+			               		</a>
+					            </div>
+					        </c:if>
+					    </c:forEach>
+                          </div>
+                          <div class="image-caption">${seller.productTitle}</div>
+                      </div>
+                      <div class="remove-button ml-3" onclick="remove('${seller.productNo}');">X</div>
+                  </div>
+              </c:forEach>
             </div>
         </div>
     <jsp:include page="../common/footer.jsp"/>
