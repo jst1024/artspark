@@ -57,20 +57,7 @@
 				MEMBER
 	</select>
 	
-	<!-- 정지된 회원 조회 -->
-	<select id="suspendedMemberList" resultType="member">
-		SELECT
-				MEM_ID memId,
-				MEM_SUSPENSION memSuspension,
-				MEM_REPORTCOUNT memReportcount
-		  FROM
-		  		MEMBER
-		 WHERE
-		 		STATUS = 'N'
-		 ORDER
-		    BY
-		    	MEM_REPORTCOUNT DESC
-	</select>
+	
 	
 	<!-- 회원가입 -->
 	<insert id="insert" parameterType="member">
