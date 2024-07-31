@@ -106,8 +106,7 @@
                 	</c:otherwise>
                 </c:choose>
                 <form method="post" action="" id="AnswerPostForm">
-                    <input type="hidden" name="answerNo" value="${answer.answerNo }" />
-                    <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
+
                 </form>
                 <script>
                     function postSubmit(el) {

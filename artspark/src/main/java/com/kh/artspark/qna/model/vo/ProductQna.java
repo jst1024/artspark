@@ -2,6 +2,8 @@ package com.kh.artspark.qna.model.vo;
 
 import java.sql.Date;
 
+import com.kh.artspark.common.model.vo.ImgFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +25,8 @@ public class ProductQna {
     private String status;    // 상태
     private Date qnaDelDate;  // 삭제일
     private String qnaCategory; // 카테고리
+    private String qnaFilePath;
     private ProductAnswer productAnswer; // 상품문의답변
+    
+    
 }
