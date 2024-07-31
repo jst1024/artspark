@@ -18,8 +18,9 @@
 		<typeAlias type="com.kh.artspark.request.model.vo.Request" alias="request" />	
 		<typeAlias type="com.kh.artspark.request.model.vo.Reply" alias="reply" />	
 		<typeAlias type="com.kh.artspark.qna.model.vo.Qna" alias="qna" />	
-		<typeAlias type="com.kh.artspark.qna.model.vo.ProductQna" alias="productQna" />	
 		<typeAlias type="com.kh.artspark.qna.model.vo.Answer" alias="answer" />	
+		<typeAlias type="com.kh.artspark.qna.model.vo.ProductQna" alias="productQna" />	
+		<typeAlias type="com.kh.artspark.qna.model.vo.ProductAnswer" alias="productAnswer" />	
 		<typeAlias type="com.kh.artspark.common.model.vo.ImgFile" alias="ImgFile" />	
 		<typeAlias type="com.kh.artspark.product.model.vo.Product" alias="product" />
 		<typeAlias type="com.kh.artspark.product.model.vo.ProductDetail" alias="productDetail" />

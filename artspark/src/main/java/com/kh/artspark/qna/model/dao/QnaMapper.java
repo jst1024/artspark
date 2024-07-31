@@ -38,7 +38,7 @@ public interface QnaMapper {
 	Qna qnaFindById(int qnaNo);
 	ImgFile findImgFileByQnaNo(int qnaNo);
 	
-	Answer findAnserById(int answerNo);
+	Answer findAnswerById(int answerNo);
 	ImgFile findImgFileByAnswerNo(int answerNo);
 	
 	int deleteQna(int qnaNo);

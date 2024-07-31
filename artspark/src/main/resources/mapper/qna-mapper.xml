@@ -89,7 +89,7 @@
 	  		QNA
 	</select>	
 	
-	<!-- QNA 리스트 조회 -->
+	<!-- QNA 리스트 조회(답변포함) -->
     <select id="qnaFindAllWithAnswers" parameterType="map" resultType="qna">
   	  SELECT
 		        qnaNo,
@@ -134,7 +134,7 @@
 	WHERE RNUM BETWEEN #{startValue} AND #{endValue}
     </select>
 	
-		<!-- 판매자가 자신의 마이페이지에서 자신의 상품에 등록된 문의를 전체조회 -->
+	<!-- 판매자가 자신의 마이페이지에서 자신의 상품에 등록된 문의를 전체조회 -->
 	<select id="qnaForArtist" parameterType="string" resultType="qna">
     	SELECT
       DISTINCT
@@ -161,7 +161,8 @@
     		BY
         		Q.QNA_DATE DESC
 	</select>
-	<!-- 내가 작성한 문의 조회 -->
+	
+	<!-- 일반 사용자가 내가 관리자에게 한 문의 조회 -->
 	<select id="getMyQna" parameterType="string" resultType="qna">
 	    SELECT
 		        Q.QNA_NO qnaNo,
@@ -190,7 +191,7 @@
 	        	Q.QNA_DATE DESC
 	</select>
 
-	<!-- 내가 작성한 PRODUCT_QNA 조회 -->
+	<!-- 일반사용자가 내가 판매자에게 한 문의 조회 -->
 	<select id="getMyProductQna" parameterType="string" resultMap="ProductQnaWithAnswer">
     	SELECT
 		        PQ.QNA_NO qnaNo,
@@ -220,7 +221,7 @@
         		PQ.QNA_DATE DESC
 	</select>
 	
-	<!-- 내가 받은 PRODUCT_QNA 조회 -->
+	<!-- 판매자가 받은 문의사항들을 조회 -->
 	<select id="getReceivedProductQna" parameterType="string" resultMap="ProductQnaWithAnswer">
 	    SELECT
 		        PQ.QNA_NO qnaNo,
@@ -262,7 +263,7 @@
         		PRODUCT_NO = #{productNo}
 	</select>
 	
-		<!-- 검색 시 행의 개수 -->
+		<!-- 관리자 문의게시판 검색 시 행의 개수 -->
 	<select id="qnaSearchCount" parameterType="hashmap" resultType="int">
 		SELECT
         		COUNT(QNA_NO)
@@ -280,7 +281,7 @@
 		  </if>
 	</select>
 	
-	<!-- 검색 결과 -->
+	<!-- 관리자 문의게시판 검색 결과 -->
 	<select id="qnaFindConditionAndKeyword" parameterType="hashmap" resultType="qna">
 	
 	<include refid="selectQna"/>
@@ -303,7 +304,7 @@
      			QNA_NO DESC
 	</select>
 	
-	<!-- 관리자 문의 -->
+	<!-- 관리자에게 문의 -->
 	<insert id="insertQna" parameterType="qna">
 		INSERT
 	      INTO
@@ -332,7 +333,8 @@
       			#{qnaCategory}
       			)
 	</insert>
-	<!-- 판매자 문의 -->
+	
+	<!-- 판매자에게 문의 -->
     <insert id="insertProductQna" parameterType="productQna">
         INSERT 
           INTO 
@@ -378,7 +380,7 @@
     			(
         		IMG_FILE_SEQ.NEXTVAL,
         		#{boardType},
-        		#{boardNo},
+        		QNA_SEQ.CURRVAL,
         		#{originName},
         		#{changeName},
         		#{imgFilePath},
