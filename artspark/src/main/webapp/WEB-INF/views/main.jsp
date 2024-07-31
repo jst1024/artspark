@@ -5,35 +5,6 @@
 <%@ page import="java.util.List, java.util.ArrayList, java.util.Map, java.util.HashMap, java.util.Date" %>
 <c:set var="path2" value="${pageContext.servletContext.contextPath }" />
 <jsp:include page="common/head.jsp" />
- <%-- 더미 데이터 설정 --%>
-<%
-   // 배너 이미지
-   List<String> banners = new ArrayList<>();
-   banners.add("image1.jpg");
-   banners.add("image2.jpg");
-   banners.add("image3.jpg");
-   request.setAttribute("banners", banners);
-
-   // 카테고리
-   List<Map<String, Object>> categories = new ArrayList<>();
-   for (int i = 1; i <= 4; i++) {
-       Map<String, Object> category = new HashMap<>();
-       category.put("id", i);
-       category.put("name", "Category" + i);
-       categories.add(category);
-   }
-   request.setAttribute("categories", categories);
-
-   // 인기 작가
-   List<Map<String, Object>> popularWriters = new ArrayList<>();
-   for (int i = 1; i <= 6; i++) {
-       Map<String, Object> writer = new HashMap<>();
-       writer.put("id", i);
-       writer.put("image", "/cat3.jpg"); 
-       popularWriters.add(writer);
-   }
-   request.setAttribute("popularWriters", popularWriters);
-%>          
 <style>
     .carousel-item {
         height: 300px;
@@ -135,25 +106,25 @@
             </div>
         </div>
 
-        <div class="container mt-4">
+       <div class="container mt-4">
 		    <div class="section-title">인기 작가</div>
 		    <div class="popular-writer-container">
 		        <c:forEach var="writer" items="${popularWriters}">
-		            <a href="${path2}/writer/${writer.id}" class="popular-writer">
+		            <a href="${path2}/writer/${writer.memId}" class="popular-writer">
 		                <c:choose>
-		                    <c:when test="${not empty writer.image}">
-		                        <img src="${path2}/resources/images/${writer.image}" alt="${writer.name}">
+		                    <c:when test="${not empty writer.filePath}">
+		                        <img src="${path2}/resources/images/${writer.filePath}" alt="${writer.memNickname}">
 		                    </c:when>
 		                    <c:otherwise>
 		                        <div class="default-image">No Image</div>
 		                    </c:otherwise>
 		                </c:choose>
+		                <div>${writer.memNickname}</div>
+		                <div>구매수: ${writer.buyCount}</div>
 		            </a>
 		        </c:forEach>
 		    </div>
 		</div>
-
-
 
         <div class="container mt-4">
             <div class="row">
@@ -166,10 +137,10 @@
                         <c:forEach var="notice" items="${noticeList}">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <a href="${path2}/noticeDetail?noticeNo=${notice.noticeNo}" 
-                                	style="color: black; text-decoration: none;">
-                                	${notice.noticeTitle}</a>
+                                    style="color: black; text-decoration: none;">
+                                    ${notice.noticeTitle}</a>
                                 <fmt:formatDate value="${notice.noticeDate}" 
-                                	pattern="yyyy-MM-dd"/>
+                                    pattern="yyyy-MM-dd"/>
                             </li>
                         </c:forEach>
                     </ul>

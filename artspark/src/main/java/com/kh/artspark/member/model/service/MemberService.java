@@ -79,6 +79,9 @@ public interface MemberService {
 
 	
 	int deleteJjim(Map<String, Object> map);
+	
+	// 인기작가 6인 리스트
+	List<Map<String, Object>> getPopularWriters();
 
 
 

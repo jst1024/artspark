@@ -70,6 +70,8 @@ public interface MemberMapper {
 
 	int deleteJjim(Map<String, Object> map);
 
+	List<Map<String, Object>> getPopularWriters();
+
 
 
 
