@@ -47,8 +47,10 @@ public interface MemberService {
 	
 	//메일인증
 	int sendMail(Mail mail);
-    void updatePassword(Member member);
-	Member getMember(String memId, String memNickname, String memEmail);
+    
+	int updatePassword(Member member);
+	
+    Member getMember(String memId, String memNickname, String memEmail);
 	
 	
 
@@ -63,11 +65,18 @@ public interface MemberService {
 	//별점의 평균
 	
 	
-	//
-	List<Member> getActiveMembers(int startValue, int endValue);
+	//정지회원 리스트
+	List<Member> suspendedMemberList(Map<String,Integer> map);
 
-	//
-	int countActiveMembers();
+	//전체 회원수
+	int memberCount();
+
+	//정지 회원수
+	int suspendedMemberCount();
+
+
+	
+	//정지
 
 
 

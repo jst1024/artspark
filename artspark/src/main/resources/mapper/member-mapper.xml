@@ -37,7 +37,7 @@
 	<result property="artistPath" column="ARTIST_PATH"/>
 	<result property="memNickname" column="MEM_NICKNAME"/>
 	<result property="productTitle" column="PRODUCT_TITLE"/>
-	<result property="reviewStar" column="REVIEW_STAR"/>
+	<result property="avgStar" column="AVG_STAR"/>
 	    <collection property="filePaths" ofType="string">
         <result column="FILE_PATH"/>
     </collection>
@@ -45,6 +45,7 @@
 	
 	
 	
+	<!--전체 조회 -->
 	<select id="memberList" resultType="member">
 		SELECT
 				MEM_ID memId,
@@ -56,7 +57,20 @@
 				MEMBER
 	</select>
 	
-	<!--전체 조회 -->
+	<!-- 정지된 회원 조회 -->
+	<select id="suspendedMemberList" resultType="member">
+		SELECT
+				MEM_ID memId,
+				MEM_SUSPENSION memSuspension,
+				MEM_REPORTCOUNT memReportcount
+		  FROM
+		  		MEMBER
+		 WHERE
+		 		STATUS = 'N'
+		 ORDER
+		    BY
+		    	MEM_REPORTCOUNT DESC
+	</select>
 	
 	<!-- 회원가입 -->
 	<insert id="insert" parameterType="member">
@@ -70,7 +84,6 @@
 		  		MEM_EMAIL
 		  		)
 		VALUES
-				
 				(
 				#{memId},
 				#{memPwd},
@@ -169,6 +182,7 @@
 	             MEM_EMAIL = #{memEmail}
 	     WHERE 
 	             MEM_ID = #{memId}
+
 	</update>
 	<select id="getArtist" parameterType="string" resultType="artist">
 	    SELECT  
@@ -321,6 +335,7 @@
 			        BO.BUY_OPTION_PRICE,
 			        BO.BUY_OPTION_AMOUNT,
 			        P.PRODUCT_TITLE
+			      
  		FROM
                     BUY B
 			        JOIN PAYMENT PM ON B.BUY_NO = PM.BUY_NO
@@ -340,19 +355,27 @@
 		<!-- 관심 판매자 목록 -->
 	<select id="interest" parameterType="String" resultMap="interest">
 		SELECT
-					A.ARTIST_PATH,
-					M.MEM_NICKNAME,
-					PF.FILE_PATH,
-					P.PRODUCT_TITLE,
-					R.REVIEW_STAR
-		 FROM
-					PRODUCT P
-					JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
-					JOIN PRODUCTFILE PF ON PF.PRODUCT_NO = P.PRODUCT_NO
-					JOIN REVIEW R ON R.MEM_ID = P.MEM_ID
-					JOIN ARTIST A ON A.MEM_ID = M.MEM_ID
-	    WHERE
-	    			M.MEM_ID = #{memId}
+       A.ARTIST_PATH,
+       M.MEM_NICKNAME,
+       PF.FILE_PATH,
+       P.PRODUCT_TITLE,
+       ROUND(NVL(AVG(R.REVIEW_STAR), 0), 1) AS AVG_STAR
+FROM
+       PRODUCT P
+       JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
+       JOIN PRODUCTFILE PF ON PF.PRODUCT_NO = P.PRODUCT_NO
+       LEFT JOIN REVIEW R ON P.PRODUCT_NO = R.PRODUCT_NO
+       LEFT JOIN ARTIST A ON A.MEM_ID = M.MEM_ID
+       JOIN JJIM J ON J.PRODUCT_NO = P.PRODUCT_NO
+           
+WHERE
+        J.MEM_ID = #{mem_id}
+GROUP
+   BY
+        A.ARTIST_PATH,
+        M.MEM_NICKNAME,
+        PF.FILE_PATH,
+        P.PRODUCT_TITLE
 	</select>
 	
 	<select id="reviewStar" parameterType="String">
@@ -364,5 +387,49 @@
 		 		MEM_ID = #{memId}
 	</select>
 	
+	<!-- 전체 회원수 조회 -->
+	<select id="memberCount" resultType="_int">
+		SELECT
+				COUNT(*)
+		  FROM
+		  		MEMBER
+	</select>
+
+	<!-- 전체 정지회원수 조회 -->
+	<select id="suspendedMemberCount" resultType="_int">
+		SELECT
+				COUNT(*)
+		  FROM
+		  		MEMBER
+		 WHERE
+		 		STATUS = 'N'
+	</select>
+	
+	<!-- resultMap 정의 -->
+    <resultMap id="suspendedMemberResultMap" type="hashmap">
+        <result property="memId" column="MEM_ID"/>
+        <result property="memSuspension" column="MEM_SUSPENSION"/>
+        <result property="memReportcount" column="MEM_REPORTCOUNT"/>
+        <result property="reportContent" column="REPORT_CONTENT"/>
+    </resultMap>
+
+    <!-- 조인 쿼리 -->
+    <select id="suspendedMemberList" resultMap="suspendedMemberResultMap">
+        SELECT
+            	M.MEM_ID,
+            	M.MEM_SUSPENSION,
+            	M.MEM_REPORTCOUNT,
+            	R.REPORT_CONTENT
+          FROM
+            	MEMBER M
+          JOIN
+            	REPORT R ON M.MEM_ID = R.MEM_ID
+         WHERE
+            	M.STATUS = 'N'
+         ORDER
+            BY
+            	M.MEM_REPORTCOUNT
+           		
+    </select>
 
 </mapper>

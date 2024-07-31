@@ -101,6 +101,76 @@
 		    background-color: #007bff;
 		    border-color: #007bff;
 		}
+		
+		.star-rating {
+            display: inline-block;
+            font-size: 0;
+            position: relative;
+            width: 100px;
+            height: 20px; 
+            background: url('${path2}/resources/images/star-empty.png') repeat-x;
+        }
+        .star-rating::before {
+            content: '';
+            display: block;
+            width: 0;
+            height: 100%;
+            background: url('${path2}/resources/images/star-full.png') repeat-x;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .star-rating[data-rating="0"]::before { width: 0%; }
+        .star-rating[data-rating="0.1"]::before { width: 2%; }
+        .star-rating[data-rating="0.2"]::before { width: 4%; }
+        .star-rating[data-rating="0.3"]::before { width: 6%; }
+        .star-rating[data-rating="0.4"]::before { width: 8%; }
+        .star-rating[data-rating="0.5"]::before { width: 10%; }
+        .star-rating[data-rating="0.6"]::before { width: 12%; }
+        .star-rating[data-rating="0.7"]::before { width: 14%; }
+        .star-rating[data-rating="0.8"]::before { width: 16%; }
+        .star-rating[data-rating="0.9"]::before { width: 18%; }
+        .star-rating[data-rating="1"]::before { width: 20%; }
+        .star-rating[data-rating="1.1"]::before { width: 22%; }
+        .star-rating[data-rating="1.2"]::before { width: 24%; }
+        .star-rating[data-rating="1.3"]::before { width: 26%; }
+        .star-rating[data-rating="1.4"]::before { width: 28%; }
+        .star-rating[data-rating="1.5"]::before { width: 30%; }
+        .star-rating[data-rating="1.6"]::before { width: 32%; }
+        .star-rating[data-rating="1.7"]::before { width: 34%; }
+        .star-rating[data-rating="1.8"]::before { width: 36%; }
+        .star-rating[data-rating="1.9"]::before { width: 38%; }
+        .star-rating[data-rating="2"]::before { width: 40%; }
+        .star-rating[data-rating="2.1"]::before { width: 42%; }
+        .star-rating[data-rating="2.2"]::before { width: 44%; }
+        .star-rating[data-rating="2.3"]::before { width: 46%; }
+        .star-rating[data-rating="2.4"]::before { width: 48%; }
+        .star-rating[data-rating="2.5"]::before { width: 50%; }
+        .star-rating[data-rating="2.6"]::before { width: 52%; }
+        .star-rating[data-rating="2.7"]::before { width: 54%; }
+        .star-rating[data-rating="2.8"]::before { width: 56%; }
+        .star-rating[data-rating="2.9"]::before { width: 58%; }
+        .star-rating[data-rating="3"]::before { width: 60%; }
+        .star-rating[data-rating="3.1"]::before { width: 62%; }
+        .star-rating[data-rating="3.2"]::before { width: 64%; }
+        .star-rating[data-rating="3.3"]::before { width: 66%; }
+        .star-rating[data-rating="3.4"]::before { width: 68%; }
+        .star-rating[data-rating="3.5"]::before { width: 70%; }
+        .star-rating[data-rating="3.6"]::before { width: 72%; }
+        .star-rating[data-rating="3.7"]::before { width: 74%; }
+        .star-rating[data-rating="3.8"]::before { width: 76%; }
+        .star-rating[data-rating="3.9"]::before { width: 78%; }
+        .star-rating[data-rating="4"]::before { width: 80%; }
+        .star-rating[data-rating="4.1"]::before { width: 82%; }
+        .star-rating[data-rating="4.2"]::before { width: 84%; }
+        .star-rating[data-rating="4.3"]::before { width: 86%; }
+        .star-rating[data-rating="4.4"]::before { width: 88%; }
+        .star-rating[data-rating="4.5"]::before { width: 90%; }
+        .star-rating[data-rating="4.6"]::before { width: 92%; }
+        .star-rating[data-rating="4.7"]::before { width: 94%; }
+        .star-rating[data-rating="4.8"]::before { width: 96%; }
+        .star-rating[data-rating="4.9"]::before { width: 98%; }
+        .star-rating[data-rating="5"]::before { width: 100%; }
     </style>
 </head>
 <body>
@@ -108,32 +178,45 @@
     <div class="container" style="max-width: 1200px;">
         <div class="row my-4">
             <div class="col-md-2">
-                <select class="form-control">
-                    <option>최신순</option>
-                    <option>인기순</option>
-                    <!-- Add other options here -->
+                <select class="form-control" name="sort" id="sort">
+                    <option value="latest" ${sort == 'latest' ? 'selected' : ''}>최신순</option>
+                    <option value="popular" ${sort == 'popular' ? 'selected' : ''}>인기순</option>
                 </select>
             </div>
+            
+            <script>
+            	// 정렬 방식 변경
+            	$('#sort').on('change', function() {
+            		const selectedSort = $(this).val();
+            		location.href = '${path2}/product?sort=' + selectedSort + '&category=${category}&keyword=${keyword}';
+            	});
+            </script>
+            
             <div class="col-md-4">
-	            <form action="${path2 }/product/search" method="get">
+	            <form action="${path2 }/product" method="get">
 	                <div class="input-group">
-	                		<c:if test="${ empty keyword }">
-		                    	<input type="text" class="form-control" name="keyword" placeholder="검색어 입력">
-		                    </c:if>
-		                    <c:if test="${ not empty keyword }">
-		                    	<input type="text" class="form-control" name="keyword" value="${ keyword }" placeholder="검색어 입력">
-		                    </c:if>
-		                    <div class="input-group-append">
-		                        <button class="btn btn-primary" type="submit">검색</button>
-		                    </div>
+                		<c:if test="${ empty keyword }">
+	                    	<input type="text" class="form-control" name="keyword" placeholder="검색어 입력">
+	                    </c:if>
+	                    <c:if test="${ not empty keyword }">
+	                    	<input type="text" class="form-control" name="keyword" value="${ keyword }" placeholder="검색어 입력">
+	                    </c:if>
+	                    <div class="input-group-append">
+	                        <button class="btn btn-primary" type="submit">검색</button>
+	                    </div>
 	                </div>
                 </form>
             </div>
             <div class="col-md-6 text-right">
             	<c:if test="${ sessionScope.loginUser != null }">
-	            	<a href="${path2 }/product/productInsertForm">
-	                	<button class="btn btn-primary">작품 등록</button>
-	                </a>
+            		<c:if test="${ artist != null }">
+		            	<a href="${path2 }/product/productInsertForm">
+		                	<button class="btn btn-primary">작품 등록</button>
+		                </a>
+	                </c:if>
+	                <c:if test="${ artist == null }">
+	                	<button class="btn btn-primary" onclick="artistAlert();">작품 등록</button>
+	                </c:if>
                 </c:if>
                 <c:if test="${ sessionScope.loginUser eq null }">
                 	<button class="btn btn-primary" onclick="loginAlert();">작품 등록</button>
@@ -144,7 +227,7 @@
             <div class="col">
                 <div id="hashtags">
                 	<c:forEach items="${ tags }" var="tag">
-                		<a href="${path2 }/product/search?keyword=${ tag.tagName }">
+                		<a href="${path2 }/product?keyword=${ tag.tagName }">
                     		<button class="tagbtn" style="margin-bottom: 10px;">#${ tag.tagName }</button>
                     	</a>
                     </c:forEach>
@@ -188,7 +271,7 @@
 	                        </h5>
 	                        <div class="d-flex justify-content-between">
 	                            <div>
-	                                <span class="badge badge-warning">★★★★★(${ product.avgStar })</span>
+	                                <div class="star-rating" data-rating="${ product.avgStar }"></div>
 	                            </div>
 	                            <div>${ product.minPrice }원 ~</div>
 	                        </div>
@@ -245,112 +328,64 @@
         	function loginAlert() {
         		alertify.alert('로그인이 필요합니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
         	}
+        	
+        	// 작가가 아닌 상태로 작품등록 버튼 누를시 alert
+        	function artistAlert() {
+        		alertify.alert('작가회원만 작품 등록이 가능합니다.').setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+        	}
         </script>
         
         <!-- 페이징 처리 -->
         <div id="pagingArea">
-	        <ul class="pagination">
-	        
-	        	<c:if test="${ category eq null }"> 
-	        		<c:choose>
-		        		<c:when test="${ pageInfo.currentPage eq 1 }">
-			            	<li class="page-item"><a class="page-link" href="#">이전</a></li>
-		            	</c:when>
-		            	<c:otherwise>
-		            		<c:if test="${ empty keyword }">
-		            			<li class="page-item"><a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage - 1 }">이전</a></li>
-		            		</c:if>
-		            		<c:if test="${ not empty keyword }">
-		            			<li class="page-item"><a class="page-link" href="${path2 }/product/search/?page=${ pageInfo.currentPage - 1 }&keyword=${keyword}">이전</a></li>
-		            		</c:if>
-		            	</c:otherwise>
-		            </c:choose>
-		            <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
-		            	<c:choose>
-			            	<c:when test="${ pageInfo.currentPage == p }">
-			            		<li class="page-item active">
-			            			<a class="page-link" href="#">${ p }</a>
-			            		</li>
-			            	</c:when>
-			            	<c:otherwise>
-			            		<c:if test="${ empty keyword }">
-				            		<li class="page-item">
-				            			<a class="page-link" href="${path2 }/product?page=${ p }">${ p }</a>
-				            		</li>
-			            		</c:if>
-			            		<c:if test="${ not empty keyword }">
-				            		<li class="page-item">
-				            			<a class="page-link" href="${path2 }/product/search?page=${ p }&keyword=${keyword}">${ p }</a>
-				            		</li>
-			            		</c:if>
-			            	</c:otherwise>
-		            	</c:choose>
-		            </c:forEach>
-		            
+		    <ul class="pagination">
+		        <c:choose>
+		            <c:when test="${ pageInfo.currentPage eq 1 }">
+		                <li class="page-item"><a class="page-link" href="#">이전</a></li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item">
+		                    <a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage - 1 }
+		                        <c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
+		                        이전
+		                    </a>
+		                </li>
+		            </c:otherwise>
+		        </c:choose>
+		
+		        <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
 		            <c:choose>
-			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
-			            	<li class="page-item">
-			            		<a class="page-link" href="#">다음</a>
-			            	</li>
-			            </c:when>
-			            <c:otherwise>
-			            	<c:if test="${ empty keyword }">
-				            	<li class="page-item">
-				            		<a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage + 1 }">다음</a>
-				            	</li>
-			            	</c:if>
-			            	<c:if test="${ not empty keyword }">
-				            	<li class="page-item">
-				            		<a class="page-link" href="${path2 }/product/search?page=${ pageInfo.currentPage + 1 }&keyword=${keyword}">다음</a>
-				            	</li>
-			            	</c:if>
-			            </c:otherwise>
+		                <c:when test="${ pageInfo.currentPage == p }">
+		                    <li class="page-item active">
+		                        <a class="page-link" href="#">${ p }</a>
+		                    </li>
+		                </c:when>
+		                <c:otherwise>
+		                    <li class="page-item">
+		                        <a class="page-link" href="${path2 }/product?page=${ p }
+		                            <c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
+		                            ${ p }
+		                        </a>
+		                    </li>
+		                </c:otherwise>
 		            </c:choose>
-	            </c:if>
-	            
-	            <c:if test="${ category != null }">
-	            	<c:choose>
-		        		<c:when test="${ pageInfo.currentPage eq 1 }">
-			            	<li class="page-item">
-			            		<a class="page-link" href="#">이전</a>
-			            	</li>
-		            	</c:when>
-		            	<c:otherwise>
-		            		<li class="page-item">
-		            			<a class="page-link" href="category?page=${ pageInfo.currentPage - 1 }&category=${ category }">이전</a>
-		            		</li>
-		            	</c:otherwise>
-		            </c:choose>
-		            <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
-		            	<c:choose>
-			            	<c:when test="${ pageInfo.currentPage == p }">
-			            		<li class="page-item active">
-			            			<a class="page-link" href="#">${ p }</a>
-			            		</li>
-			            	</c:when>
-			            	<c:otherwise>
-			            		<li class="page-item">
-			            			<a class="page-link" href="category?page=${ p }&category=${ category }">${ p }</a>
-			            		</li>
-			            	</c:otherwise>
-		            	</c:choose>
-		            </c:forEach>
-		            
-		            <c:choose>
-			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
-			            	<li class="page-item">
-			            		<a class="page-link" href="#">다음</a>
-			            	</li>
-			            </c:when>
-			            <c:otherwise>
-			            	<li class="page-item">
-			            		<a class="page-link" href="category?page=${ pageInfo.currentPage + 1 }&category=${ category }">다음</a>
-			            	</li>
-			            </c:otherwise>
-		            </c:choose>
-	            </c:if>
-	        </ul>
-	    </div>
+		        </c:forEach>
+		
+		        <c:choose>
+		            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
+		                <li class="page-item">
+		                    <a class="page-link" href="#">다음</a>
+		                </li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item">
+		                    <a class="page-link" href="${path2 }/product?page=${ pageInfo.currentPage + 1 }<c:if test="${ not empty keyword && keyword != null }">&keyword=${ keyword }</c:if><c:if test="${ not empty category && category != null }">&category=${ category }</c:if><c:if test="${ not empty sort && category != sort }">&sort=${ sort }</c:if>">
+		                        다음
+		                    </a>
+		                </li>
+		            </c:otherwise>
+		        </c:choose>
+		    </ul>
+		</div>
     </div>
     <jsp:include page="../common/footer.jsp" />
 </body>

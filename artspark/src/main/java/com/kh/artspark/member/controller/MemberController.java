@@ -433,6 +433,7 @@ public class MemberController {
 	public String interestSeller(HttpSession session, Model model) {
 		Member member = (Member)session.getAttribute("loginUser");
 		List<Interest> interestThing = memberService.interest(member.getMemId()); 
+		log.info("가 : {}",interestThing);
 		
 		model.addAttribute("interestThing", interestThing);
 		log.info("관심: {} ", interestThing);

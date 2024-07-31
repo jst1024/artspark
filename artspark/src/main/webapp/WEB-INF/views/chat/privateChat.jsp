@@ -244,21 +244,28 @@
         <div class="chat-list">
         	
         	<!-- 채팅방 목록 -->
-            <c:forEach items="${ chatrooms }" var="chatroom">
-            	<div class="chat-list-item">
-            		<input type="hidden" id="chatroom-no" value="${ chatroom.chatroomNo }">
-                	<img src="https://via.placeholder.com/40" alt="User Image">
-	                <div class="user-info">
-	                	<c:if test="${ chatroom.memId == sessionScope.loginUser.memId }">
-	                    	<span class="username">${ chatroom.memId2 }</span>
-	                    </c:if>
-	                    <c:if test="${ chatroom.memId2 == sessionScope.loginUser.memId }">
-	                    	<span class="username">${ chatroom.memId }</span>
-	                    </c:if>
-	                    <span class="last-message">${ chatroom.lastChat }</span>
-	                </div>
-	            </div>
-            </c:forEach>
+        	<c:choose>
+	        	<c:when test="${ not empty chatrooms }">
+		            <c:forEach items="${ chatrooms }" var="chatroom">
+		            	<div class="chat-list-item">
+		            		<input type="hidden" id="chatroom-no" value="${ chatroom.chatroomNo }">
+		                	<img src="https://via.placeholder.com/40" alt="User Image">
+			                <div class="user-info">
+			                	<c:if test="${ chatroom.memId == sessionScope.loginUser.memId }">
+			                    	<span class="username">${ chatroom.memId2 }</span>
+			                    </c:if>
+			                    <c:if test="${ chatroom.memId2 == sessionScope.loginUser.memId }">
+			                    	<span class="username">${ chatroom.memId }</span>
+			                    </c:if>
+			                    <span class="last-message">${ chatroom.lastChat }</span>
+			                </div>
+			            </div>
+		            </c:forEach>
+	            </c:when>
+	            <c:otherwise>
+	            	<p style="font-size : 20px;">채팅방이 존재하지 않습니다.</p>
+	            </c:otherwise>
+	        </c:choose>
             
             <!-- 추가적인 채팅방 아이템들 -->
         </div>
@@ -269,7 +276,7 @@
             <!-- 상세 채팅 내용 -->
             <div class="chat-container">
             
-                <h2>선택된 채팅방이 없습니다.</h2>
+                <h2 style="text-align : center;">선택된 채팅방이 없습니다.</h2>
                 
             </div>
             

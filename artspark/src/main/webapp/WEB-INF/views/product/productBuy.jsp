@@ -229,25 +229,25 @@
 			const buyerEmail = $('input[name="buyerEmail"]').val();
 			const buyerRequest = $('#buyerRequest').val();
 			
-			var buyOptionNames = document.querySelectorAll('input[name="buyOptionName"]');
+			const buyOptionNames = document.querySelectorAll('input[name="buyOptionName"]');
 			var buyOptionName = [];
 			buyOptionNames.forEach(function(input) {
 				buyOptionName.push(input.value);
 			});
 			
-			var buyDetailOptionNames = document.querySelectorAll('input[name="buyDetailOptionName"]');
+			const buyDetailOptionNames = document.querySelectorAll('input[name="buyDetailOptionName"]');
 			var buyDetailOptionName = [];
 			buyDetailOptionNames.forEach(function(input) {
 				buyDetailOptionName.push(input.value);
 			});
 			
-			var buyOptionAmounts = document.querySelectorAll('input[name="buyOptionAmount"]');
+			const buyOptionAmounts = document.querySelectorAll('input[name="buyOptionAmount"]');
 			var buyOptionAmount = [];
 			buyOptionAmounts.forEach(function(input) {
 				buyOptionAmount.push(parseInt(input.value));
 			});
 			
-			var buyOptionPrices = document.querySelectorAll('input[name="buyOptionPrice"]');
+			const buyOptionPrices = document.querySelectorAll('input[name="buyOptionPrice"]');
 			var buyOptionPrice = [];
 			buyOptionPrices.forEach(function(input) {
 				buyOptionPrice.push(parseInt(input.value));
