@@ -76,8 +76,8 @@ public class RequestController {
 		
 		model.addAttribute("requestList", requestList);
 		model.addAttribute("pageInfo", pageInfo);
-		log.info("{}", requestList);
-		log.info("{}", listCount);
+		//log.info("{}", requestList);
+		//log.info("{}", listCount);
 		return "request/requestList";
 	
 	}
@@ -85,9 +85,9 @@ public class RequestController {
 	@GetMapping("requestSearchCount")
 	public String requestSearchCount(String condition, String category, @RequestParam(value="page", defaultValue = "1") int page, String keyword, Model model) {
 		
-		log.info(" 검색 조건 : {}", condition);
-		log.info(" 검색 카테고리 : {}", category);
-		log.info(" 검색 키워드 : {}", keyword);
+		//log.info(" 검색 조건 : {}", condition);
+		//log.info(" 검색 카테고리 : {}", category);
+		//log.info(" 검색 키워드 : {}", keyword);
 		
 		
 		
@@ -112,8 +112,8 @@ public class RequestController {
 
 		
 		List<Request> requestList = requestService.requestFindConditionAndKeyword(map, rowBounds);
-		log.info("{}", requestList);
-		log.info("{}", searchCount);
+		//log.info("{}", requestList);
+		//log.info("{}", searchCount);
 		
 		model.addAttribute("requestList", requestList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -190,7 +190,7 @@ public class RequestController {
 	}
 	@GetMapping("requestDetail")
 	public ModelAndView requestFindById(int reqNo, ModelAndView mv) {
-		log.info("{}", reqNo);
+		//log.info("{}", reqNo);
 		Request request = requestService.requestFindById(reqNo);
 		ImgFile imgFile = requestService.findImgFileByReqNo(reqNo);
 		if(requestService.increaseCount(reqNo) > 0) {
@@ -277,7 +277,7 @@ public class RequestController {
 	@ResponseBody
 	@PostMapping("/deleteReply")
 	public String deleteReply(@RequestParam("replyNo") int replyNo) {
-	    log.info("{}", replyNo);
+	    //log.info("{}", replyNo);
 	    int result = requestService.deleteReply(replyNo);
 	    return result > 0 ? "success" : "fail";
 	}

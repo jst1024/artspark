@@ -57,14 +57,12 @@
             <table class="table table-bordered">
                 <tbody>
                     <tr>
-                        <th scope="row">답변 글 번호</th>
-                        <td>${answer.answerNo}</td>
                        <th scope="row">문의 글 번호</th>
                         <td>${answer.qnaNo}</td>    
                         <th scope="row">작성일</th>
                         <td>${answer.answerDate}</td>
                         <th scope="row">작성자</th>
-                        <td>${loginUser.memId}</td>                        
+                        <td>${answer.memId }</td>                        
                     </tr>
                     <tr>
                         <th scope="row">제목</th>

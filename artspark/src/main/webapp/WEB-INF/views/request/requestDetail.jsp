@@ -202,7 +202,7 @@
         				type : 'post',
         				success : result => {
         					
-        					console.log(result);
+        					// console.log(result);
         					if(result == 'success') {
         						selectReply();
         						$('#replyContent').val('');
