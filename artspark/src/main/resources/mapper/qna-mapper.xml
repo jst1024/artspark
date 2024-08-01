@@ -208,29 +208,7 @@
 		        PA.ANSWER_TITLE answerTitle,
 		        PA.ANSWER_CONTENT answerContent,
 		        PA.ANSWER_DATE answerDate,
-		        PA.MEM_ID answerMemId,
-		        (
-		        SELECT 
-		        		FILE_PATH 
-        		  FROM 
-        		  		IMG_FILE 
-      		  	 WHERE 
-      		  	 		BOARD_TYPE='상품문의' 
-      		  	   AND 
-      		  	   		BOARD_NO=PQ.QNA_NO
-      		  	   		)
-      		  	   	AS qnaFilePath,
-		        (
-		        SELECT 
-		        	   	FILE_PATH 
-		          FROM 
-		          		IMG_FILE 
-		         WHERE 
-		         		BOARD_TYPE='답변' 
-		           AND 
-		           		BOARD_NO=PA.ANSWER_NO
-		           		) 
-		           	AS answerFilePath
+		        PA.MEM_ID answerMemId
     	  FROM
         		PRODUCT_QNA PQ
 	      LEFT 
@@ -260,29 +238,7 @@
 		        PA.ANSWER_TITLE answerTitle,
 		        PA.ANSWER_CONTENT answerContent,
 		        PA.ANSWER_DATE answerDate,
-		        PA.MEM_ID answerMemId,
-		        (
-		        SELECT 
-		        		FILE_PATH 
-	        	  FROM 
-	        	  		IMG_FILE 
-        	  	 WHERE 
-        	  	 		BOARD_TYPE='상품문의' 
-       	  	 	   AND 
-       	  	 	   		BOARD_NO=PQ.QNA_NO
-       	  	 	   		) 
-     	  	 	   	AS qnaFilePath,
-		        (
-		        SELECT 
-		        		FILE_PATH 
-        		  FROM 
-        		  		IMG_FILE 
-      		  	 WHERE 
-      		  	 		BOARD_TYPE='답변' 
-     		  	   AND 
-     		  	   		BOARD_NO=PA.ANSWER_NO
-     		  	   		) 
-    		  	   	AS answerFilePath
+		        PA.MEM_ID answerMemId
 	      FROM
 	        	PRODUCT_QNA PQ
 	      JOIN

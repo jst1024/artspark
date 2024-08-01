@@ -57,6 +57,9 @@ CREATE SEQUENCE ALRAM_TYPE_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE ARTIST_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE PRODUCT_QNA_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE PRODUCT_ANSWER_SEQ START WITH 1 INCREMENT BY 1;
+delete from product_qna;
+drop sequence product_answer_seq;
+drop sequence product_qna_seq;
 commit;
 
 -- MEMBER 테이블 생성
@@ -438,8 +441,16 @@ INSERT INTO PRODUCT_DETAIL (PRODUCT_NO, PRODUCT_PURPOSE, DETAIL_TYPE, DETAIL_SIZ
 VALUES (PRODUCT_DETAIL_SEQ.NEXTVAL, '상업용', '타입3', '사이즈3', '3000x3000', 3, '2024-06-18');
 
 
-
-
+delete from qna;
+delete from answer;
+drop sequence qna_seq;
+drop sequence answer_seq;
+drop sequence product_qna_seq;
+drop sequence product_answer_seq;
+commit;
+select * from qna;
+delete from product_qna;
+delete from product_answer;
 -- JJIM 테이블 생성
 CREATE TABLE JJIM (
    MEM_ID VARCHAR2(50) NOT NULL,
