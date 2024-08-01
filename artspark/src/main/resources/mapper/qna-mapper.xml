@@ -131,7 +131,7 @@
     		 		QNA.STATUS = 'Y'
     		 ORDER 
     		 	BY 
-    		 		QNA.QNA_NO DESC, ANSWER.ANSWER_DATE ASC
+    		 		QNA.QNA_DATE DESC, ANSWER.ANSWER_DATE ASC
 					)
 	WHERE RNUM BETWEEN #{startValue} AND #{endValue}
     </select>

@@ -130,7 +130,7 @@
 	        }
 		  </script>        
 	            
-	    <script>
+	     <script>
 	        // 파일 선택 시 파일명을 업데이트
 	        function updateFileName(input) {
 	            var fileName = input.files[0].name;
