@@ -3,7 +3,7 @@
 <c:set var="path2" value="${pageContext.servletContext.contextPath}"/>
 <div class="dashboard-item">
     <h5>회원 관리</h5>
-    <div class="table-container">
+    <div class="table-container" style="height:400px;">
         <table class="table table-striped">
             <thead>
                 <tr>

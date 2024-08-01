@@ -3,63 +3,84 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.artspark.banner.model.dao.BannerMapper">
+
+    <resultMap id="BannerMap" type="banner">
+        <result column="BAN_NO" property="banNo"/>
+        <result column="BAN_NAME" property="banName"/>
+        <result column="BAN_COMENT" property="banComent"/>
+        <result column="BAN_URL" property="banUrl"/>
+        <result column="BAN_IMAGE" property="banImage"/>
+    </resultMap>
+    
+    <sql id="selectBanner">
+        SELECT
+            	BAN_NO,
+	            BAN_NAME,
+	            BAN_COMENT,
+	            BAN_URL,
+	            BAN_IMAGE
+    </sql>
+    
+    <!-- 배너목록조회 -->
+    <select id="getAllBanners" resultMap="BannerMap">
+        <include refid="selectBanner"/>
+        FROM 
+        	  BANNER
+       ORDER
+          BY
+          	  BAN_NO
+    </select>
+    
+    <insert id="addBanner" parameterType="banner">
+		INSERT
+	      INTO
+	      		BANNER
+	      		(
+	      		BAN_NO,
+	      		BAN_NAME,
+	      		BAN_COMENT,
+	      		BAN_URL,
+	      		BAN_IMAGE
+	      		)
+      	VALUES
+      			(
+      			BANNER_SEQ.NEXTVAL,
+      			#{banName},
+      			#{banComent},
+      			#{banUrl},
+      			#{banImage}
+      			)
+	</insert>
 	
-	<!-- 배너목록조회 -->
-	<select id="getAllBanners" resultType="map">
-		SELECT 
-            	BAN_NO, 
-            	BAN_NAME, 
-            	BAN_COMENT, 
-            	BAN_URL, 
-            	BAN_IMAGE
-          FROM 
-        		BANNER
-	</select>
-	
-	<!-- 배너 상세보기 -->
-	<select id="getBannerByNo" parameterType="_int" resultType="map">
-		SELECT 
-            	BAN_NO, 
-            	BAN_NAME, 
-            	BAN_COMENT, 
-            	BAN_URL, 
-            	BAN_IMAGE,
-          FROM 
-          		BANNER
-         WHERE 
-         		BAN_NO = #{banNo}
-	</select>
-	
-	<!-- 배너 수정 -->
-    <update id="updateBanner" parameterType="banner">
-        UPDATE 
-            	BANNER
-           SET 
-            	BAN_NAME = #{banName},
-	            BAN_COMENT = #{banComent},
-	            BAN_URL = #{banUrl},
-	            BAN_IMAGE = #{banImage}
-         WHERE 
-            	BAN_NO = #{banNo}
+    <!-- 배너 상세보기 -->
+    <select id="selectBannerByNo" parameterType="_int" resultMap="BannerMap">
+        <include refid="selectBanner"/>
+        FROM 
+        	  BANNER
+       WHERE 
+        	  BAN_NO = #{banNo}
+    </select>
+    
+    <!-- 배너 수정 -->
+    <update id="updateBanner" parameterType="map">
+      UPDATE 
+        	  BANNER
+         SET 
+              BAN_NAME = #{banName},
+              BAN_COMENT = #{banComent},
+              BAN_URL = #{banUrl},
+              BAN_IMAGE = #{banImage}
+       WHERE 
+        	  BAN_NO = #{banNo}
     </update>
     
-	<!-- 배너 삭제 -->
-	<delete id="deleteBanner"  parameterType="_int">
-		DELETE 
-		  FROM 
-		  		BANNER 
-		 WHERE 
-		 		BAN_NO = #{banNo}
-	</delete>
-	
+    <!-- 배너 삭제 -->
+    <delete id="deleteBanner" parameterType="_int">
+      DELETE 
+        FROM 
+          	  BANNER 
+       WHERE 
+       		  BAN_NO = #{banNo}
+    </delete>
+
 </mapper>
-
-
-
-
-
-
-
-
-
-

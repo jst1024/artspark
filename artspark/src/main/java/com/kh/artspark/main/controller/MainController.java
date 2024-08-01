@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.kh.artspark.banner.model.service.BannerService;
 import com.kh.artspark.common.model.vo.PageInfo;
 import com.kh.artspark.member.model.service.MemberService;
 import com.kh.artspark.notice.model.service.NoticeService;
@@ -27,7 +28,8 @@ public class MainController {
     private final NoticeService noticeService;
     private final RequestService requestService;
     private final MemberService memberService;
-
+    private final BannerService bannerService;
+    
     @GetMapping("/")
     public String mainPage(@RequestParam(value="page", defaultValue="1") int page, Model model) {
         // 공지사항 설정
@@ -44,13 +46,17 @@ public class MainController {
 
         // 인기 작가 설정
         List<Map<String, Object>> popularWriters = memberService.getPopularWriters();
-
+        
+        // 배너 설정
+        List<Map<String, Object>> banners = bannerService.getAllBanners();
+        
         // 모델에 데이터 추가
         model.addAttribute("noticeList", noticeList);
         model.addAttribute("noticePageInfo", noticePageInfo);
         model.addAttribute("requestList", requestList);
         model.addAttribute("requestPageInfo", requestPageInfo);
         model.addAttribute("popularWriters", popularWriters);
+        model.addAttribute("banners", banners);
 
         return "main"; // main.jsp로 포워딩
     }

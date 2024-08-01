@@ -20,21 +20,28 @@ public class BannerServiceImpl implements BannerService {
 	public List<Map<String, Object>> getAllBanners() {
 		return bannerMapper.getAllBanners();
 	}
-
+	
+	@Override
+	public int addBanner(Banner banner) {
+		return bannerMapper.addBanner(banner);
+	}
+	
 	@Override
 	public int deleteBanner(int bannerNo) {
 		return bannerMapper.deleteBanner(bannerNo);
 	}
 
 	@Override
-	public Map<String, Object> getBannerByNo(int bannerNo) {
-		return bannerMapper.getBannerByNo(bannerNo);
+	public Banner selectBannerByNo(int bannerNo) {
+		return bannerMapper.selectBannerByNo(bannerNo);
 	}
 
 	@Override
 	public int updateBanner(Banner banner) {
 		return bannerMapper.updateBanner(banner);
 	}
+
+	
 
 
 }

@@ -65,7 +65,6 @@ public class AdminController {
     public String bannerList(Model model) {
         List<Map<String, Object>> bannerList = bannerService.getAllBanners();
         model.addAttribute("bannerList", bannerList);
-        log.info("배너리스트 {}", bannerList);
         return "admin/bannerSettings";
     }
 
@@ -452,9 +451,7 @@ public class AdminController {
         map.put("startValue", startValue);
         map.put("endValue", endValue);
 
-        log.info("Fetching deleted products for page: {}, endValue: {}", page, endValue);
         List<Product> deletedProductList = productService.deletedProductFindAll(map);
-        log.info("Fetched deleted products: {}", deletedProductList);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<Map<String, Object>> formattedDeletedProductList = new ArrayList<>();

@@ -297,7 +297,6 @@ $(document).ready(function () {
     loadNotices(1);
     loadSuspendedMembers(1);
     loadDeletedProducts(1);
-    loadTrafficStats(1);
     loadQnas(1);
 
     // 페이지네이션 클릭 이벤트
@@ -485,6 +484,7 @@ $(document).ready(function () {
                 </div>
             </div>
         </div>
+        <!-- 
         <div class="dashboard-item">
             <h5>트래픽 통계</h5>
             <div class="table-container">
@@ -498,16 +498,15 @@ $(document).ready(function () {
                     </tr>
                     </thead>
                     <tbody id="trafficStatsTableBody">
-                    <!-- AJAX로 데이터를 채울 예정 -->
                     </tbody>
                 </table>
                 <div id="trafficStatsPagingArea">
                     <ul class="pagination pagination-custom">
-                        <!-- AJAX로 페이징을 동적으로 업데이트 -->
                     </ul>
                 </div>
             </div>
         </div>
+         -->
     </div>
 </div>
 <!-- 정지 회원 모달 창 -->
