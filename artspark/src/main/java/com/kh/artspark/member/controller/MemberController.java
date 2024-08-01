@@ -81,7 +81,6 @@ public class MemberController {
 	public ModelAndView login(Member member, ModelAndView mv, HttpSession session) {
 	    Member loginUser = memberService.login(member);
 	    if(loginUser !=null && bcryptPasswordEncoder.matches(member.getMemPwd(),loginUser.getMemPwd())){
-	    //if (loginUser != null && member.getMemPwd().equals(loginUser.getMemPwd())) {
 	        if ("D".equals(loginUser.getMemCategory())) {
 	            // 블랙리스트 사용자
 	            mv.addObject("blacklistUser", true);
