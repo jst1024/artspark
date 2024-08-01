@@ -25,6 +25,7 @@ public class BannerController {
 
     private final BannerService bannerService;
 
+    
 
     @GetMapping("/deleteBanner")
     @ResponseBody
@@ -41,17 +42,22 @@ public class BannerController {
 
     @GetMapping("/editBanner")
     @ResponseBody
-    public Map<String, Object> editBanner(@RequestParam("banNo") int banNo) {
-        return bannerService.getBannerByNo(banNo);
+    public ResponseEntity<Map<String, Object>> editBanner(@RequestParam("banNo") int banNo) {
+        Map<String, Object> banner = bannerService.getBannerByNo(banNo);
+        if (banner != null) {
+            return new ResponseEntity<>(banner, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/updateBanner")
     @ResponseBody
-    public ResponseEntity<Integer> updateBanner(@RequestParam("banNo") int banNo,
-                               @RequestParam("banName") String banName,
-                               @RequestParam("banComent") String banComent,
-                               @RequestParam("banUrl") String banUrl,
-                               @RequestParam("banImage") String banImage) {
+    public ResponseEntity<Banner> updateBanner(@RequestParam("banNo") int banNo,
+                                               @RequestParam("banName") String banName,
+                                               @RequestParam("banComent") String banComent,
+                                               @RequestParam("banUrl") String banUrl,
+                                               @RequestParam("banImage") String banImage) {
         Banner banner = new Banner();
         banner.setBanNo(banNo);
         banner.setBanName(banName);
@@ -62,11 +68,10 @@ public class BannerController {
         int result = bannerService.updateBanner(banner);
         if (result > 0) {
             log.info("배너 업데이트 성공: 배너 번호 " + banNo);
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(banner, HttpStatus.OK);
         } else {
             log.error("배너 업데이트 실패: 배너 번호 " + banNo);
-            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

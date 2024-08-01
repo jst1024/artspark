@@ -20,29 +20,29 @@
 </head>
 <body>
     <div class="container">
-        <div class="dashboard-item">
+        <div class="dashboard-item" style="width:100%;">
             <h5>배너 설정</h5>
             <div class="table-container">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>배너 ID</th>
-                            <th>이미지</th>
+                            <th>배너번호</th>
+                            <th>배너이름</th>
                             <th>링크</th>
                             <th>상태</th>
                             <th>관리</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="bannerTableBody">
                         <c:forEach var="banner" items="${bannerList}">
                             <tr>
-                                <td>${banner.BAN_NO}</td>
-                                <td><img src="${path2}/resources/images/${banner.BAN_IMAGE}" alt="배너 이미지"></td>
-                                <td><a href="${banner.BAN_URL}">링크</a></td>
-                                <td>${banner.BAN_STATUS}</td>
+                                <td>${banner.banNo}</td>
+                                <td>${banner.banName}</td>
+                                <td><a href="${banner.banUrl}">링크</a></td>
+                                <td>${banner.banStatus}</td>
                                 <td>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteBanner(${banner.BAN_NO})">삭제</button>
-                                    <button class="btn btn-warning btn-sm" onclick="editBanner(${banner.BAN_NO})">수정</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteBanner(${banner.banNo})">삭제</button>
+                                    <button class="btn btn-warning btn-sm" onclick="editBanner(${banner.banNo})">수정</button>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -67,7 +67,7 @@
                         <input type="hidden" id="banNo" name="banNo">
                         <div class="form-group">
                             <label for="banName">배너 이름</label>
-                            <input type="text" class="form-control" id="banName" name="banName" required>
+                            <input type="text" class="form-control" id="banName" name="banName">
                         </div>
                         <div class="form-group">
                             <label for="banComent">배너 설명</label>
@@ -75,11 +75,11 @@
                         </div>
                         <div class="form-group">
                             <label for="banUrl">배너 URL</label>
-                            <input type="text" class="form-control" id="banUrl" name="banUrl" required>
+                            <input type="text" class="form-control" id="banUrl" name="banUrl">
                         </div>
                         <div class="form-group">
                             <label for="banImage">배너 이미지</label>
-                            <input type="text" class="form-control" id="banImage" name="banImage" required>
+                            <input type="text" class="form-control" id="banImage" name="banImage">
                         </div>
                         <button type="submit" class="btn btn-primary">저장하기</button>
                     </form>
@@ -94,7 +94,7 @@
         function deleteBanner(banNo) {
             if (confirm('정말 삭제하시겠습니까?')) {
                 $.ajax({
-                    url: '${path2}/admin/deleteBanner',
+                    url: '${path2}/deleteBanner',
                     type: 'GET',
                     data: { banNo: banNo },
                     success: function(response) {
@@ -110,15 +110,15 @@
 
         function editBanner(banNo) {
             $.ajax({
-                url: '${path2}/admin/editBanner',
+                url: '${path2}/editBanner',
                 type: 'GET',
                 data: { banNo: banNo },
                 success: function(response) {
-                    $('#banNo').val(response.BAN_NO);
-                    $('#banName').val(response.BAN_NAME);
-                    $('#banComent').val(response.BAN_COMENT);
-                    $('#banUrl').val(response.BAN_URL);
-                    $('#banImage').val(response.BAN_IMAGE);
+                    $('#banNo').val(response.banNo);
+                    $('#banName').val(response.banName);
+                    $('#banComent').val(response.banComent);
+                    $('#banUrl').val(response.banUrl);
+                    $('#banImage').val(response.banImage);
                     $('#editBannerModal').modal('show');
                 },
                 error: function(xhr, status, error) {
@@ -130,19 +130,33 @@
         $('#editBannerForm').on('submit', function(event) {
             event.preventDefault();
             $.ajax({
-                url: '${path2}/admin/updateBanner',
+                url: '${path2}/updateBanner',
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function(response) {
                     alert('배너가 수정되었습니다.');
                     $('#editBannerModal').modal('hide');
-                    location.reload();
+                    loadBannerList();  // 배너 목록을 다시 불러옴
                 },
                 error: function(xhr, status, error) {
                     alert('배너 수정에 실패했습니다.');
                 }
             });
         });
+
+        function loadBannerList() {
+            $.ajax({
+                url: '${path2}/admin/bannerSettings',
+                type: 'GET',
+                success: function(response) {
+                    var newBannerList = $(response).find('#bannerTableBody').html();
+                    $('#bannerTableBody').html(newBannerList);
+                },
+                error: function(xhr, status, error) {
+                    console.error('배너 목록을 불러오는데 실패했습니다:', error);
+                }
+            });
+        }
     </script>
 </body>
 </html>

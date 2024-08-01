@@ -65,7 +65,7 @@ public class AdminController {
     public String bannerList(Model model) {
         List<Map<String, Object>> bannerList = bannerService.getAllBanners();
         model.addAttribute("bannerList", bannerList);
-        log.info("배너리스트 {}", bannerList);
+        log.info("배너리스트 : {}", bannerList);
         return "admin/bannerSettings";
     }
 
