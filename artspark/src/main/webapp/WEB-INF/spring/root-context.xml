@@ -105,6 +105,7 @@
 	  <mybatis-spring:scan base-package="com.kh.artspark.chat.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.review.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.report.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.banner.model.dao"/>
 
 
 		<!-- 메일 전송 도구 등록 -->

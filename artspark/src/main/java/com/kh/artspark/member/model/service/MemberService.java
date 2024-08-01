@@ -1,5 +1,6 @@
 package com.kh.artspark.member.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,9 +80,6 @@ public interface MemberService {
 
 	
 	int deleteJjim(Map<String, Object> map);
-	
-	// 인기작가 6인 리스트
-	List<Map<String, Object>> getPopularWriters();
 
 	// 인기작가 6명
 	List<Map<String, Object>> getPopularWriters();
