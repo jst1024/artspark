@@ -357,9 +357,9 @@ public class ProductController {
 			sb.append("#" + t.getTagName());
 		}
 		
-		log.info(sb.toString());
-		log.info("PayOption: {}", product.get("payOptionList"));
-		log.info("파일 정보 : {}", productFiles);
+//		log.info(sb.toString());
+//		log.info("PayOption: {}", product.get("payOptionList"));
+//		log.info("파일 정보 : {}", productFiles);
 		
 		model.addAttribute("productFiles", productFiles);
 		model.addAttribute("productTags", sb.toString());
@@ -382,15 +382,15 @@ public class ProductController {
 								HttpSession session,
 								Model model) {
 		
-		log.info("입력 정보 : {}", product);
-		log.info("입력 정보 : {}", productDetail);
-		log.info("입력 정보 : {}", productForm);
-		log.info("입력 정보 : {}", tags);
-		log.info("입력 정보 : {}", productPurpose1);
-		log.info("입력 정보 : {}", productPurpose2);
-		log.info("사진들 : {}", upImage1);
-		log.info("사진들 : {}", upImage2);
-		log.info("사진들 : {}", upImage3);
+//		log.info("입력 정보 : {}", product);
+//		log.info("입력 정보 : {}", productDetail);
+//		log.info("입력 정보 : {}", productForm);
+//		log.info("입력 정보 : {}", tags);
+//		log.info("입력 정보 : {}", productPurpose1);
+//		log.info("입력 정보 : {}", productPurpose2);
+//		log.info("사진들 : {}", upImage1);
+//		log.info("사진들 : {}", upImage2);
+//		log.info("사진들 : {}", upImage3);
 		
 		String productPurpose = "";
 		if(productPurpose1 != null && productPurpose2 != null) {
@@ -442,7 +442,7 @@ public class ProductController {
 			}
 		}
 		
-		log.info("파일들 : {}", productFiles);
+//		log.info("파일들 : {}", productFiles);
 		
 		int result = productService.updateProduct(product, productDetail, productForm, 
 												tagList, productFiles);
