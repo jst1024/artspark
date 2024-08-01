@@ -222,7 +222,6 @@ public class MemberController {
 	    try {
 	        upfile.transferTo(new File(savePath + changeName));
 	    } catch (IOException e) {
-	        log.error("파일 업로드 실패", e);
 	        // 예외 처리
 	    }
 	    

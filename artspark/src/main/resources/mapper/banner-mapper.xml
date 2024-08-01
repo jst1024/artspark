@@ -4,7 +4,7 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.artspark.banner.model.dao.BannerMapper">
 
-    <resultMap id="BannerMap" type="map">
+    <resultMap id="BannerMap" type="banner">
         <result column="BAN_NO" property="banNo"/>
         <result column="BAN_NAME" property="banName"/>
         <result column="BAN_COMENT" property="banComent"/>
@@ -26,6 +26,9 @@
         <include refid="selectBanner"/>
         FROM 
         	  BANNER
+       ORDER
+          BY
+          	  BAN_NO
     </select>
     
     <insert id="addBanner" parameterType="banner">
@@ -50,7 +53,7 @@
 	</insert>
 	
     <!-- 배너 상세보기 -->
-    <select id="getBannerByNo" parameterType="_int" resultMap="BannerMap">
+    <select id="selectBannerByNo" parameterType="_int" resultMap="BannerMap">
         <include refid="selectBanner"/>
         FROM 
         	  BANNER

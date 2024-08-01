@@ -17,7 +17,7 @@ public interface BannerService {
 	int deleteBanner(int bannerNo);
 
 	// 배너상세
-	Map<String, Object> getBannerByNo(int bannerNo);
+	Banner selectBannerByNo(int bannerNo);
 
 	// 배너수정
 	int updateBanner(Banner banner);

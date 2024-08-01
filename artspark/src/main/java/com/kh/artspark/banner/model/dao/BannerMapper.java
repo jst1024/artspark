@@ -16,7 +16,7 @@ public interface BannerMapper {
 
 	int deleteBanner(int bannerNo);
 
-	Map<String, Object> getBannerByNo(int bannerNo);
+	Banner selectBannerByNo(int bannerNo);
 
 	int updateBanner(Banner banner);
 

@@ -297,7 +297,6 @@ $(document).ready(function () {
     loadNotices(1);
     loadSuspendedMembers(1);
     loadDeletedProducts(1);
-    loadTrafficStats(1);
     loadQnas(1);
 
     // 페이지네이션 클릭 이벤트

@@ -62,28 +62,64 @@
                 </div>
                 <div class="modal-body">
                     <form id="addBannerForm" enctype="multipart/form-data">
-					    <div class="form-group">
-					        <label for="addBanName">배너 이름</label>
-					        <input type="text" class="form-control" id="addBanName" name="banName" required>
-					    </div>
-					    <div class="form-group">
-					        <label for="addBanComent">배너 설명</label>
-					        <input type="text" class="form-control" id="addBanComent" name="banComent">
-					    </div>
-					    <div class="form-group">
-					        <label for="addBanUrl">배너 URL</label>
-					        <input type="text" class="form-control" id="addBanUrl" name="banUrl" required>
-					    </div>
-					    <div class="form-group">
-					        <label for="addBanImage">배너 이미지</label>
-					        <input type="file" class="form-control" id="addBanImage" name="banImage" required>
-					    </div>
-					    <button type="submit" class="btn btn-primary">저장하기</button>
-					</form>
+                        <div class="form-group">
+                            <label for="addBanName">배너 이름</label>
+                            <input type="text" class="form-control" id="addBanName" name="banName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addBanComent">배너 설명</label>
+                            <input type="text" class="form-control" id="addBanComent" name="banComent">
+                        </div>
+                        <div class="form-group">
+                            <label for="addBanUrl">배너 URL</label>
+                            <input type="text" class="form-control" id="addBanUrl" name="banUrl" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addBanImage">배너 이미지</label>
+                            <input type="file" class="form-control" id="addBanImage" name="banImage" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">저장하기</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 배너 수정 모달 -->
+	<div class="modal fade" id="editBannerModal" tabindex="-1" role="dialog" aria-labelledby="editBannerModalLabel" aria-hidden="true">
+	    <div class="modal-dialog" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h5 class="modal-title" id="editBannerModalLabel">배너 수정</h5>
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	            </div>
+	            <div class="modal-body">
+	                <form id="editBannerForm" enctype="multipart/form-data">
+	                    <input type="hidden" id="editBanNo" name="banNo">
+	                    <div class="form-group">
+	                        <label for="editBanName">배너 이름</label>
+	                        <input type="text" class="form-control" id="editBanName" name="banName" required>
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="editBanComent">배너 설명</label>
+	                        <input type="text" class="form-control" id="editBanComent" name="banComent">
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="editBanUrl">배너 URL</label>
+	                        <input type="text" class="form-control" id="editBanUrl" name="banUrl" required>
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="editBanImage">배너 이미지</label>
+	                        <input type="file" class="form-control" id="editBanImage" name="banImage">
+	                    </div>
+	                    <button type="submit" class="btn btn-primary">수정하기</button>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
     <script src="${path2}/resources/js/jquery.min.js"></script>
     <script src="${path2}/resources/js/bootstrap.min.js"></script>
@@ -111,11 +147,11 @@
                 type: 'GET',
                 data: { banNo: banNo },
                 success: function(response) {
-                    $('#banNo').val(response.banNo);
-                    $('#banName').val(response.banName);
-                    $('#banComent').val(response.banComent);
-                    $('#banUrl').val(response.banUrl);
-                    $('#banImage').val(response.banImage);
+                    $('#editBanNo').val(response.banNo);
+                    $('#editBanName').val(response.banName);
+                    $('#editBanComent').val(response.banComent);
+                    $('#editBanUrl').val(response.banUrl);
+                    $('#editBanImage').val('');
                     $('#editBannerModal').modal('show');
                 },
                 error: function(xhr, status, error) {
@@ -126,13 +162,19 @@
 
         $('#editBannerForm').on('submit', function(event) {
             event.preventDefault();
+            var formData = new FormData(this);
+
             $.ajax({
                 url: '${path2}/updateBanner',
                 type: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                processData: false,
+                contentType: false,
                 success: function(response) {
                     alert('배너가 수정되었습니다.');
                     $('#editBannerModal').modal('hide');
+                    $('.modal-backdrop').remove(); // 검은색 배경 제거
+                    $('body').removeClass('modal-open'); // 모달 오픈 클래스 제거
                     updateBannerRow(response);
                 },
                 error: function(xhr, status, error) {
@@ -153,7 +195,9 @@
                 contentType: false,
                 success: function(response) {
                     alert('배너가 추가되었습니다.');
-                    $('#addBannerModal').modal('hide');
+                    $('#addBannerModal').modal('hide'); // 모달 닫기
+                    $('.modal-backdrop').remove(); // 검은색 배경 제거
+                    $('body').removeClass('modal-open'); // 모달 오픈 클래스 제거
                     updateBannerRow(response);
                 },
                 error: function(xhr, status, error) {
@@ -162,14 +206,26 @@
             });
         });
 
-
         function updateBannerRow(banner) {
             var row = $('#bannerRow-' + banner.banNo);
-            row.find('td:eq(1)').text(banner.banName);
-            row.find('td:eq(2) a').attr('href', banner.banUrl).text('링크');
-            row.find('td:eq(3)').text(banner.banStatus);
+            if (row.length === 0) {
+                // 새로운 배너 행 추가
+                var newRow = '<tr id="bannerRow-' + banner.banNo + '">'
+                    + '<td>' + banner.banNo + '</td>'
+                    + '<td>' + banner.banName + '</td>'
+                    + '<td><a href="' + banner.banUrl + '">링크</a></td>'
+                    + '<td>'
+                    + '<button class="btn btn-danger btn-sm" onclick="deleteBanner(' + banner.banNo + ')">삭제</button>'
+                    + '<button class="btn btn-warning btn-sm" onclick="editBanner(' + banner.banNo + ')">수정</button>'
+                    + '</td>'
+                    + '</tr>';
+                $('#bannerTableBody').append(newRow);
+            } else {
+                // 기존 배너 행 업데이트
+                row.find('td:eq(1)').text(banner.banName);
+                row.find('td:eq(2) a').attr('href', banner.banUrl).text('링크');
+            }
         }
     </script>
 </body>
 </html>
-

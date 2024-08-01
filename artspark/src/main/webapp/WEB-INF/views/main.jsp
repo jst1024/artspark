@@ -109,7 +109,7 @@
             <div class="carousel-inner">
                 <c:forEach var="banner" items="${banners}" varStatus="status">
                     <div class="carousel-item ${status.first ? 'active' : ''}">
-                        <img src="${path2}/resources/images/${banner.banImage}" class="d-block w-100" alt="${banner.banName}">
+                        <img src="${path2}/${banner.banImage}" class="d-block w-100" alt="${banner.banName}">
                     </div>
                 </c:forEach>
             </div>
