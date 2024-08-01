@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.kh.artspark.banner.model.vo.Banner;
+
 @Mapper
 public interface BannerMapper {
 
@@ -14,6 +16,8 @@ public interface BannerMapper {
 
 	Map<String, Object> getBannerByNo(int bannerNo);
 
-	int updateBannerStatus(int bannerNo, String status);
+	int updateBanner(Banner banner);
+
+
 
 }

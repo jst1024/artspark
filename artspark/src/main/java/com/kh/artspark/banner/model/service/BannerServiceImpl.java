@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.kh.artspark.banner.model.dao.BannerMapper;
+import com.kh.artspark.banner.model.vo.Banner;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +32,9 @@ public class BannerServiceImpl implements BannerService {
 	}
 
 	@Override
-	public int updateBannerStatus(int bannerNo, String status) {
-		return bannerMapper.updateBannerStatus(bannerNo, status);
+	public int updateBanner(Banner banner) {
+		return bannerMapper.updateBanner(banner);
 	}
+
+
 }

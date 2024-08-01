@@ -17,6 +17,7 @@
             width: 50px;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -35,7 +36,7 @@
                     </thead>
                     <tbody>
                         <c:forEach var="banner" items="${bannerList}">
-                            <tr>
+                            <tr id="banner-${banner.BAN_NO}">
                                 <td>${banner.BAN_NO}</td>
                                 <td><img src="${path2}/resources/images/${banner.BAN_IMAGE}" alt="배너 이미지"></td>
                                 <td><a href="${banner.BAN_URL}">링크</a></td>
@@ -61,18 +62,42 @@
     </div>
 
     <script>
-        function deleteBanner(bannerId) {
+        function deleteBanner(bannerNo) {
             if (confirm('정말 삭제하시겠습니까?')) {
-                window.location.href = '${path2}/deleteBanner?bannerId=' + bannerId;
+                $.ajax({
+                    url: '${path2}/deleteBanner',
+                    type: 'GET',
+                    data: { bannerNo: bannerNo },
+                    success: function(result) {
+                        if (result > 0) {
+                            $('#banner-' + bannerNo).remove();
+                            console.log('배너 삭제 성공: 배너 번호 ' + bannerNo);
+                        } else {
+                            console.error('배너 삭제 실패: 배너 번호 ' + bannerNo);
+                        }
+                    }
+                });
             }
         }
 
-        function editBanner(bannerId) {
-            window.location.href = '${path2}/editBanner?bannerId=' + bannerId;
+        function editBanner(bannerNo) {
+            window.location.href = '${path2}/editBanner?bannerNo=' + bannerNo;
         }
 
-        function toggleBannerStatus(bannerId, status) {
-            window.location.href = '${path2}/toggleBannerStatus?bannerId=' + bannerId + '&status=' + status;
+        function toggleBannerStatus(bannerNo, status) {
+            $.ajax({
+                url: '${path2}/toggleBannerStatus',
+                type: 'GET',
+                data: { bannerNo: bannerNo, status: status },
+                success: function(result) {
+                    if (result > 0) {
+                        $('#banner-' + bannerNo + ' td:nth-child(4)').text(status);
+                        console.log('배너 상태 업데이트 성공: 배너 번호 ' + bannerNo);
+                    } else {
+                        console.error('배너 상태 업데이트 실패: 배너 번호 ' + bannerNo);
+                    }
+                }
+            });
         }
     </script>
 </body>

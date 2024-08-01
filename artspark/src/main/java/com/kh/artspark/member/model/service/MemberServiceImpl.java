@@ -154,6 +154,11 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.getPopularWriters();
 	}
 
+	@Override
+	public List<Member> memberList() {
+		return null;
+	}
+
 
 
 

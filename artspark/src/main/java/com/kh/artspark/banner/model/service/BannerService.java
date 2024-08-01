@@ -3,6 +3,8 @@ package com.kh.artspark.banner.model.service;
 import java.util.List;
 import java.util.Map;
 
+import com.kh.artspark.banner.model.vo.Banner;
+
 public interface BannerService {
 
 	// 배너리스트
@@ -15,6 +17,7 @@ public interface BannerService {
 	Map<String, Object> getBannerByNo(int bannerNo);
 
 	// 배너수정
-	int updateBannerStatus(int bannerNo, String status);
+	int updateBanner(Banner banner);
+	
 
 }

@@ -119,14 +119,15 @@
                  <c:if test="${ qna.answerNo  eq '' }">
 
                  </c:if>
-                <c:if test="${ qna.answerNo != '' }">
-                        <tr class="answer-Detail ${qna.secret == 'Y' ? 'secret' : '' }">
-                            <td>${qna.answerNo}</td>
-                            <td>↳ [답변] ${qna.answerTitle}</td>
-                            <td>${qna.answerMemId}</td>
-                            <td>${qna.answerDate}</td>
-                        </tr>
-                </c:if>
+                	<c:if test="${ qna.answerNo != '' }">
+                              <tr class="answer-Detail ${qna.secret == 'Y' ? 'secret' : '' }">
+                                  <td></td>
+                                  <input type="hidden" value="${qna.answerNo}" />
+                                  <td>↳ [답변] ${qna.answerTitle}</td>
+                                  <td>${qna.answerMemId}</td>
+                                  <td>${qna.answerDate}</td>
+                              </tr>
+                      </c:if>
             </c:forEach>
         </c:otherwise>
                 </c:choose>
@@ -162,7 +163,7 @@
         
         $(() => {
             $('.answer-Detail').click(e => {
-                const answerNo = $(e.currentTarget).children().eq(0).text(); 
+               	const answerNo = $(e.currentTarget).find('input[type="hidden"]').val(); 
                 const secret = $(e.currentTarget).hasClass('secret'); 
                 const currentUserId = '${sessionScope.loginUser.memId}';
                 const isAdmin = currentUserId === 'admin';

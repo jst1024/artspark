@@ -14,7 +14,7 @@ import com.kh.artspark.member.model.vo.OrderBuyOption;
 public interface MemberService {
 	
 	// 전체회원 조회
-	List<Member> memberList(Map<String, Integer> map);
+	List<Member> memberList();
 	
 	// 로그인(SELECT)
 	Member login(Member member);
@@ -83,6 +83,8 @@ public interface MemberService {
 
 	// 인기작가 6명
 	List<Map<String, Object>> getPopularWriters();
+
+	List<Member> memberList(Map<String, Integer> map);
 
 
 

@@ -53,11 +53,14 @@
     <div class="container-fluid" style="max-width: 1920px;">
         <div class="container-main">
             <h2 class="mt-5">답변 글 상세보기</h2>
+            <input type="hidden" id="answerNo" value="${answer.answerNo}">
             <table class="table table-bordered">
                 <tbody>
                     <tr>
                         <th scope="row">답변 글 번호</th>
                         <td>${answer.answerNo}</td>
+                       <th scope="row">문의 글 번호</th>
+                        <td>${answer.qnaNo}</td>    
                         <th scope="row">작성일</th>
                         <td>${answer.answerDate}</td>
                         <th scope="row">작성자</th>

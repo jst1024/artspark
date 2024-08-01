@@ -6,23 +6,55 @@
 	
 	<!-- 배너목록조회 -->
 	<select id="getAllBanners">
-	
+		SELECT 
+            	BAN_NO, 
+            	BAN_NAME, 
+            	BAN_COMENT, 
+            	BAN_URL, 
+            	BAN_IMAGE, 
+          CASE 
+          WHEN 
+          		BAN_STATUS = 'Y' THEN '활성' ELSE '비활성' END AS BAN_STATUS
+          FROM 
+        		BANNER
 	</select>
 	
 	<!-- 배너 상세보기 -->
 	<select id="getBannerByNo">
-	
+		SELECT 
+            	BAN_NO, 
+            	BAN_NAME, 
+            	BAN_COMENT, 
+            	BAN_URL, 
+            	BAN_IMAGE, 
+            	BAN_STATUS
+          FROM 
+          		BANNER
+         WHERE 
+         		BAN_NO = #{banNo}
 	</select>
 	
 	<!-- 배너 수정 -->
-	<update id="updateBannerStatus">
-	
-	
-	</update>
-	
+    <update id="updateBanner">
+        UPDATE 
+            	BANNER
+           SET 
+            	BAN_NAME = #{banName},
+	            BAN_COMENT = #{banComent},
+	            BAN_URL = #{banUrl},
+	            BAN_IMAGE = #{banImage},
+	            BAN_STATUS = #{banStatus}
+         WHERE 
+            	BAN_NO = #{banNo}
+    </update>
+    
 	<!-- 배너 삭제 -->
 	<delete id="deleteBanner">
-	
+		DELETE 
+		  FROM 
+		  		BANNER 
+		 WHERE 
+		 		BAN_NO = #{banNo}
 	</delete>
 	
 </mapper>
