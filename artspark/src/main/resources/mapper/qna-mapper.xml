@@ -325,6 +325,8 @@
 		  <if test="condition == 'content'">
 		   		QNA_CONTENT LIKE '%' || #{keyword} || '%'
 		  </if>
+		   AND
+		  		STATUS = 'Y'
 	</select>
 	
 	<!-- 관리자 문의게시판 검색 결과 -->
@@ -360,6 +362,8 @@
 				Q.QNA_CONTENT LIKE '%' || #{keyword} || '%'
 			</otherwise>
     	</choose>
+    	   AND
+    	   		Q.STATUS = 'Y'
      	 ORDER
      	    BY
      			Q.QNA_NO DESC

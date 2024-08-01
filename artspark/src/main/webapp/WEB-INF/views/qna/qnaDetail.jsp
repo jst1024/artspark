@@ -118,6 +118,7 @@
                 	<c:when test="${sessionScop.loginUser != null || sessionScope.loginUser.memId eq 'admin' }">
 	                	<a class="btn btn-danger" onclick="postSubmit(this.innerHTML);">삭제하기</a>
 	                	<button type="button" class="btn btn-success" onclick="location.href='answerInsert?qnaNo=${qna.qnaNo}'">답변하기</button>
+	                	<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
                 	</c:when>
                 	<c:otherwise>
                			<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>

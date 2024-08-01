@@ -156,9 +156,6 @@
                     location.href = 'qnaDetail?qnaNo=' + qnaNo; 
                 }
             });
-            $('.qna-Detail').click(e => {
-            	 location.href = 'qnaDetail?qnaNo=' + qnaNo;
-            });
         });
         
         $(() => {
