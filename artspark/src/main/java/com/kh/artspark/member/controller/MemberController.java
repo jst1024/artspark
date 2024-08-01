@@ -64,7 +64,7 @@ public class MemberController {
 		
 		List<Member> memberList = memberService.memberList();
 		for(Member m : memberList) {
-			log.info("회원정보: {} ", m.toString());
+
 		}
 		
 	}
@@ -81,9 +81,6 @@ public class MemberController {
 	public ModelAndView login(Member member, ModelAndView mv, HttpSession session) {
 	    Member loginUser = memberService.login(member);
 	    if(loginUser !=null && bcryptPasswordEncoder.matches(member.getMemPwd(),loginUser.getMemPwd())){
-	    //if (loginUser != null && member.getMemPwd().equals(loginUser.getMemPwd())) {
-//	    	log.info("아이디: {}",loginUser.getMemId());
-//	    	log.info("비밀번호: {}",loginUser.getMemPwd());
 	        if ("D".equals(loginUser.getMemCategory())) {
 	            // 블랙리스트 사용자
 	            mv.addObject("blacklistUser", true);
@@ -110,7 +107,7 @@ public class MemberController {
 	@PostMapping("update")
 	public String update(Member member, HttpSession session, Model model) {
 		
-		log.info("수정 요청 멤버:{}",member);
+
 		// 1 / 0
 		if(memberService.update(member) > 0) {
 			session.setAttribute("loginUser",memberService.login(member));
@@ -141,8 +138,7 @@ public class MemberController {
 	            Artist artist = memberService.getArtist(loginUser.getMemId());
 	            model.addAttribute("loginUser", loginUser);
 	            model.addAttribute("artist", artist);
-	            log.info("artist : {}", artist);
-	            log.info("Updated loginUser : {}", loginUser);
+
 	        } else {
 	            // 업데이트 실패 처리
 	            model.addAttribute("errorMsg", "판매자로 변경하는데 실패했습니다.");
@@ -182,7 +178,6 @@ public class MemberController {
 	            artist.setArtistChangeName(newFileName);
 	            artist.setArtistPath("/resources/uploadFiles/" + newFileName);
 	            
-	            log.info("artist2: {}", artist);
 	            
 	            // model에 artist 추가 (JSP 페이지로 전달)
 	            model.addAttribute("artist", artist);
@@ -244,7 +239,7 @@ public class MemberController {
 	@PostMapping("join")
 	public String join(Member member, Model model) {
 		
-		log.info("회원가입 객체 : {}", member);
+
 		String encPwd = bcryptPasswordEncoder.encode(member.getMemPwd());
 		member.setMemPwd(encPwd);;
 		member.setMemCategory("A");  //회원가입하면 일반회원 카테고리를 가지고 가입한다.
@@ -295,10 +290,10 @@ public class MemberController {
 	    params.put("memEmail", memEmail);
 	    String foundId = memberService.findId(params);
         if (foundId != null) {
-        	log.info("아이디 찾기 : {}",foundId);
+
             model.addAttribute("foundId", foundId);
         } else {
-        	log.info("오류 : {}",foundId);
+
             model.addAttribute("errorMessage", "찾는 아이디가 없습니다.");
         }
         
@@ -422,7 +417,7 @@ public class MemberController {
 	    
 	    model.addAttribute("orderBuyOptions", orderBuyOptions);
 	    
-	    log.info("주문 내역: {}", orderBuyOptions);
+
 	    
 	    return "member/orderManage";  // 주문 내역 페이지로 이동
 	}
@@ -456,7 +451,7 @@ public class MemberController {
 			map.put("loginId", loginId);
 			map.put("productNo", productNo);
 		
-			log.info("성공 :{}",productNo);
+
 			if(memberService.deleteJjim(map) > 0) {
 			
 				return ResponseEntity.ok("성공");
@@ -486,9 +481,6 @@ public class MemberController {
 	    List<ProductQna> receivedProductQna = qnaService.getReceivedProductQna(loginUser.getMemId());
 	    model.addAttribute("receivedProductQna", receivedProductQna);
 	    
-	    log.info("1 : {}", myQna);
-	    log.info("2 : {}", myProductQna);
-	    log.info("3 : {}", receivedProductQna);
 
 	    return "member/myPage";
 	}
