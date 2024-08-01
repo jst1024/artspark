@@ -6,10 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kh.artspark.banner.model.service.BannerService;
 import com.kh.artspark.common.model.vo.PageInfo;
 import com.kh.artspark.member.model.service.MemberService;
 import com.kh.artspark.member.model.vo.Member;
@@ -43,6 +43,7 @@ public class AdminController {
     private final MemberService memberService;
     private final RequestService requestService;
     private final QnaService qnaService;
+    private final BannerService bannerService;
     private final BCryptPasswordEncoder bcryptPasswordEncoder;
 
     @GetMapping
@@ -61,7 +62,10 @@ public class AdminController {
     }
 
     @GetMapping("/bannerSettings")
-    public String bannerSettings() {
+    public String bannerList(Model model) {
+        List<Map<String, Object>> bannerList = bannerService.getAllBanners();
+        model.addAttribute("bannerList", bannerList);
+        log.info("배너리스트 {}", bannerList);
         return "admin/bannerSettings";
     }
 
@@ -493,4 +497,5 @@ public class AdminController {
         }
         return response;
     }
+    
 }

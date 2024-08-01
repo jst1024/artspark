@@ -36,7 +36,7 @@
                             <li class="nav-item"><a class="nav-link" href="${path2 }/requestlist">의뢰게시판</a></li>
                         </ul>
                         
-						<form class="form-inline my-2 my-lg-0" action="${path2 }/product/search" method="get">
+						<form class="form-inline my-2 my-lg-0" action="${path2 }/product" method="get">
 	                		<div class="input-group">
 		                		<c:if test="${ empty keyword }">
 			                    	<input type="text" class="form-control" name="keyword" placeholder="검색어 입력">

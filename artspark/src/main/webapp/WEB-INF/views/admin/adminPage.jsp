@@ -3,7 +3,7 @@
 <c:set var="path2" value="${pageContext.servletContext.contextPath}"/>
 
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
     <jsp:include page="../common/head.jsp"/>
     <style>
