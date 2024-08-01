@@ -74,7 +74,7 @@
 	            REQ_CONTENT LIKE '%' || #{keyword} || '%'
 	    </if>
 	       AND 
-	       		STATUS = 'Y' 
+	    		STATUS = 'Y'
 	</select>
 	
 		<!-- 검색 결과-->
@@ -99,8 +99,8 @@
 				REQ_CONTENT LIKE '%' || #{keyword} || '%'
 			</otherwise>
     	</choose>
-    	   AND
-    			STATUS = 'Y'	
+  		   AND 
+	    		STATUS = 'Y'
      	 ORDER
      	    BY
      			REQ_NO DESC
