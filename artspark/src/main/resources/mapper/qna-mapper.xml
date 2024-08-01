@@ -330,24 +330,39 @@
 	<!-- 관리자 문의게시판 검색 결과 -->
 	<select id="qnaFindConditionAndKeyword" parameterType="hashmap" resultType="qna">
 	
-	<include refid="selectQna"/>
+        SELECT
+		        Q.QNA_NO qnaNo,
+		        Q.QNA_TITLE qnaTitle,
+		        Q.QNA_CONTENT qnaContent,
+		        Q.QNA_DATE qnaDate,
+		        Q.MEM_ID memId,
+		        Q.SECRET secret,
+		        Q.QNA_CATEGORY qnaCategory,
+		        A.ANSWER_NO answerNo,
+				A.ANSWER_TITLE answerTitle, 
+	 			A.ANSWER_CONTENT answerContent,
+				A.ANSWER_DATE answerDate,
+				A.MEM_ID answerMemId
 	      FROM
-	      		QNA
+	      		QNA Q
+    	  LEFT
+    	  JOIN
+    	  		ANSWER A ON Q.QNA_NO = A.QNA_NO
 	     WHERE
 	   	<choose>
  		   	<when test="condition == 'writer'">
-	   			MEM_ID LIKE '%' || #{keyword} || '%'
+	   			Q.MEM_ID LIKE '%' || #{keyword} || '%'
 	   		</when>
 	   		<when test="condition == 'title'">
-	   			QNA_TITLE LIKE '%' || #{keyword} || '%'
+	   			Q.QNA_TITLE LIKE '%' || #{keyword} || '%'
 	   		</when>
 			<otherwise>
-				QNA_CONTENT LIKE '%' || #{keyword} || '%'
+				Q.QNA_CONTENT LIKE '%' || #{keyword} || '%'
 			</otherwise>
     	</choose>
      	 ORDER
      	    BY
-     			QNA_NO DESC
+     			Q.QNA_NO DESC
 	</select>
 	
 	<!-- 관리자에게 문의 -->
