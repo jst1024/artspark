@@ -132,7 +132,7 @@ public class QnaServiceImpl implements QnaService {
         int result2 = 1;
         if (imgFile != null && imgFile.getOriginName() != null && !imgFile.getOriginName().isEmpty()) {
             imgFile.setBoardType("답변");
-            imgFile.setBoardNo(productAnswer.getAnswerNo());  // 여기서 boardNo를 answerNo로 설정
+            imgFile.setBoardNo(productAnswer.getAnswerNo());  
             result2 = qnaMapper.insertImgFileForProductAnswer(imgFile);
         }
         return result1 * result2;

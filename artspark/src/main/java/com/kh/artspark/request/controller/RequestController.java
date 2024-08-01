@@ -257,6 +257,11 @@ public class RequestController {
 	    }
 	}
 	
+	@GetMapping("reqReply")
+	public Request requestAndReply(int reqNo) {
+		return requestService.requestAndReply(reqNo);
+	}
+	
 	@ResponseBody
 	@GetMapping(value="reply", produces="application/json; charset=UTF-8")
 	public String selectReply(int reqNo) {
@@ -267,11 +272,6 @@ public class RequestController {
 	@PostMapping("reply")
 	public String saveReply(Reply reply) {
 		return requestService.insertReply(reply) > 0 ? "success" : "fail";
-	}
-	
-	@GetMapping("reqReply")
-	public Request requestAndReply(int reqNo) {
-		return requestService.requestAndReply(reqNo);
 	}
 	
 	@ResponseBody
