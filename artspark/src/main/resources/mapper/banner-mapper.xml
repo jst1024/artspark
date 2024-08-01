@@ -14,41 +14,70 @@
     
     <sql id="selectBanner">
         SELECT
-            BAN_NO,
-            BAN_NAME,
-            BAN_COMENT,
-            BAN_URL,
-            BAN_IMAGE
+            	BAN_NO,
+	            BAN_NAME,
+	            BAN_COMENT,
+	            BAN_URL,
+	            BAN_IMAGE
     </sql>
     
     <!-- 배너목록조회 -->
     <select id="getAllBanners" resultMap="BannerMap">
         <include refid="selectBanner"/>
-        FROM BANNER
+        FROM 
+        	  BANNER
     </select>
     
+    <insert id="addBanner" parameterType="banner">
+		INSERT
+	      INTO
+	      		BANNER
+	      		(
+	      		BAN_NO,
+	      		BAN_NAME,
+	      		BAN_COMENT,
+	      		BAN_URL,
+	      		BAN_IMAGE
+	      		)
+      	VALUES
+      			(
+      			BANNER_SEQ.NEXTVAL,
+      			#{banName},
+      			#{banComent},
+      			#{banUrl},
+      			#{banImage}
+      			)
+	</insert>
+	
     <!-- 배너 상세보기 -->
     <select id="getBannerByNo" parameterType="_int" resultMap="BannerMap">
         <include refid="selectBanner"/>
-        FROM BANNER
-        WHERE BAN_NO = #{banNo}
+        FROM 
+        	  BANNER
+       WHERE 
+        	  BAN_NO = #{banNo}
     </select>
     
     <!-- 배너 수정 -->
     <update id="updateBanner" parameterType="map">
-        UPDATE BANNER
-        SET 
-            BAN_NAME = #{banName},
-            BAN_COMENT = #{banComent},
-            BAN_URL = #{banUrl},
-            BAN_IMAGE = #{banImage}
-        WHERE BAN_NO = #{banNo}
+      UPDATE 
+        	  BANNER
+         SET 
+              BAN_NAME = #{banName},
+              BAN_COMENT = #{banComent},
+              BAN_URL = #{banUrl},
+              BAN_IMAGE = #{banImage}
+       WHERE 
+        	  BAN_NO = #{banNo}
     </update>
     
     <!-- 배너 삭제 -->
     <delete id="deleteBanner" parameterType="_int">
-        DELETE FROM BANNER 
-        WHERE BAN_NO = #{banNo}
+      DELETE 
+        FROM 
+          	  BANNER 
+       WHERE 
+       		  BAN_NO = #{banNo}
     </delete>
 
 </mapper>

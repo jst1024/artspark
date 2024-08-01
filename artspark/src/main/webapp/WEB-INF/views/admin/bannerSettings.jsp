@@ -7,8 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>배너 설정</title>
-    <link rel="stylesheet" href="${path2}/resources/css/bootstrap.min.css">
+    <jsp:include page="../common/head.jsp"/>
     <style>
         .table-container {
             margin-top: 20px;
@@ -29,17 +28,15 @@
                             <th>배너번호</th>
                             <th>배너이름</th>
                             <th>링크</th>
-                            <th>상태</th>
                             <th>관리</th>
                         </tr>
                     </thead>
                     <tbody id="bannerTableBody">
                         <c:forEach var="banner" items="${bannerList}">
-                            <tr>
+                            <tr id="bannerRow-${banner.banNo}">
                                 <td>${banner.banNo}</td>
                                 <td>${banner.banName}</td>
                                 <td><a href="${banner.banUrl}">링크</a></td>
-                                <td>${banner.banStatus}</td>
                                 <td>
                                     <button class="btn btn-danger btn-sm" onclick="deleteBanner(${banner.banNo})">삭제</button>
                                     <button class="btn btn-warning btn-sm" onclick="editBanner(${banner.banNo})">수정</button>
@@ -50,36 +47,36 @@
                 </table>
             </div>
         </div>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addBannerModal">배너 추가</button>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="editBannerModal" tabindex="-1" role="dialog" aria-labelledby="editBannerModalLabel" aria-hidden="true">
+    <!-- 배너 추가 모달 -->
+    <div class="modal fade" id="addBannerModal" tabindex="-1" role="dialog" aria-labelledby="addBannerModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editBannerModalLabel">배너 수정</h5>
+                    <h5 class="modal-title" id="addBannerModalLabel">배너 추가</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="editBannerForm">
-                        <input type="hidden" id="banNo" name="banNo">
+                    <form id="addBannerForm">
                         <div class="form-group">
-                            <label for="banName">배너 이름</label>
-                            <input type="text" class="form-control" id="banName" name="banName">
+                            <label for="addBanName">배너 이름</label>
+                            <input type="text" class="form-control" id="addBanName" name="banName" required>
                         </div>
                         <div class="form-group">
-                            <label for="banComent">배너 설명</label>
-                            <input type="text" class="form-control" id="banComent" name="banComent">
+                            <label for="addBanComent">배너 설명</label>
+                            <input type="text" class="form-control" id="addBanComent" name="banComent">
                         </div>
                         <div class="form-group">
-                            <label for="banUrl">배너 URL</label>
-                            <input type="text" class="form-control" id="banUrl" name="banUrl">
+                            <label for="addBanUrl">배너 URL</label>
+                            <input type="text" class="form-control" id="addBanUrl" name="banUrl" required>
                         </div>
                         <div class="form-group">
-                            <label for="banImage">배너 이미지</label>
-                            <input type="text" class="form-control" id="banImage" name="banImage">
+                            <label for="addBanImage">배너 이미지</label>
+                            <input type="text" class="form-control" id="addBanImage" name="banImage" required>
                         </div>
                         <button type="submit" class="btn btn-primary">저장하기</button>
                     </form>
@@ -99,7 +96,7 @@
                     data: { banNo: banNo },
                     success: function(response) {
                         alert('배너가 삭제되었습니다.');
-                        location.reload();
+                        $('#bannerRow-' + banNo).remove();
                     },
                     error: function(xhr, status, error) {
                         alert('배너 삭제에 실패했습니다.');
@@ -136,7 +133,7 @@
                 success: function(response) {
                     alert('배너가 수정되었습니다.');
                     $('#editBannerModal').modal('hide');
-                    loadBannerList();  // 배너 목록을 다시 불러옴
+                    updateBannerRow(response);
                 },
                 error: function(xhr, status, error) {
                     alert('배너 수정에 실패했습니다.');
@@ -144,19 +141,30 @@
             });
         });
 
-        function loadBannerList() {
+        $('#addBannerForm').on('submit', function(event) {
+            event.preventDefault();
             $.ajax({
-                url: '${path2}/admin/bannerSettings',
-                type: 'GET',
+                url: '${path2}/addBanner',
+                type: 'POST',
+                data: $(this).serialize(),
                 success: function(response) {
-                    var newBannerList = $(response).find('#bannerTableBody').html();
-                    $('#bannerTableBody').html(newBannerList);
+                    alert('배너가 추가되었습니다.');
+                    $('#addBannerModal').modal('hide');
+                    location.reload(); // 추가 후 페이지 새로고침
                 },
                 error: function(xhr, status, error) {
-                    console.error('배너 목록을 불러오는데 실패했습니다:', error);
+                    alert('배너 추가에 실패했습니다.');
                 }
             });
+        });
+
+        function updateBannerRow(banner) {
+            var row = $('#bannerRow-' + banner.banNo);
+            row.find('td:eq(1)').text(banner.banName);
+            row.find('td:eq(2) a').attr('href', banner.banUrl).text('링크');
+            row.find('td:eq(3)').text(banner.banStatus);
         }
     </script>
 </body>
 </html>
+
