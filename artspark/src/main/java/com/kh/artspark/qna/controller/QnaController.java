@@ -148,6 +148,7 @@ public class QnaController {
 		
 		return changeName;
 	}
+	
 	@GetMapping("qnaDetail")
 	public ModelAndView qnaFindById(int qnaNo, ModelAndView mv) {
 		Qna qna = qnaService.qnaFindById(qnaNo);
@@ -161,6 +162,7 @@ public class QnaController {
 		}
 		return mv;
 	}
+	
 	@PostMapping("deleteQna")
 	public String deleteQna(int qnaNo, String filePath, HttpSession session, Model model) {
 		if (filePath != null && !"".equals(filePath)) {
