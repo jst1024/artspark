@@ -67,7 +67,7 @@
 <body>
     <jsp:include page="../common/header.jsp" />
     
-    <form action="${pageContext.request.contextPath}/artistQna" method="post" enctype="multipart/form-data" onsubmit="return submitContents(this)">
+    <form action="${pageContext.request.contextPath}/artistQna" method="post" onsubmit="return submitContents(this)">
         <div class="container container-custom mt-5">
             <div class="row">
                 <div class="col-md-6">
@@ -75,22 +75,14 @@
                         <label for="title">제목</label>
                         <input type="hidden" value="${sessionScope.loginUser.memId}" name="memId">
                         <input type="hidden" value="${productNo}" name="productNo">
-					    <input type="hidden" value="상품문의" name="qnaCategory" >
-					    <input type="hidden" value="Y" name="status" >                        
-                        <input type="text" class="form-control" name="qnaTitle" placeholder="내용을 입력해주세요">
+                        <input type="hidden" value="상품문의" name="qnaCategory" >
+                        <input type="hidden" value="Y" name="status" >                        
+                        <input type="text" class="form-control" name="qnaTitle" placeholder="제목을 입력해주세요">
                     </div>
 
                     <div class="form-group col-md-12">
                         <label for="editorTxt">내용</label>
                         <textarea class="form-control" id="editorTxt" name="qnaContent" rows="15"></textarea>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <label for="file">첨부파일</label>
-                        <div class="file-input-wrapper">
-                            <input type="file" id="file" name="upfile" onchange="updateFileName(this)">
-                        </div>
-                        <small class="form-text text-muted">업로드 가능 파일 (pdf 등) 최대 업로드 파일 크기 (50MB)</small>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -118,7 +110,7 @@
 
     <script>
         function backpage() {
-            location.href = "productDetail?productNo=${productNo}";
+            location.href = "${pageContext.request.contextPath}/product/${productNo}";
         }
     </script>
 
@@ -145,14 +137,6 @@
             }
         }
     </script>        
-            
-    <script>
-        // 파일 선택 시 파일명을 업데이트
-        function updateFileName(input) {
-            var fileName = input.files[0].name;
-            document.getElementById('file-name').textContent = fileName;
-        }
-    </script>
 
     <jsp:include page="../common/footer.jsp" />
 </body>

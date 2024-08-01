@@ -253,8 +253,11 @@
 	            FILE_PATH = #{imgFilePath}
 	     WHERE  BOARD_NO = #{boardNo}
 	</update>	
-	<!-- 댓글 목록 -->
-	   <select id="selectReply" resultType="reply" parameterType="_int">
+	
+	
+	
+		<!-- 댓글 목록 -->
+   <select id="selectReply" resultType="reply" parameterType="_int">
 	   SELECT
 	   		   REPLY_NO replyNo,
 	   		   REPLY_CONTENT replyContent,
@@ -288,31 +291,6 @@
 			    #{reqNo}
 			    )
 	</insert>
-	
-   	 <select id="reqeustAndReply" parameterType="_int" resultMap="requestResultSet">
-       SELECT
-		        REQ.REQ_NO,
-		        REQ.REQ_PURPOSE,
-		        REQ.REQ_TITLE,
-		        REQ.REQ_CATEGORY,
-		        REQ.REQ_CONTENT,
-		        REQ.REQ_DATE,
-		        REQ.REQ_COUNT,
-				REQ.MEM_ID,
-		        REP.REPLY_NO,
-		        REP.REPLY_CONTENT,
-		        REP.REPLY_DATE,
-		        REP.REQ_NO,
-		        REP.REPLY_DATE,
-		        REP.MEM_ID
-   	     FROM
-                REQUEST REQ
-         LEFT
-         JOIN 
-                REPLY REP ON REQ.REQ_NO = REP.REQ_NO
-        WHERE
-                REQ.REQ_NO = #{reqNo}
-     </select>
      
 	<!-- 댓글 삭제 -->
     <delete id="deleteReply" parameterType="int">

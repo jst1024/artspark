@@ -61,7 +61,7 @@
     <jsp:include page="../common/header.jsp" />
     <div class="container mt-5">
         <h2>상품답변 글 등록</h2>
-        <form action="productInsertAnswer" method="post" enctype="multipart/form-data" onsubmit="return submitContents(this)">
+        <form action="productInsertAnswer" method="post" onsubmit="return submitContents(this)">
             <input type="hidden" name="qnaNo" value="${qnaNo}">
             <div class="form-group">
                 <label for="title">제목</label>
@@ -71,15 +71,6 @@
             <div class="form-group">
                 <label for="editorTxt">내용</label>
                 <textarea class="form-control" id="editorTxt" name="answerContent" rows="10"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="file">첨부파일</label>
-                <div class="file-input-wrapper">
-                    <label class="btn btn-secondary" for="file">파일 선택</label>
-                    <input type="file" id="file" name="upfile" onchange="updateFileName(this)">
-                    <span id="file-name" class="file-name">선택된 파일 없음</span>
-                </div>
-                <small class="form-text text-muted">업로드 가능 파일 (pdf 등) 최대 업로드 파일 크기 (50MB)</small>
             </div>
             <button type="submit" class="btn btn-primary" style="float: right;">등록하기</button>
         </form>
@@ -103,19 +94,11 @@
                 alert("제목을 입력해주세요.");
                 return false;
             }
-
             try {
                 e.form.submit();
             } catch (e) {
                 console.log(e);
             }
-        }
-    </script>
-
-    <script>
-        function updateFileName(input) {
-            var fileName = input.files[0].name;
-            document.getElementById('file-name').textContent = fileName;
         }
     </script>
 

@@ -485,10 +485,6 @@ public class MemberController {
 	    // 내 상품에 등록된 문의 목록 조회
 	    List<ProductQna> receivedProductQna = qnaService.getReceivedProductQna(loginUser.getMemId());
 	    model.addAttribute("receivedProductQna", receivedProductQna);
-	    
-	    log.info("1 : {}", myQna);
-	    log.info("2 : {}", myProductQna);
-	    log.info("3 : {}", receivedProductQna);
 
 	    return "member/myPage";
 	}

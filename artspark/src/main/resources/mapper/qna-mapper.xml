@@ -73,14 +73,12 @@
 	    <result property="memId" column="memId"/>
 	    <result property="status" column="status"/>
 	    <result property="qnaCategory" column="qnaCategory"/>
-	    <result property="qnaFilePath" column="qnaFilePath"/>
 	    <association property="productAnswer" javaType="com.kh.artspark.qna.model.vo.ProductAnswer">
 	        <id property="answerNo" column="answerNo"/>
 	        <result property="answerTitle" column="answerTitle"/>
 	        <result property="answerContent" column="answerContent"/>
 	        <result property="answerDate" column="answerDate"/>
 	        <result property="memId" column="answerMemId"/>
-	        <result property="answerFilePath" column="answerFilePath"/>
 	    </association>
 	</resultMap>
 	
@@ -135,34 +133,6 @@
 					)
 	WHERE RNUM BETWEEN #{startValue} AND #{endValue}
     </select>
-	
-	<!-- 판매자가 자신의 마이페이지에서 자신의 상품에 등록된 문의를 전체조회 -->
-	<select id="qnaForArtist" parameterType="string" resultType="qna">
-    	SELECT
-      DISTINCT
-        		Q.QNA_NO qnaNo,
-        		Q.QNA_TITLE qnaTitle,
-        		Q.QNA_CONTENT qnaContent,
-        		Q.QNA_DATE qnaDate,
-        		Q.MEM_ID memId,
-        		Q.SECRET secret,
-        		Q.QNA_CATEGORY qnaCategory
-    	  FROM
-        		QNA Q
-    	  JOIN
-        	    PRODUCT P ON Q.MEM_ID = P.MEM_ID
-    	  JOIN
-        		MEMBER M ON P.MEM_ID = M.MEM_ID
-    	  JOIN
-        		ARTIST A ON M.MEM_ID = A.MEM_ID
-   		 WHERE
-        		A.MEM_ID = #{memId}
-    	   AND
-        		Q.STATUS = 'Y'
-    	 ORDER 
-    		BY
-        		Q.QNA_DATE DESC
-	</select>
 	
 	<!-- 일반 사용자가 관리자에게 한 문의 조회 -->
 	<select id="getMyQna" parameterType="string" resultType="qna">
@@ -409,36 +379,8 @@
 	        	#{qnaDelDate},
 	        	#{qnaCategory}
 	    		)
-	    <selectKey keyProperty="qnaNo" resultType="int" order="AFTER">
-	        SELECT PRODUCT_QNA_SEQ.CURRVAL FROM DUAL
-	    </selectKey>
-    </insert>
+  	</insert>
     
-   	<!-- 판매자 문의 파일업로드 -->
-	<insert id="insertProductImgFile" parameterType="imgFile">
-    	INSERT 
-      	  INTO 
-	      		IMG_FILE 
-	      		(
-		        FILE_NO,
-		        BOARD_TYPE,
-		        BOARD_NO,
-		        ORIGIN_NAME,
-		        CHANGE_NAME,
-		        FILE_PATH,
-		        FILE_DATE
-    			) 
-    	VALUES 
-    			(
-        		IMG_FILE_SEQ.NEXTVAL,
-        		#{boardType},
-        		#{boardNo},
-        		#{originName},
-        		#{changeName},
-        		#{imgFilePath},
-        		SYSDATE
-    			)
-	</insert>
     
     <!-- 관리자 답변 -->
    	<insert id="insertAnswer" parameterType="Answer">
@@ -513,32 +455,6 @@
 	        	SYSDATE,
 	        	#{memId},
 	        	#{qnaNo}
-	    		)
-	</insert>
-
-	<!-- 판매자 답변 파일업로드 -->
-	<insert id="insertImgFileForProductAnswer" parameterType="imgFile">
-	    INSERT 
-	      INTO 
-	      		IMG_FILE 
-	      		(
-	        	FILE_NO,
-	        	BOARD_TYPE,
-	        	BOARD_NO,
-	        	ORIGIN_NAME,
-	        	CHANGE_NAME,
-	        	FILE_PATH,
-	        	FILE_DATE
-	    		) 
-   		VALUES 
-   				(
-	        	IMG_FILE_SEQ.NEXTVAL,
-	        	#{boardType},
-	        	PRODUCT_ANSWER_SEQ.CURRVAL,
-	        	#{originName},
-	        	#{changeName},
-	        	#{imgFilePath},
-	        	SYSDATE
 	    		)
 	</insert>
 	
@@ -627,7 +543,14 @@
     
     <!-- 관리자답변 파일 조회 -->
 	<select id="findImgFileByAnswerNo" parameterType="int" resultType="com.kh.artspark.common.model.vo.ImgFile">
-	<include refid="selectImgFile"/>
+		SELECT
+		        FILE_NO imgFile,
+		        BOARD_TYPE boardType,
+		        BOARD_NO boardNo,
+		        ORIGIN_NAME originName,
+		        CHANGE_NAME changeName,
+		        FILE_PATH imgFilePath,
+		        FILE_DATE imgFileDate
     	  FROM 
         		IMG_FILE 
          WHERE 

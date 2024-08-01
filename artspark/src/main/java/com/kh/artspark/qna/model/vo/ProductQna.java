@@ -25,7 +25,6 @@ public class ProductQna {
     private String status;    // 상태
     private Date qnaDelDate;  // 삭제일
     private String qnaCategory; // 카테고리
-    private String qnaFilePath;
     private ProductAnswer productAnswer; // 상품문의답변
     
     

@@ -130,7 +130,7 @@
                         <c:when test="${empty sessionScope.loginUser }">
                             <tr> <!-- 댓글작성 영역, 로그인이 되어있지 않으면 로그인하라고 표시 -->
                                 <th colspan="2">
-                                    <textarea class="form-control" name="" id="replyContent" cols="55" rows="2" style="resize:none; width:100%;" readonly>로그인 후 이용가능합니다.</textarea>
+                                    <textarea class="form-control" name="" id="replyContent" cols="100" rows="2" style="resize:none; width:100%;" readonly>로그인 후 이용가능합니다.</textarea>
                                 </th>
                                 <th style="vertical-align:middle"><button class="btn btn-secondary" disabled>등록하기</button></th> 
                             </tr>
@@ -138,7 +138,7 @@
                         <c:otherwise>
                             <tr> <!-- 댓글작성 영역 -->
                                 <th colspan="5">
-                                    <textarea class="form-control" name="" id="replyContent" cols="55" rows="2" style="resize:none; width:100%;"></textarea>
+                                    <textarea class="form-control" name="" id="replyContent" cols="100" rows="2" style="resize:none; width:100%;"></textarea>
                                 </th>
                                 <th style="vertical-align:middle"><button onclick="insertReply();" class="btn btn-secondary">등록하기</button></th> 
                             </tr>

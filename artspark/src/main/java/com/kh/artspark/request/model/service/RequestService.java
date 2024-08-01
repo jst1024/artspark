@@ -43,9 +43,6 @@ public interface RequestService {
 	
 	// 댓글 등록
 	int insertReply(Reply reply);
-	
-	//request와 묶인 Reply랑 같이 조회
-	Request requestAndReply(int reqNo);
 
 	// 댓글 삭제
 	int deleteReply(int replyNo);
