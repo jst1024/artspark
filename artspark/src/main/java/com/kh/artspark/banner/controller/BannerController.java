@@ -1,6 +1,9 @@
 package com.kh.artspark.banner.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.artspark.banner.model.service.BannerService;
 import com.kh.artspark.banner.model.vo.Banner;
@@ -28,7 +32,30 @@ public class BannerController {
     public ResponseEntity<Banner> addBanner(@RequestParam("banName") String banName,
                                             @RequestParam("banComent") String banComent,
                                             @RequestParam("banUrl") String banUrl,
-                                            @RequestParam("banImage") String banImage) {
+                                            @RequestParam("banImage") MultipartFile banImageFile) {
+        String banImage = "";
+        if (!banImageFile.isEmpty()) {
+            try {
+                String originalFilename = banImageFile.getOriginalFilename();
+                String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String savedFilename = UUID.randomUUID().toString() + fileExtension;
+
+                String uploadDir = "C:/uploads"; // 실제 업로드 경로
+                File uploadPath = new File(uploadDir);
+                if (!uploadPath.exists()) {
+                    uploadPath.mkdirs();
+                }
+
+                File dest = new File(uploadDir, savedFilename);
+                banImageFile.transferTo(dest);
+
+                banImage = "resources/images/" + savedFilename;
+            } catch (IOException e) {
+                log.error("배너 이미지 업로드 실패", e);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
         Banner banner = new Banner();
         banner.setBanName(banName);
         banner.setBanComent(banComent);
@@ -37,10 +64,10 @@ public class BannerController {
 
         int result = bannerService.addBanner(banner);
         if (result > 0) {
-            log.info("배너 추가 성공: " + banName);
-            return new ResponseEntity<>(banner, HttpStatus.CREATED);
+            log.info("배너 추가 성공");
+            return new ResponseEntity<>(banner, HttpStatus.OK);
         } else {
-            log.error("배너 추가 실패: " + banName);
+            log.error("배너 추가 실패");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

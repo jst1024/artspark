@@ -10,8 +10,6 @@
     <style>
         body {
             background-color: #f8f9fa;
-            padding-top: 5vh;
-            padding-bottom: 5vh;
         }
         .form-container {
             background-color: white;
@@ -33,7 +31,6 @@
             flex: 1;
         }
         .container-fluid {
-            margin-top: 5vh; /* 컨테이너를 아래로 내리기 위해 추가 */
         }
     </style>
 </head>

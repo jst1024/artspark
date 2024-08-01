@@ -61,25 +61,25 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="addBannerForm">
-                        <div class="form-group">
-                            <label for="addBanName">배너 이름</label>
-                            <input type="text" class="form-control" id="addBanName" name="banName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addBanComent">배너 설명</label>
-                            <input type="text" class="form-control" id="addBanComent" name="banComent">
-                        </div>
-                        <div class="form-group">
-                            <label for="addBanUrl">배너 URL</label>
-                            <input type="text" class="form-control" id="addBanUrl" name="banUrl" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addBanImage">배너 이미지</label>
-                            <input type="text" class="form-control" id="addBanImage" name="banImage" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">저장하기</button>
-                    </form>
+                    <form id="addBannerForm" enctype="multipart/form-data">
+					    <div class="form-group">
+					        <label for="addBanName">배너 이름</label>
+					        <input type="text" class="form-control" id="addBanName" name="banName" required>
+					    </div>
+					    <div class="form-group">
+					        <label for="addBanComent">배너 설명</label>
+					        <input type="text" class="form-control" id="addBanComent" name="banComent">
+					    </div>
+					    <div class="form-group">
+					        <label for="addBanUrl">배너 URL</label>
+					        <input type="text" class="form-control" id="addBanUrl" name="banUrl" required>
+					    </div>
+					    <div class="form-group">
+					        <label for="addBanImage">배너 이미지</label>
+					        <input type="file" class="form-control" id="addBanImage" name="banImage" required>
+					    </div>
+					    <button type="submit" class="btn btn-primary">저장하기</button>
+					</form>
                 </div>
             </div>
         </div>
@@ -143,20 +143,25 @@
 
         $('#addBannerForm').on('submit', function(event) {
             event.preventDefault();
+            var formData = new FormData(this);
+
             $.ajax({
                 url: '${path2}/addBanner',
                 type: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                processData: false,
+                contentType: false,
                 success: function(response) {
                     alert('배너가 추가되었습니다.');
                     $('#addBannerModal').modal('hide');
-                    location.reload(); // 추가 후 페이지 새로고침
+                    updateBannerRow(response);
                 },
                 error: function(xhr, status, error) {
                     alert('배너 추가에 실패했습니다.');
                 }
             });
         });
+
 
         function updateBannerRow(banner) {
             var row = $('#bannerRow-' + banner.banNo);
