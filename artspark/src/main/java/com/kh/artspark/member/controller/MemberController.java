@@ -477,7 +477,7 @@ public class MemberController {
 	    // 내가 작성한 문의 목록 조회
 	    List<Qna> myQna = qnaService.getMyQna(loginUser.getMemId());
 	    model.addAttribute("myQna", myQna);
-
+	    
 	    // 내가 작성한 상품 문의 목록 조회
 	    List<ProductQna> myProductQna = qnaService.getMyProductQna(loginUser.getMemId());
 	    model.addAttribute("myProductQna", myProductQna);
@@ -485,6 +485,10 @@ public class MemberController {
 	    // 내 상품에 등록된 문의 목록 조회
 	    List<ProductQna> receivedProductQna = qnaService.getReceivedProductQna(loginUser.getMemId());
 	    model.addAttribute("receivedProductQna", receivedProductQna);
+	    
+	    log.info("1 : {}", myQna);
+	    log.info("2 : {}", myProductQna);
+	    log.info("3 : {}", receivedProductQna);
 
 	    return "member/myPage";
 	}

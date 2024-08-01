@@ -2,9 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="java.util.List, java.util.ArrayList, java.util.Map, java.util.HashMap, java.util.Date" %>
 <c:set var="path2" value="${pageContext.servletContext.contextPath }" />
 <jsp:include page="common/head.jsp" />
+
 <style>
     .carousel-item {
         height: 300px;
@@ -12,14 +12,23 @@
     }
     .category-icon {
         display: inline-block;
-        width: 80px;
-        height: 80px;
-        background-color: lightblue;
-        border-radius: 10px;
+        width: 100px;
+        height: 120px;
         margin: 10px;
-        margin-top : 40px;
-        line-height: 80px; 
-        text-align: center; 
+        margin-top: 40px;
+        text-align: center;
+        text-decoration: none;
+        color: black;
+    }
+    .category-icon img {
+        width: 75px;
+        height: 75px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    .category-name {
+        margin-top: 5px;
+        font-size: 14px;
     }
     .popular-writer-container {
         display: flex;
@@ -33,14 +42,20 @@
         border-radius: 10px;
         margin: 10px;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
+        text-align: center;
+        position: relative;
     }
     .popular-writer img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         border-radius: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
     }
     .default-image {
         width: 100%;
@@ -49,6 +64,16 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .popular-writer-details {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        width: 100%;
+        padding: 10px;
+        border-radius: 0 0 10px 10px;
     }
     .section-title {
         font-size: 24px;
@@ -100,9 +125,22 @@
 
         <div class="container text-center mt-4">
             <div class="row justify-content-center">
-                <c:forEach var="category" items="${categories}">
-                    <a href="${path2}/category/${category.id}" class="category-icon">${category.name}</a>
-                </c:forEach>
+                <a href="${path2}/product?category=일러스트" class="category-icon">
+                    <img src="https://artmug.kr/image/cate/MT_100000000000_on.png?ver=6" alt="일러스트">
+                    <div class="category-name">일러스트</div>
+                </a>
+                <a href="${path2}/product?category=디자인" class="category-icon">
+                    <img src="https://artmug.kr/image/cate/MT_104000000000_on.png?ver=6" alt="디자인">
+                    <div class="category-name">디자인</div>
+                </a>
+                <a href="${path2}/product?category=영상%20·%20음향" class="category-icon">
+                    <img src="https://artmug.kr/image/cate/MT_108000000000_on.png?ver=6" alt="영상·음향">
+                    <div class="category-name">영상·음향</div>
+                </a>
+                <a href="${path2}/product?category=웹툰%20·%20만화" class="category-icon">
+                    <img src="https://artmug.kr/image/cate/MT_103000000000_on.png?ver=6" alt="웹툰·만화">
+                    <div class="category-name">웹툰·만화</div>
+                </a>
             </div>
         </div>
 
@@ -110,15 +148,19 @@
             <div class="section-title">인기 작가</div>
             <div class="popular-writer-container">
                 <c:forEach var="writer" items="${popularWriters}">
-                    <a href="${path2}/writer/${writer.id}" class="popular-writer">
+                    <a href="${path2 }/product/${writer.productNo}" class="popular-writer">
                         <c:choose>
-                            <c:when test="${not empty writer.image}">
-                                <img src="${path2}/resources/images/${writer.image}" alt="${writer.name}">
+                            <c:when test="${not empty writer.filePath}">
+                                <img src="${path2}/${writer.filePath}" alt="${writer.memNickname}">
                             </c:when>
                             <c:otherwise>
                                 <div class="default-image">No Image</div>
                             </c:otherwise>
                         </c:choose>
+                        <div class="popular-writer-details">
+                            <div>${writer.memNickname}</div>
+                            <div>구매수: ${writer.buyCount}</div>
+                        </div>
                     </a>
                 </c:forEach>
             </div>

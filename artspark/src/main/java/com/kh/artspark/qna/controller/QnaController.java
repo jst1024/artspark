@@ -131,36 +131,6 @@ public class QnaController {
 		    return "common/errorPage";
 		}
 	}
-
-    @GetMapping("artistQna")
-    public String showArtistQna(@RequestParam("productNo") int productNo, Model model) {
-        model.addAttribute("productNo", productNo);
-        return "product/productQna";
-    }
-
-    @PostMapping("artistQna")
-    public String submitProductQna(ProductQna productQna, @RequestParam("upfile") MultipartFile upfile, HttpSession session) {
-        ImgFile imgFile = null;
-
-        if (upfile != null && !upfile.isEmpty()) {
-            imgFile = new ImgFile();
-            imgFile.setOriginName(upfile.getOriginalFilename());
-            imgFile.setChangeName(saveFile(upfile, session));
-            imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
-            imgFile.setBoardType("상품문의");
-        }
-
-        if (qnaService.insertProductQna(productQna, imgFile) > 0) {
-            session.setAttribute("alertMsg", "문의가 성공적으로 등록되었습니다.");
-            return "redirect:/product/" + productQna.getProductNo();
-        } else {
-            session.setAttribute("errorMsg", "문의 등록 실패!");
-            return "common/errorPage";
-        }
-    }
-    
-
-
 	public String saveFile(MultipartFile upfile, HttpSession session) {
 		String originName = upfile.getOriginalFilename();
 		String ext = originName.substring(originName.lastIndexOf('.')+1);
@@ -178,7 +148,6 @@ public class QnaController {
 		
 		return changeName;
 	}
-
 	@GetMapping("qnaDetail")
 	public ModelAndView qnaFindById(int qnaNo, ModelAndView mv) {
 		Qna qna = qnaService.qnaFindById(qnaNo);
@@ -192,7 +161,6 @@ public class QnaController {
 		}
 		return mv;
 	}
-
 	@PostMapping("deleteQna")
 	public String deleteQna(int qnaNo, String filePath, HttpSession session, Model model) {
 		if (filePath != null && !"".equals(filePath)) {
@@ -206,14 +174,12 @@ public class QnaController {
 	        return "common/errorPage";
 	    }
 	}
-
 	@PostMapping("updateQna")
 	public ModelAndView updateQna(ModelAndView mv, int qnaNo) {
 		mv.addObject("imgFile", qnaService.findImgFileByQnaNo(qnaNo))
 		  .addObject("qna", qnaService.qnaFindById(qnaNo)).setViewName("qna/qnaUpdate");
 		return mv;
 	}
-	
 	@PostMapping("qnaUpdate")
 	public String qnaUpdate(Qna qna, HttpSession session, MultipartFile reUpFile, Model model) {
 	    ImgFile imgFile = new ImgFile();
@@ -236,13 +202,11 @@ public class QnaController {
 	        return "common/errorPage";
 	    }
 	}
-	
 	@GetMapping("answerInsert")
 	public String answerInsert() {
 		return "qna/answerInsert";
 	}
 
-	// 기존 insertAnswer 메서드
 	@PostMapping("insertAnswer")
 	public String insertAnswer(Answer answer, HttpSession session, Model model, MultipartFile upfile, @RequestParam int qnaNo) { 
 	    ImgFile imgFile = new ImgFile();
@@ -261,45 +225,6 @@ public class QnaController {
 	        return "common/errorPage";
 	    }
 	}
-	// 판매자문의-답변
-	 @GetMapping("productAnswerInsert")
-	    public String productAnswerInsert(@RequestParam int qnaNo, Model model) {
-	        model.addAttribute("qnaNo", qnaNo);
-	        return "qna/productAnswer";
-	    }
-
-	    // 판매자 답변 저장
-	    @PostMapping("productInsertAnswer")
-	    public String productInsertAnswer(ProductAnswer productAnswer, HttpSession session, Model model,
-	                                      @RequestParam("upfile") MultipartFile upfile) {
-	    	
-	        Member loginUser = (Member) session.getAttribute("loginUser");
-	        
-	        if (loginUser == null) {
-	            return "redirect:/loginPage"; // 로그인 페이지로 리다이렉트
-	        }
-
-	        ImgFile imgFile = null;
-
-	        if (!upfile.isEmpty()) {
-	            imgFile = new ImgFile();
-	            imgFile.setOriginName(upfile.getOriginalFilename());
-	            imgFile.setChangeName(saveFile(upfile, session));
-	            imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
-	            imgFile.setBoardType("답변");
-	        }
-
-	        productAnswer.setMemId(loginUser.getMemId());
-
-	        if (qnaService.insertProductAnswer(productAnswer, imgFile) > 0) {
-	            session.setAttribute("alertMsg", "답변 작성 성공~!");
-	            return "redirect:/myPage";
-	        } else {
-	            model.addAttribute("errorMsg", "답변 작성 실패!");
-	            return "common/errorPage";
-	        }
-	    }
-	
 	@GetMapping("answerDetail")
 	public ModelAndView getAnswerDetail(@RequestParam int answerNo, ModelAndView mv) {
 	    Answer answer = qnaService.findAnswerById(answerNo); // 답변을 조회하는 메서드
@@ -314,11 +239,95 @@ public class QnaController {
 	    }
 	    return mv;
 	}
+	
+	/*
+    @GetMapping("myAdminQna")
+    public String showAdminQna() {
+        return "qna/myAdminQna";
+    }
+
+    @GetMapping("myProductQna")
+    public String showProductQna() {
+        return "qna/myProductQna";
+    }
+
+    @GetMapping("myReceivedQna")
+    public String showReceivedQna() {
+        return "qna/myReceivedQna";
+    }
+	*/
+	
+	
 	// 마이페이지에서의 답변
     @GetMapping("getAnswerDetail")
     @ResponseBody
     public Answer getAnswerDetail(@RequestParam int answerNo) {
         Answer answer = qnaService.findAnswerById(answerNo);
         return answer;
+    }
+	
+	// 판매자 문의
+    @GetMapping("artistQna")
+    public String showArtistQna(@RequestParam("productNo") int productNo, Model model) {
+        model.addAttribute("productNo", productNo);
+        return "product/productQna";
+    }
+    @PostMapping("artistQna")
+    public String submitProductQna(ProductQna productQna, @RequestParam("upfile") MultipartFile upfile, HttpSession session) {
+        ImgFile imgFile = null;
+
+        if (upfile != null && !upfile.isEmpty()) {
+            imgFile = new ImgFile();
+            imgFile.setOriginName(upfile.getOriginalFilename());
+            imgFile.setChangeName(saveFile(upfile, session));
+            imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
+            imgFile.setBoardType("상품문의");
+        }
+
+        if (qnaService.insertProductQna(productQna, imgFile) > 0) {
+            session.setAttribute("alertMsg", "문의가 성공적으로 등록되었습니다.");
+            return "redirect:/product/" + productQna.getProductNo();
+        } else {
+            session.setAttribute("errorMsg", "문의 등록 실패!");
+            return "common/errorPage";
+        }
+    }
+	// 판매자문의-답변
+	@GetMapping("productAnswerInsert")
+    public String productAnswerInsert(@RequestParam int qnaNo, Model model) {
+        model.addAttribute("qnaNo", qnaNo);
+        return "qna/productAnswer";
+    }
+    // 판매자 답변 등록
+    @PostMapping("productInsertAnswer")
+    public String productInsertAnswer(ProductAnswer productAnswer, HttpSession session, Model model,
+                                      @RequestParam("upfile") MultipartFile upfile) {
+    	
+        Member loginUser = (Member) session.getAttribute("loginUser");
+        
+        if (loginUser == null) {
+            return "redirect:/loginPage"; // 로그인 페이지로 리다이렉트
+        }
+
+        ImgFile imgFile = null;
+
+        if (!upfile.isEmpty()) {
+            imgFile = new ImgFile();
+            imgFile.setOriginName(upfile.getOriginalFilename());
+            imgFile.setChangeName(saveFile(upfile, session));
+            imgFile.setImgFilePath("resources/uploadFiles/" + imgFile.getChangeName());
+            imgFile.setBoardType("상품문의답변");
+        }
+        
+
+        productAnswer.setMemId(loginUser.getMemId());
+
+        if (qnaService.insertProductAnswer(productAnswer, imgFile) > 0) {
+            session.setAttribute("alertMsg", "답변 작성 성공~!");
+            return "redirect:/myPage";
+        } else {
+            model.addAttribute("errorMsg", "답변 작성 실패!");
+            return "common/errorPage";
+        }
     }
 }

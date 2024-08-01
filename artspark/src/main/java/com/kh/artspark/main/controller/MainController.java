@@ -27,7 +27,7 @@ public class MainController {
     private final NoticeService noticeService;
     private final RequestService requestService;
     private final MemberService memberService;
-    
+
     @GetMapping("/")
     public String mainPage(@RequestParam(value="page", defaultValue="1") int page, Model model) {
         // 공지사항 설정

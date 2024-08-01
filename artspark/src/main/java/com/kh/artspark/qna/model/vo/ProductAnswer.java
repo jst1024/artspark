@@ -21,4 +21,5 @@ public class ProductAnswer {
     private String memId; // 작성자 아이디
     private int qnaNo; // 문의번호
     private String status; // 상태
+    private String answerFilePath;
 }
