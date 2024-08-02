@@ -46,12 +46,8 @@ public interface RequestMapper {
 	// 댓글 목록
 	List<Reply> selectReply(int reqNo);
 	
-	// 의뢰상세보기와 댓글목록이 같이 나오게
-	Request requestAndReply(int reqNo);
-	
 	// 댓글 등록
 	int insertReply(Reply reply);
-	
 	
 	// 댓글 삭제
 	int deleteReply(int replyNo);

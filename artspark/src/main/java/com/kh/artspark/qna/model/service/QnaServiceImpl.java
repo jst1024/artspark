@@ -49,14 +49,18 @@ public class QnaServiceImpl implements QnaService {
     @Transactional
     @Override
     public int insertQna(Qna qna, ImgFile imgFile) {
-        
-         int result1 = qnaMapper.insertQna(qna);
-         int result2 = 1;
-         
-         if(imgFile.getOriginName() != null) {
-              result2 = qnaMapper.insertImgFile(imgFile);
-         }
-        return result1 * result2;
+        try {
+            int result1 = qnaMapper.insertQna(qna);
+            int result2 = 1;
+
+            if (imgFile.getOriginName() != null) {
+                result2 = qnaMapper.insertImgFile(imgFile);
+            }
+            return result1 * result2;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0; 
+        }
     }
     
     @Override
@@ -94,19 +98,8 @@ public class QnaServiceImpl implements QnaService {
     
     // 판매자 문의 등록
     @Override
-    @Transactional
-    public int insertProductQna(ProductQna productQna, ImgFile imgFile) {
-        // 1. PRODUCT_QNA 테이블에 데이터 삽입
-        int result1 = qnaMapper.insertProductQna(productQna);
-
-        int result2 = 1;
-        if (imgFile != null && imgFile.getOriginName() != null && !imgFile.getOriginName().isEmpty()) {
-            imgFile.setBoardType("상품문의");
-            imgFile.setBoardNo(productQna.getQnaNo());  // 여기서 boardNo를 qnaNo로 설정
-            result2 = qnaMapper.insertProductImgFile(imgFile);
-        }
-
-        return result1 * result2;
+    public int insertProductQna(ProductQna productQna) {
+        return qnaMapper.insertProductQna(productQna);
     }
 
     // 관리자 답변 등록
@@ -124,18 +117,10 @@ public class QnaServiceImpl implements QnaService {
         return result1 * result2;
     }
 
-    // 판매자 답변 등록
+ // 판매자 답변 등록
     @Override
-    @Transactional
-    public int insertProductAnswer(ProductAnswer productAnswer, ImgFile imgFile) {
-        int result1 = qnaMapper.insertProductAnswer(productAnswer);
-        int result2 = 1;
-        if (imgFile != null && imgFile.getOriginName() != null && !imgFile.getOriginName().isEmpty()) {
-            imgFile.setBoardType("답변");
-            imgFile.setBoardNo(productAnswer.getAnswerNo());  
-            result2 = qnaMapper.insertImgFileForProductAnswer(imgFile);
-        }
-        return result1 * result2;
+    public int insertProductAnswer(ProductAnswer productAnswer) {
+        return qnaMapper.insertProductAnswer(productAnswer);
     }
     
     // 답변 상세보기
@@ -149,10 +134,6 @@ public class QnaServiceImpl implements QnaService {
     }
     
     // 마이페이지 문의 조회
-    @Override
-    public List<Qna> qnaForArtist(String memId) {
-        return qnaMapper.qnaForArtist(memId);
-    }
     @Override
     public List<Qna> getMyQna(String memId) {
         return qnaMapper.getMyQna(memId);

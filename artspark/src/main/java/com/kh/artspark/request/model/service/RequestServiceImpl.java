@@ -97,11 +97,6 @@ public class RequestServiceImpl implements RequestService {
 	public int insertReply(Reply reply) {
 		return requestMapper.insertReply(reply);
 	}
-
-	@Override
-	public Request requestAndReply(int reqNo) {
-		return requestMapper.requestAndReply(reqNo);
-	}
 	
 	@Override
 	public int deleteReply(int replyNo) {

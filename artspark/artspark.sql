@@ -60,8 +60,12 @@ CREATE SEQUENCE PRODUCT_ANSWER_SEQ START WITH 1 INCREMENT BY 1;
 delete from product_qna;
 drop sequence product_answer_seq;
 drop sequence product_qna_seq;
+drop sequence img_file_seq;
 commit;
-
+delete from qna;
+delete from answer;
+drop sequence qna_seq;
+drop sequence answer_seq;
 -- MEMBER 테이블 생성
 CREATE TABLE MEMBER (
    MEM_ID VARCHAR2(50) NOT NULL,
@@ -73,7 +77,7 @@ CREATE TABLE MEMBER (
    MEM_CATEGORY VARCHAR2(10) DEFAULT 'A' NOT NULL,
    PRIMARY KEY (MEM_ID)
 );
-
+delete from img_file;
 COMMENT ON COLUMN MEMBER.STATUS IS 'Y 와 N 으로 탈퇴 여부확인';
 COMMENT ON COLUMN MEMBER.MEM_CATEGORY IS 'A : 일반회원 B : 판매자 C : 관리자 D : 블랙리스트';
 

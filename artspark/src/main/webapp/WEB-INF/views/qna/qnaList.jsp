@@ -183,16 +183,6 @@
             	 location.href = 'answerDetail?answerNo=' + answerNo;
             });
         });
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const qnaRows = document.querySelectorAll('tr.qna-Detail');
-            qnaRows.forEach(function(row) {
-                const nextRow = row.nextElementSibling;
-                if (nextRow && nextRow.classList.contains('answer') && nextRow.innerHTML.trim() === '') {
-                    nextRow.style.display = 'none';
-                }
-            });
-        });
     </script>
     
     <!-- 페이징 -->

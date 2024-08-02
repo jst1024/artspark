@@ -19,7 +19,6 @@ public interface QnaMapper {
     
     List<Qna> qnaFindAllWithAnswers(Map<String, Integer> map);
     //memberController에 추가 (판매자 마이페이지에 보이게끔)
-    List<Qna> qnaForArtist(String memId);
     List<Qna> getMyQna(String memId); 
     List<ProductQna> getMyProductQna(String memId);
     List<ProductQna> getReceivedProductQna(String memId);

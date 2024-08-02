@@ -25,7 +25,7 @@ public interface QnaService {
     String getArtistMemIdByProductNo(int productNo);
 
     // 판매자페이지에서 문의등록
-    int insertProductQna(ProductQna productQna, ImgFile imgFile);
+	int insertProductQna(ProductQna productQna);
     
     //관리자 문의 페이지 상세보기
     Qna qnaFindById(int qnaNo);
@@ -35,20 +35,22 @@ public interface QnaService {
 
     int updateQna(Qna qna, ImgFile imgFile);
 
-    // memberController에 추가
-    List<Qna> qnaForArtist(String memId);
+    
 
     // 답변 등록
     int insertAnswer(Answer answer, ImgFile imgFile); // 관리자답변
-    int insertProductAnswer(ProductAnswer productAnswer, ImgFile imgFile); // 판매자답변
+    int insertProductAnswer(ProductAnswer productAnswer); // 판매자답변
 
     // 관리자 답변 상세보기
     ImgFile findImgFileByAnswerNo(int answerNo);
     Answer findAnswerById(int answerNo);
-
+ 
+    // memberController에 추가
     // 마이페이지 문의 상세보기
     List<Qna> getMyQna(String memId); // 관리자에게
     List<ProductQna> getMyProductQna(String memId); // 판매자에게
     List<ProductQna> getReceivedProductQna(String memId); // 판매자로서 받은
+
+
 
 }
