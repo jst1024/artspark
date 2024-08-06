@@ -1,5 +1,9 @@
 package com.kh.artspark.member.model.vo;
 
+
+import java.sql.Date;
+
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +24,9 @@ public class Member {
 	private String memNickname;
 	private String status;
 	private String memEmail;
-	private String memEnroll;
+	private Date memEnroll;
 	private String memCategory;
-	private String memId2;
+	private Date memSuspension;
+	private int memReportcount;
+  
 }

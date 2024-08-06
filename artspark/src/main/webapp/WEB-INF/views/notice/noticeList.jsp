@@ -28,16 +28,16 @@
             margin: 0 auto;
             overflow-x: auto;
         }
-        .search-form {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 15px;
-            margin-right : 15px;
-        }
+		.search-form {
+		    display: flex;
+		    justify-content: flex-end;
+		    margin-bottom: 25px;
+		    margin-left : 335px;
+		}
         #noticeList {text-align:center;}
         #noticeList>tbody>tr:hover {cursor:pointer;}
 
-        #pagingArea {width:fit-content; margin:auto;}
+        #pagingArea {width:fit-content; margin:auto; margin-top:30px;}
         
         #searchForm {
             width:80%;
@@ -114,7 +114,6 @@
 	        
 	        <script>
 	               $(() => {
-	            	   console.dir('pagingArea');
 	            	   
 	            	   $('.notice-Detail').click(e => {
 	            		   location.href = 'noticeDetail?noticeNo=' + $(e.currentTarget).children().eq(0).text();

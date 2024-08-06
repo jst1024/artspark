@@ -2,7 +2,6 @@ package com.kh.artspark.common.model.vo;
 
 import java.sql.Date;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +9,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor // 기본생성자
+@NoArgsConstructor
 @ToString
 public class ImgFile {
 	private int imgFileNo;

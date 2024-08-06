@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>공지사항 상세보기</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -75,10 +74,10 @@
                     <tr>
                         <th scope="row">첨부파일</th>
                         <td colspan="3">
-                            <c:if test="${imgFile != null}">
+                            <c:if test="${imgFile != null && !imgFile.equals('')}">
                                 <strong>첨부파일: </strong><a href="${imgFile.imgFilePath}" target="_blank">${imgFile.originName}</a>
                             </c:if>
-                            <c:if test="${imgFile == null}">
+                            <c:if test="${imgFile == null || imgFile.equals('')}">
                                 <span>첨부파일 없음</span>
                             </c:if>
                         </td>
@@ -88,7 +87,6 @@
             <div class="admin-actions">
                 <c:choose>
                     <c:when test="${sessionScope.loginUser.memId == 'admin'}">
-                        <button type="button" class="btn btn-secondary" onclick="location.href='managePage'">관리자페이지</button>
                         <form action="updateNotice" method="post" style="display: inline;">
     						<input type="hidden" name="noticeNo" value="${notice.noticeNo}">
     						<button type="submit" class="btn btn-primary">수정하기</button>
@@ -98,6 +96,7 @@
                              <input type="hidden" name="filePath" value="${imgFile.imgFilePath}">
                              <button type="submit" class="btn btn-danger">삭제하기</button>
                        	</form>
+                       	<button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
                     </c:when>
                     <c:otherwise>
                         <button type="button" class="btn btn-secondary" onclick="history.back()">뒤로가기</button>

@@ -10,6 +10,8 @@
 				COUNT(*)
 		  FROM
 		  		PRODUCT
+		 WHERE
+		 		STATUS = 'Y'
 	</select>
 	
 	<!-- 카테고리별 상품 개수 조회 -->
@@ -20,8 +22,69 @@
 		  		PRODUCT
 		 WHERE
 		 		PRODUCT_CATEGORY = #{category}
+		   AND
+		   		STATUS = 'Y'
 	</select>
 	
+	<!-- 검색 상품 개수 조회 -->
+	<select id="productSearchCount" parameterType="String" resultType="_int">
+		SELECT
+		        COUNT(*)
+		  FROM
+		        (
+		        SELECT
+				        P.PRODUCT_TITLE,
+				        M.MEM_NICKNAME,
+				        MIN(TN.TAG_NAME) AS TAG_NAME
+				  FROM
+				        PRODUCT P
+				        JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
+				        JOIN (
+				                SELECT
+				                        T.TAG_NAME,
+				                        TC.PRODUCT_NO
+				                  FROM
+				                        TAG T
+				                        JOIN TAG_CHECK TC ON T.TAG_NO = TC.TAG_NO
+				             ) TN ON P.PRODUCT_NO = TN.PRODUCT_NO
+				 WHERE
+				 		P.STATUS = 'Y'
+				   AND
+			   			(
+				        PRODUCT_TITLE LIKE '%' || #{keyword} || '%'
+				    OR
+				        M.MEM_NICKNAME LIKE '%' || #{keyword} || '%'
+				    OR
+				        TN.TAG_NAME LIKE '%' || #{keyword} || '%'
+				        )
+				 GROUP
+			        BY
+			            P.PRODUCT_TITLE,
+			            M.MEM_NICKNAME
+		        )
+	</select>
+	
+	<!-- 태그 30개 조회 -->
+	<select id="getTags" resultType="tag">
+		SELECT
+				TAG_NO tagNo,
+				TAG_NAME tagName
+		  FROM
+		  		(
+		  		SELECT
+		  				TAG_NO,
+		  				TAG_NAME
+		  		  FROM
+		  		  		TAG
+		  		 ORDER
+		  		 	BY
+		  		 		TAG_NO
+		  		)
+		 WHERE
+		 		ROWNUM BETWEEN 1 AND 45
+	</select>
+	
+	<!-- 상품 목록 resultMap -->
 	<resultMap id="productResultMap" type="hashmap">
 	    <result property="productNo" column="PRODUCT_NO"/>
 	    <result property="productTitle" column="PRODUCT_TITLE"/>
@@ -36,14 +99,14 @@
 	</resultMap>
 	
 	<!-- 모든 상품 목록 조회 -->
-	<select id="findAllProductList" resultMap="productResultMap">
+	<select id="findAllProductList" parameterType="map" resultMap="productResultMap">
 		SELECT
 				P.PRODUCT_NO,
 				P.PRODUCT_TITLE,
 				M.MEM_ID,
 				M.MEM_NICKNAME,
 				PD.PRODUCT_PURPOSE,
-				NVL(AVG(R.REVIEW_STAR), 0) AS AVG_STAR,
+				ROUND(NVL(AVG(R.REVIEW_STAR), 0), 1) AS AVG_STAR,
 				NVL(MIN_DO.MIN_PRICE, 0) AS MIN_PRICE,
 				NVL(JB.IS_LIKED, 0) AS IS_LIKED	,
 				PF.CHANGE_NAME,		
@@ -84,6 +147,8 @@
 		  					 	BY
 		  					 		PRODUCT_NO
 		  				) PF_MIN ON PF.FILE_NO = PF_MIN.FIRST_NO
+		 WHERE
+		 		P.STATUS = 'Y'
 		 GROUP
 		 	BY
 		 		P.PRODUCT_NO,
@@ -97,9 +162,172 @@
 				PF.FILE_PATH
 	     ORDER
 	     	BY
+	            <if test="sort == 'popular'">
+	                (SELECT COUNT(*) FROM JJIM WHERE PRODUCT_NO = P.PRODUCT_NO) DESC,
+	            </if>
 	     		P.PRODUCT_NO DESC
 	</select>
 	
+	<!-- 카테고리별 상품 목록 조회 -->
+	<select id="findAllCategoryList" parameterType="map" resultMap="productResultMap">
+		SELECT
+				P.PRODUCT_NO,
+				P.PRODUCT_TITLE,
+				M.MEM_ID,
+				M.MEM_NICKNAME,
+				PD.PRODUCT_PURPOSE,
+				ROUND(NVL(AVG(R.REVIEW_STAR), 0), 1) AS AVG_STAR,
+				NVL(MIN_DO.MIN_PRICE, 0) AS MIN_PRICE,
+				NVL(JB.IS_LIKED, 0) AS IS_LIKED	,
+				PF.CHANGE_NAME,		
+				PF.FILE_PATH
+		  FROM
+		  		PRODUCT P
+		  		JOIN 		MEMBER M ON P.MEM_ID = M.MEM_ID
+		  		JOIN 		PRODUCT_DETAIL PD ON P.PRODUCT_NO = PD.PRODUCT_NO
+		  		LEFT JOIN 	REVIEW R ON P.PRODUCT_NO = R.PRODUCT_NO
+		  		JOIN 	(
+			  				SELECT
+			  						PO.PRODUCT_NO,
+			  						MIN(DO.DETAIL_OPTION_PRICE) MIN_PRICE
+			  				  FROM
+			  					  	PAY_OPTION PO
+			  					  	JOIN DETAIL_OPTION DO ON PO.PAY_OPTION_NO = DO.PAY_OPTION_NO
+			  				 GROUP
+			  					BY
+			  					 	PO.PRODUCT_NO	
+			  			  )	MIN_DO ON P.PRODUCT_NO = MIN_DO.PRODUCT_NO
+		  		LEFT JOIN (
+		  					SELECT
+		  							J.PRODUCT_NO,
+		  							1 AS IS_LIKED
+		  					  FROM
+		  					  		JJIM J
+		  					 WHERE
+		  							J.MEM_ID = #{loginUserId}		
+		  				  )	JB ON P.PRODUCT_NO = JB.PRODUCT_NO 	
+		  		JOIN PRODUCTFILE PF ON P.PRODUCT_NO = PF.PRODUCT_NO
+		  		JOIN 	(
+		  					SELECT
+		  							PRODUCT_NO,
+		  							MIN(FILE_NO) FIRST_NO
+		  					  FROM
+		  					  		PRODUCTFILE
+		  					 GROUP
+		  					 	BY
+		  					 		PRODUCT_NO
+		  				) PF_MIN ON PF.FILE_NO = PF_MIN.FIRST_NO
+		 WHERE
+		 		P.PRODUCT_CATEGORY = #{category}
+		   AND
+		   		P.STATUS = 'Y'
+		 GROUP
+		 	BY
+		 		P.PRODUCT_NO,
+	            P.PRODUCT_TITLE,
+	            M.MEM_ID,
+	            M.MEM_NICKNAME,
+	            PD.PRODUCT_PURPOSE,
+	            MIN_DO.MIN_PRICE,
+	            JB.IS_LIKED,
+	            PF.CHANGE_NAME,		
+				PF.FILE_PATH
+	     ORDER
+	     	BY
+	     		<if test="sort == 'popular'">
+	                (SELECT COUNT(*) FROM JJIM WHERE PRODUCT_NO = P.PRODUCT_NO) DESC,
+	            </if>
+	     		P.PRODUCT_NO DESC
+	</select>
+	
+	<!-- 상품 검색 -->
+	<select id="productSearchList" parameterType="map" resultMap="productResultMap">
+		SELECT
+				P.PRODUCT_NO,
+				P.PRODUCT_TITLE,
+				M.MEM_ID,
+				M.MEM_NICKNAME,
+				PD.PRODUCT_PURPOSE,
+				ROUND(NVL(AVG(R.REVIEW_STAR), 0), 1) AS AVG_STAR,
+				NVL(MIN_DO.MIN_PRICE, 0) AS MIN_PRICE,
+				NVL(JB.IS_LIKED, 0) AS IS_LIKED	,
+				PF.CHANGE_NAME,		
+				PF.FILE_PATH,
+                MIN(TN.TAG_NAME) AS TAG_NAME
+		  FROM
+		  		PRODUCT P
+		  		JOIN 		MEMBER M ON P.MEM_ID = M.MEM_ID
+		  		JOIN 		PRODUCT_DETAIL PD ON P.PRODUCT_NO = PD.PRODUCT_NO
+		  		LEFT JOIN 	REVIEW R ON P.PRODUCT_NO = R.PRODUCT_NO
+		  		JOIN 	(
+			  				SELECT
+			  						PO.PRODUCT_NO,
+			  						MIN(DO.DETAIL_OPTION_PRICE) MIN_PRICE
+			  				  FROM
+			  					  	PAY_OPTION PO
+			  					  	JOIN DETAIL_OPTION DO ON PO.PAY_OPTION_NO = DO.PAY_OPTION_NO
+			  				 GROUP
+			  					BY
+			  					 	PO.PRODUCT_NO	
+			  			  )	MIN_DO ON P.PRODUCT_NO = MIN_DO.PRODUCT_NO
+		  		LEFT JOIN (
+		  					SELECT
+		  							J.PRODUCT_NO,
+		  							1 AS IS_LIKED
+		  					  FROM
+		  					  		JJIM J
+		  					 WHERE
+		  							J.MEM_ID = #{loginUserId}		
+		  				  )	JB ON P.PRODUCT_NO = JB.PRODUCT_NO 	
+		  		JOIN PRODUCTFILE PF ON P.PRODUCT_NO = PF.PRODUCT_NO
+		  		JOIN 	(
+		  					SELECT
+		  							PRODUCT_NO,
+		  							MIN(FILE_NO) FIRST_NO
+		  					  FROM
+		  					  		PRODUCTFILE
+		  					 GROUP
+		  					 	BY
+		  					 		PRODUCT_NO
+		  				) PF_MIN ON PF.FILE_NO = PF_MIN.FIRST_NO
+                JOIN (
+                        SELECT
+                                T.TAG_NAME,
+                                TC.PRODUCT_NO
+                          FROM
+                                TAG T
+                                JOIN TAG_CHECK TC ON T.TAG_NO = TC.TAG_NO
+                     ) TN ON P.PRODUCT_NO = TN.PRODUCT_NO
+          WHERE
+          		P.STATUS = 'Y'
+           AND
+           		(
+                PRODUCT_TITLE LIKE '%' || #{keyword} || '%'
+            OR
+                M.MEM_NICKNAME LIKE '%' || #{keyword} || '%'
+            OR
+                TN.TAG_NAME LIKE '%' || #{keyword} || '%'
+                )
+		 GROUP
+		 	BY
+		 		P.PRODUCT_NO,
+	            P.PRODUCT_TITLE,
+	            M.MEM_ID,
+	            M.MEM_NICKNAME,
+	            PD.PRODUCT_PURPOSE,
+	            MIN_DO.MIN_PRICE,
+	            JB.IS_LIKED,
+	            PF.CHANGE_NAME,		
+				PF.FILE_PATH
+	     ORDER
+	     	BY
+	     		<if test="sort == 'popular'">
+	                (SELECT COUNT(*) FROM JJIM WHERE PRODUCT_NO = P.PRODUCT_NO) DESC,
+	            </if>
+	     		P.PRODUCT_NO DESC
+	</select>
+	
+	<!-- 찜 등록 -->
 	<insert id="insertJjim" parameterType="map">
 		INSERT
 		  INTO
@@ -117,6 +345,7 @@
 				)
 	</insert>
 	
+	<!-- 찜 삭제 -->
 	<delete id="deleteJjim" parameterType="map">
 		DELETE
 		  FROM
@@ -216,7 +445,7 @@
 		      				  		JOIN PAY_OPTION PO ON PO.PAY_OPTION_NO = DO.PAY_OPTION_NO
 		      				 ORDER
 		      				 	BY
-		      				 		DO.DETAIL_OPTION_NO DESC
+		      				 		DO.DETAIL_OPTION_NO
 		      			) PDO ON P.PRODUCT_NO = PDO.PRODUCT_NO
 		      	JOIN MEMBER M ON P.MEM_ID = M.MEM_ID
 		 WHERE
@@ -441,6 +670,187 @@
 				)		  
 	</insert>
 	
+	<!-- 상품 삭제 -->
+	<update id="deleteProduct" parameterType="_int">
+		UPDATE
+				PRODUCT
+		   SET
+				STATUS = 'N',
+				PRODUCT_DELDATE = SYSDATE
+		 WHERE
+		 		PRODUCT_NO = #{productNo}		      		   
+	</update>
+	
+	<!-- 삭제된 상품의 찜 목록 삭제 -->
+	<delete id="deleteProductJjim" parameterType="_int">
+		DELETE
+		  FROM
+		  		JJIM
+		 WHERE
+		 		PRODUCT_NO = #{productNo}	  
+	</delete>
+	
+	<!-- 상품 업데이트시 중폭 파일 삭제 -->
+	<delete id="deleteOriginFile" parameterType="String">
+		DELETE
+		  FROM
+		  		PRODUCTFILE
+		 WHERE
+		 		CHANGE_NAME = #{changeName}
+	</delete>
+	
+	<!-- 상품 업데이트 -->
+	<update id="updateProduct" parameterType="product">
+		UPDATE
+				PRODUCT
+		   SET
+		   		PRODUCT_CATEGORY = #{productCategory},
+		   		PRODUCT_TITLE = #{productTitle},
+		   		PRODUCT_CONTENT = #{productContent}
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</update>
+	
+	<!-- 상품 상세 업데이트 -->
+	<update id="updateProductDetail" parameterType="productDetail">
+		UPDATE
+				PRODUCT_DETAIL
+		   SET
+		   		PRODUCT_PURPOSE = #{productPurpose},
+		   		DETAIL_TYPE = #{detailType},
+		   		DETAIL_SIZE = #{detailSize},
+		   		DETAIL_PIXEL = #{detailPixel},
+		   		UPDATE_COUNT = #{updateCount},
+		   		DETAIL_WORKDATE = #{detailWorkdate}
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</update>
+	
+	<!-- 기존 태그 삭제 -->
+	<delete id="deleteTag" parameterType="_int">
+		DELETE
+		  FROM
+		  		TAG_CHECK
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<!-- 기존 가격 옵션 삭제 -->
+	<delete id="deleteOptions" parameterType="_int">
+		DELETE
+		  FROM
+		  		PAY_OPTION
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<!-- 어드민에 들어갈 리스트 -->
+	<select id="productFindAll" resultType="product" parameterType="map">
+	SELECT
+				PRODUCT_NO productNo,
+	            PRODUCT_TITLE productTitle,
+	            PRODUCT_DATE productDate,
+				MEM_ID memId
+  	  FROM
+            (SELECT 
+                    PRODUCT_NO,
+                    PRODUCT_TITLE,
+                    PRODUCT_DATE,
+                 	MEM_ID,
+                    ROWNUM RNUM 
+              FROM
+                   	(
+                   	SELECT 
+                           PRODUCT_NO,
+                           PRODUCT_TITLE,
+                           PRODUCT_DATE,
+						   MEM_ID
+                      FROM
+                           PRODUCT
+                     WHERE
+                           STATUS = 'Y'                            
+                     ORDER
+                        BY
+                           PRODUCT_NO DESC))               
+	  		 WHERE
+      		 		RNUM BETWEEN #{startValue} AND #{endValue}
+	</select>
+	
+	<!-- 상품상태 변경 -->
+	<update id="updateProductStatus">
+	    UPDATE 
+	    		PRODUCT
+	       SET 
+	       		STATUS = #{status}
+	     WHERE 
+	     		PRODUCT_NO = #{productNo}
+	</update>
+	
+	<!-- 삭제된 상품 수 조회 -->
+    <select id="deletedProductCount" resultType="int">
+        SELECT 
+        		COUNT(*) 
+          FROM 
+          		PRODUCT 
+         WHERE 
+         		STATUS = 'N'
+    </select>
+
+    <!-- 삭제된 상품 목록 조회 -->
+    <resultMap id="ProductResultMap" type="com.kh.artspark.product.model.vo.Product">
+        <result property="productNo" column="PRODUCT_NO"/>
+        <result property="productCategory" column="PRODUCT_CATEGORY"/>
+        <result property="productTitle" column="PRODUCT_TITLE"/>
+        <result property="productContent" column="PRODUCT_CONTENT"/>
+        <result property="productDate" column="PRODUCT_DATE"/>
+        <result property="productDeldate" column="PRODUCT_DELDATE"/>
+        <result property="memId" column="MEM_ID"/>
+    </resultMap>
+
+    <select id="deletedProductFindAll" resultMap="ProductResultMap">
+        SELECT *
+        FROM (
+            SELECT ROWNUM AS RNUM, A.*
+            FROM (
+                SELECT PRODUCT_NO, PRODUCT_CATEGORY, PRODUCT_TITLE, PRODUCT_CONTENT, PRODUCT_DATE, PRODUCT_DELDATE, MEM_ID
+                FROM PRODUCT
+                WHERE STATUS = 'N'
+                ORDER BY PRODUCT_DATE DESC
+            ) A
+        )
+        WHERE RNUM BETWEEN #{startValue} AND #{endValue}
+    </select>
+    
+
+	<select id="productQnaCount" parameterType="_int" resultType="_int">
+		SELECT
+				COUNT(QNA_NO)
+		  FROM
+		  		PRODUCT_QNA
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+	</select>
+	
+	<select id="findProductQnaList" parameterType="_int" resultType="com.kh.artspark.product.model.vo.ProductQna">
+		SELECT
+				QNA_NO qnaNo,
+				PRODUCT_NO productNo,
+				QNA_TITLE qnaTitle,
+				QNA_CONTENT qnaContent,
+				QNA_DATE qnaDate,
+				MEM_ID memId,
+				STATUS status,
+				QNA_DELDATE qnaDeldate,
+				QNA_CATEGORY qnaCategory
+		  FROM
+		  		PRODUCT_QNA
+		 WHERE
+		 		PRODUCT_NO = #{productNo}
+		 ORDER
+		 	BY
+		 		QNA_DATE DESC
+	</select>
+
 </mapper>
 
 

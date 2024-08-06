@@ -96,9 +96,31 @@
 	  		Mapper 애노테이션을 사용하기위한 준비과정
 	  		나중에 repository를 인터페이스로 쓰려면 여기다 넣으면됨!!! 
 	  -->
+	  <mybatis-spring:scan base-package="com.kh.artspark.member.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.product.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.notice.model.dao"/>
 	  <mybatis-spring:scan base-package="com.kh.artspark.request.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.qna.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.buy.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.chat.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.review.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.report.model.dao"/>
+	  <mybatis-spring:scan base-package="com.kh.artspark.banner.model.dao"/>
+
+
+		<!-- 메일 전송 도구 등록 -->
+		<bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="sender">
+			<property name="host" value="smtp.gmail.com"/>
+			<property name="port" value="587"/>
+			<property name="username" value="qjatn092028@gmail.com"/>
+			<property name="password" value="qmlg orti wmoz gfie"/>	
+			<property name="javaMailProperties">
+				<props>
+					<prop key="mail.smtp.auth">true</prop>
+					<prop key="mail.smtp.starttls.enable">true</prop>
+				</props>
+			</property>
+		</bean>
 	  
 </beans>
 

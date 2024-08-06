@@ -102,10 +102,10 @@
                         <c:otherwise>
                             <c:forEach var="request" items="${requestList}" varStatus="status">
                                 <tr class="request-Detail">
-                                    <td>${request.reqNo}</td>
+                                    <td>${request.reqNo }</td>
                                     <td>${request.reqPurpose}</td>
                                     <td>${request.reqTitle}</td>
-                                    <td>${request.reqCategory}</td>
+                                    <td>${request.reqCategory}</td>                                
                                     <td>${request.memId}</td>
                                     <td>${request.reqDate}</td>
                                     <td>${request.reqCount}</td>
@@ -118,6 +118,7 @@
             <script>
                 $(() => {
                     $('.request-Detail').click(e => {
+                    	console.log($(e.currentTarget).children().eq(0).text());
                         location.href = 'requestDetail?reqNo=' + $(e.currentTarget).children().eq(0).text();
                     });
                 });

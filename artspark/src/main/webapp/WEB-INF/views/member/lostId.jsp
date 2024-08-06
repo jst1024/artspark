@@ -32,19 +32,19 @@
             <div class="col-md-6">
                 <div class="form-container mx-auto">
                     <h2 class="text-center mb-4">아이디 찾기</h2>
-                    <form>
+                    <form action="findId" method="post">
                         <div class="mb-3">
-                            <label for="name" class="form-label">이름</label>
-                            <input type="text" class="form-control" id="name" placeholder="내용을 입력해주세요">
+                            <label for="userNickname" class="form-label">닉네임</label>
+                            <input type="text" class="form-control" id="memNickname" name="memNickname" placeholder="닉네임를 입력해주세요">
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">이메일</label>
-                            <input type="email" class="form-control" id="email" placeholder="내용을 입력해주세요">
+                         <div class="mb-3">
+                            <label for="userEmail" class="form-label">이메일</label>
+                            <input type="email" class="form-control" id="memEmail" name="memEmail"placeholder="이메일을 입력해주세요">
                         </div>
                         <button type="submit" class="btn btn-primary w-100 mb-3">아이디 찾기</button>
                         <div class="d-flex justify-content-between">
-                            <a href="#" class="btn btn-link">회원가입</a>
-                            <a href="#" class="btn btn-link">로그인 하기</a>
+                            <a href="joinPage" class="btn btn-link">회원가입</a>
+                            <a href="loginPage" class="btn btn-link">로그인 하기</a>
                         </div>
                     </form>
                 </div>

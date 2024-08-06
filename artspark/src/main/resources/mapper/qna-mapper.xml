@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.artspark.qna.model.dao.QnaMapper">
+
+	<sql id="selectQna">
+        SELECT
+		        QNA_NO qnaNo,
+		        QNA_TITLE qnaTitle,
+		        QNA_CONTENT qnaContent,
+		        QNA_DATE qnaDate,
+		        MEM_ID memId,
+		        SECRET secret,
+		        QNA_CATEGORY qnaCategory,
+		        ANSWER_NO answerNo,
+				ANSWER_TITLE answerTitle, 
+	 			ANSWER_CONTENT answerContent,
+				ANSWER_DATE answerDate,
+				MEM_ID answerMemId
+    </sql>
+	
+	<sql id="selectImgFile">
+		SELECT
+		        FILE_NO imgFile,
+		        BOARD_TYPE boardType,
+		        BOARD_NO boardNo,
+		        ORIGIN_NAME originName,
+		        CHANGE_NAME changeName,
+		        FILE_PATH imgFilePath,
+		        FILE_DATE imgFileDate
+	</sql>
+	
+    <sql id="selectAnswer">
+        SELECT
+	            ANSWER_NO answerNo,
+	            ANSWER_TITLE answerTitle,
+	            ANSWER_CONTENT answerContent,
+	            ANSWER_DATE answerDate,
+	            MEM_ID memId,
+	            STATUS status,
+	            QNA_NO qnaNo
+    </sql>
+    
+	<resultMap id="QnaWithAnswers" type="Qna">
+	    <id property="qnaNo" column="qnaNo"/>
+	    <result property="qnaTitle" column="qnaTitle"/>
+	    <result property="qnaContent" column="qnaContent"/>
+	    <result property="qnaDate" column="qnaDate"/>
+	    <result property="memId" column="memId"/>
+	    <result property="secret" column="secret"/>
+	    <result property="status" column="status"/>
+	    <result property="qnaDelDate" column="qnaDelDate"/>
+	    <result property="qnaCategory" column="qnaCategory"/>
+	    <collection property="answer" ofType="Answer">
+	        <id property="answerNo" column="answerNo"/>
+	        <result property="qnaNo" column="qnaNo"/>
+	        <result property="answerTitle" column="answerTitle"/>
+	        <result property="answerContent" column="answerContent"/>
+	        <result property="answerDate" column="answerDate"/>
+	        <result property="memId" column="answerMemId"/>
+	        <result property="status" column="answerStatus"/>
+	        <result property="answerDelDate" column="answerDelDate"/>	        
+	    </collection>
+	</resultMap>
+	
+	<resultMap id="ProductQnaWithAnswer" type="com.kh.artspark.qna.model.vo.ProductQna">
+	    <id property="qnaNo" column="qnaNo"/>
+	    <result property="productNo" column="productNo"/>
+	    <result property="qnaTitle" column="qnaTitle"/>
+	    <result property="qnaContent" column="qnaContent"/>
+	    <result property="qnaDate" column="qnaDate"/>
+	    <result property="memId" column="memId"/>
+	    <result property="status" column="status"/>
+	    <result property="qnaCategory" column="qnaCategory"/>
+	    <association property="productAnswer" javaType="com.kh.artspark.qna.model.vo.ProductAnswer">
+	        <id property="answerNo" column="answerNo"/>
+	        <result property="answerTitle" column="answerTitle"/>
+	        <result property="answerContent" column="answerContent"/>
+	        <result property="answerDate" column="answerDate"/>
+	        <result property="memId" column="answerMemId"/>
+	    </association>
+	</resultMap>
+	
+	<select id="qnaCount" resultType="_int">
+	SELECT 
+			COUNT(QNA_NO)
+	  FROM
+	  		QNA
+	</select>	
+	
+	<!-- QNA 리스트 조회(답변포함) -->
+    <select id="qnaFindAllWithAnswers" parameterType="map" resultType="qna">
+  	  SELECT
+		        qnaNo,
+		        qnaTitle,
+		        qnaContent,
+		        qnaDate,
+		        memId,
+		        secret,
+		        qnaCategory,
+		        answerNo,
+				answerTitle, 
+	 			answerContent,
+				answerDate,
+				answerMemId
+	  FROM 	(
+    		SELECT 
+			        QNA.QNA_NO qnaNo,
+			        QNA.QNA_TITLE qnaTitle,
+			        QNA.QNA_CONTENT qnaContent,
+			        QNA.QNA_DATE qnaDate,
+			        QNA.MEM_ID memId,
+			        QNA.SECRET secret,
+			        QNA.QNA_CATEGORY qnaCategory,
+			        ANSWER.ANSWER_NO answerNo,
+			        ANSWER.ANSWER_TITLE answerTitle,
+			        ANSWER.ANSWER_CONTENT answerContent,
+			        ANSWER.ANSWER_DATE answerDate,
+			        ANSWER.MEM_ID answerMemId,
+			        ANSWER.STATUS answerStatus,
+			        ROWNUM AS RNUM
+    		  FROM 	
+    				QNA
+    		  LEFT 
+    		  JOIN 
+    		  		ANSWER ON QNA.QNA_NO = ANSWER.QNA_NO
+    		 WHERE 
+    		 		QNA.STATUS = 'Y'
+    		 ORDER 
+    		 	BY 
+    		 		QNA.QNA_DATE DESC, ANSWER.ANSWER_DATE ASC
+					)
+	WHERE RNUM BETWEEN #{startValue} AND #{endValue}
+    </select>
+	
+	<!-- 일반 사용자가 관리자에게 한 문의 조회 -->
+	<select id="getMyQna" parameterType="string" resultType="qna">
+        SELECT
+		        Q.QNA_NO qnaNo,
+		        Q.QNA_TITLE qnaTitle,
+		        Q.QNA_CONTENT qnaContent,
+		        Q.QNA_DATE qnaDate,
+		        Q.MEM_ID memId,
+		        Q.SECRET secret,
+		        Q.QNA_CATEGORY qnaCategory,
+		        A.ANSWER_NO answerNo,
+				A.ANSWER_TITLE answerTitle, 
+	 			A.ANSWER_CONTENT answerContent,
+				A.ANSWER_DATE answerDate,
+				A.MEM_ID answerMemId
+	     FROM
+	        	QNA Q
+	     LEFT 
+	     JOIN
+	        	ANSWER A ON Q.QNA_NO = A.QNA_NO
+	    WHERE
+	        	Q.MEM_ID = #{memId}
+	      AND 
+	      		Q.STATUS = 'Y'
+	    ORDER
+	       BY
+	        	Q.QNA_DATE DESC
+	</select>
+
+	<!-- 일반사용자인 내가 판매자에게 한 문의 조회 -->
+	<select id="getMyProductQna" parameterType="string" resultMap="ProductQnaWithAnswer">
+	    SELECT
+		        PQ.QNA_NO qnaNo,
+		        PQ.PRODUCT_NO productNo,
+		        PQ.QNA_TITLE qnaTitle,
+		        PQ.QNA_CONTENT qnaContent,
+		        PQ.QNA_DATE qnaDate,
+		        PQ.MEM_ID memId,
+		        PQ.STATUS status,
+		        PQ.QNA_CATEGORY qnaCategory,
+		        PA.ANSWER_NO answerNo,
+		        PA.ANSWER_TITLE answerTitle,
+		        PA.ANSWER_CONTENT answerContent,
+		        PA.ANSWER_DATE answerDate,
+		        PA.MEM_ID answerMemId
+    	  FROM
+        		PRODUCT_QNA PQ
+	      LEFT 
+	      JOIN
+	        	PRODUCT_ANSWER PA ON PQ.QNA_NO = PA.QNA_NO
+	     WHERE
+	        	PQ.MEM_ID = #{memId}
+	       AND 
+	       		PQ.STATUS = 'Y'
+	     ORDER 
+	        BY
+	        	PQ.QNA_DATE DESC
+	</select>
+	
+	<!-- 판매자가 받은 문의사항들을 조회 -->
+	<select id="getReceivedProductQna" parameterType="string" resultMap="ProductQnaWithAnswer">
+	    SELECT
+		        PQ.QNA_NO qnaNo,
+		        PQ.PRODUCT_NO productNo,
+		        PQ.QNA_TITLE qnaTitle,
+		        PQ.QNA_CONTENT qnaContent,
+		        PQ.QNA_DATE qnaDate,
+		        PQ.MEM_ID memId,
+		        PQ.STATUS status,
+		        PQ.QNA_CATEGORY qnaCategory,
+		        PA.ANSWER_NO answerNo,
+		        PA.ANSWER_TITLE answerTitle,
+		        PA.ANSWER_CONTENT answerContent,
+		        PA.ANSWER_DATE answerDate,
+		        PA.MEM_ID answerMemId
+	      FROM
+	        	PRODUCT_QNA PQ
+	      JOIN
+	        	PRODUCT P ON PQ.PRODUCT_NO = P.PRODUCT_NO
+	      LEFT
+	      JOIN
+	        	PRODUCT_ANSWER PA ON PQ.QNA_NO = PA.QNA_NO
+	     WHERE
+	        	P.MEM_ID = #{memId}
+	       AND 
+	        	PQ.STATUS = 'Y'
+	     ORDER 
+	    	BY
+	        	PQ.QNA_DATE DESC
+	</select>
+	
+	<!-- 특정 상품번호를 기준으로 문의사항을 조회 -->
+	<select id="getArtistMemIdByProductNo" parameterType="int" resultType="string">
+    	SELECT 
+        		MEM_ID
+    	  FROM 
+       			PRODUCT
+    	 WHERE 
+        		PRODUCT_NO = #{productNo}
+	</select>
+	
+		<!-- 관리자 문의게시판 검색 시 행의 개수 -->
+	<select id="qnaSearchCount" parameterType="hashmap" resultType="int">
+		SELECT
+        		COUNT(QNA_NO)
+		  FROM
+		        QNA
+		 WHERE  
+		  <if test="condition == 'writer'">      
+		        MEM_ID LIKE '%' || #{keyword} || '%'
+	      </if>
+		  <if test="condition == 'title'">
+		   		QNA_TITLE LIKE '%' || #{keyword} || '%'
+		  </if>
+		  <if test="condition == 'content'">
+		   		QNA_CONTENT LIKE '%' || #{keyword} || '%'
+		  </if>
+		   AND
+		  		STATUS = 'Y'
+	</select>
+	
+	<!-- 관리자 문의게시판 검색 결과 -->
+	<select id="qnaFindConditionAndKeyword" parameterType="hashmap" resultType="qna">
+	
+        SELECT
+		        Q.QNA_NO qnaNo,
+		        Q.QNA_TITLE qnaTitle,
+		        Q.QNA_CONTENT qnaContent,
+		        Q.QNA_DATE qnaDate,
+		        Q.MEM_ID memId,
+		        Q.SECRET secret,
+		        Q.QNA_CATEGORY qnaCategory,
+		        A.ANSWER_NO answerNo,
+				A.ANSWER_TITLE answerTitle, 
+	 			A.ANSWER_CONTENT answerContent,
+				A.ANSWER_DATE answerDate,
+				A.MEM_ID answerMemId
+	      FROM
+	      		QNA Q
+    	  LEFT
+    	  JOIN
+    	  		ANSWER A ON Q.QNA_NO = A.QNA_NO
+	     WHERE
+	   	<choose>
+ 		   	<when test="condition == 'writer'">
+	   			Q.MEM_ID LIKE '%' || #{keyword} || '%'
+	   		</when>
+	   		<when test="condition == 'title'">
+	   			Q.QNA_TITLE LIKE '%' || #{keyword} || '%'
+	   		</when>
+			<otherwise>
+				Q.QNA_CONTENT LIKE '%' || #{keyword} || '%'
+			</otherwise>
+    	</choose>
+    	   AND
+    	   		Q.STATUS = 'Y'
+     	 ORDER
+     	    BY
+     			Q.QNA_NO DESC
+	</select>
+	
+	<!-- 관리자에게 문의 -->
+	<insert id="insertQna" parameterType="qna">
+		INSERT
+	      INTO
+	      		QNA
+	      		(
+	      		QNA_NO,
+	      		QNA_TITLE,
+	      		QNA_CONTENT,
+	      		QNA_DATE,
+	      		MEM_ID,
+	      		SECRET,
+	      		STATUS,
+	      		QNA_DELDATE,
+	      		QNA_CATEGORY
+	      		)
+      	VALUES
+      			(
+      			QNA_SEQ.NEXTVAL,      			
+      			#{qnaTitle},
+      			#{qnaContent},
+      			SYSDATE,
+      			#{memId},
+      			#{secret},
+      			default,
+      			#{qnaDelDate},
+      			#{qnaCategory}
+      			)
+	</insert>
+	
+	<!-- 관리자 문의 파일업로드 -->
+	<insert id="insertImgFile" parameterType="imgFile">
+    	INSERT 
+      	  INTO 
+	      		IMG_FILE 
+	      		(
+		        FILE_NO,
+		        BOARD_TYPE,
+		        BOARD_NO,
+		        ORIGIN_NAME,
+		        CHANGE_NAME,
+		        FILE_PATH,
+		        FILE_DATE
+    			) 
+    	VALUES 
+    			(
+        		IMG_FILE_SEQ.NEXTVAL,
+        		#{boardType},
+        		QNA_SEQ.CURRVAL,
+        		#{originName},
+        		#{changeName},
+        		#{imgFilePath},
+        		SYSDATE
+    			)
+	</insert>
+	
+	<!-- 판매자에게 문의 -->
+    <insert id="insertProductQna" parameterType="productQna">
+        INSERT 
+          INTO 
+        		PRODUCT_QNA 
+        		(
+	            QNA_NO,
+	            PRODUCT_NO,
+	            QNA_TITLE,
+	            QNA_CONTENT,
+	            QNA_DATE,
+	            MEM_ID,
+	            STATUS,
+	            QNA_DELDATE,
+	            QNA_CATEGORY
+        		) 
+        VALUES 
+        		(
+            	PRODUCT_QNA_SEQ.NEXTVAL,
+	        	#{productNo},
+	        	#{qnaTitle},
+	        	#{qnaContent},
+	        	SYSDATE,
+	        	#{memId},
+	        	'Y',
+	        	#{qnaDelDate},
+	        	#{qnaCategory}
+	    		)
+  	</insert>
+    
+    
+    <!-- 관리자 답변 -->
+   	<insert id="insertAnswer" parameterType="Answer">
+	    INSERT 
+	      INTO 
+	      		ANSWER 
+	      		(
+	        	ANSWER_NO,
+	        	QNA_NO,
+	        	ANSWER_TITLE,
+	        	ANSWER_CONTENT,
+	        	ANSWER_DATE,
+	        	MEM_ID,
+	        	STATUS
+	    		) 
+   		VALUES 
+   				(
+	        	ANSWER_SEQ.NEXTVAL,
+	        	#{qnaNo},
+	        	#{answerTitle},
+	        	#{answerContent},
+	        	SYSDATE,
+	        	#{memId},
+	        	'Y'
+	    		)
+	</insert>
+	
+	<!-- 관리자 답변 파일 업로드 -->
+	<insert id="insertImgFileForAnswer" parameterType="imgFile">
+	    INSERT 
+	      INTO 
+	      		IMG_FILE 
+	      		(
+	        	FILE_NO,
+	        	BOARD_TYPE,
+	        	BOARD_NO,
+	        	ORIGIN_NAME,
+	        	CHANGE_NAME,
+	        	FILE_PATH,
+	        	FILE_DATE
+	    		) 
+	    VALUES 
+	    		(
+	        	IMG_FILE_SEQ.NEXTVAL,
+	        	#{boardType},
+	        	ANSWER_SEQ.CURRVAL,
+	        	#{originName},
+	        	#{changeName},
+	        	#{imgFilePath},
+	        	SYSDATE
+	    		)
+	</insert>
+	
+	<!-- 판매자 답변 -->
+	<insert id="insertProductAnswer" parameterType="com.kh.artspark.qna.model.vo.ProductAnswer">
+	    INSERT 
+	      INTO 
+	    		PRODUCT_ANSWER 
+	    		(
+	        	ANSWER_NO,
+	        	ANSWER_TITLE,
+	        	ANSWER_CONTENT,
+	        	ANSWER_DATE,
+	        	MEM_ID,
+	        	QNA_NO
+	    		) 
+	    VALUES 
+	     		(
+	        	PRODUCT_ANSWER_SEQ.NEXTVAL,
+	        	#{answerTitle},
+	        	#{answerContent},
+	        	SYSDATE,
+	        	#{memId},
+	        	#{qnaNo}
+	    		)
+	</insert>
+	
+	<!-- 관리자 문의 조회(detail)  -->
+	<select id="qnaFindById" parameterType="_int" resultType="qna">
+        SELECT
+		        QNA_NO qnaNo,
+		        QNA_TITLE qnaTitle,
+		        QNA_CONTENT qnaContent,
+		        QNA_DATE qnaDate,
+		        MEM_ID memId,
+		        SECRET secret,
+		        QNA_CATEGORY qnaCategory
+		  FROM
+		  		QNA
+		 WHERE
+		 		QNA_NO = #{qnaNo}
+	</select>
+	<!-- 관리자 문의 파일 조회(detail) -->
+	<select id="findImgFileByQnaNo" parameterType="int" resultType="com.kh.artspark.common.model.vo.ImgFile">
+	<include refid="selectImgFile"/>
+    	  FROM 
+        		IMG_FILE 
+         WHERE 
+        	    BOARD_NO = #{qnaNo} 
+           AND       
+                BOARD_TYPE = '문의'
+	</select>
+	
+	
+	<update id="deleteQna" parameterType="_int">
+		UPDATE
+				QNA
+		   SET	
+		   		STATUS = 'N', QNA_DELDATE = SYSDATE
+		 WHERE
+		   		QNA_NO = #{qnaNo}
+	</update>
+	<update id="updateQna" parameterType="qna">
+		UPDATE
+				QNA
+		   SET
+		   		QNA_TITLE   = #{qnaTitle},
+		   		QNA_CONTENT = #{qnaContent}
+		 WHERE
+		 		QNA_NO = #{qnaNo}
+	</update>
+	
+	<update id="updateImgFile" parameterType="ImgFile">
+	    UPDATE 
+	    		IMG_FILE
+	       SET 
+	            ORIGIN_NAME = #{originName},
+	            CHANGE_NAME = #{changeName},
+	            FILE_PATH = #{imgFilePath}
+	     WHERE  BOARD_NO = #{boardNo}
+	</update>	
+	
+	<!-- 답변 리스트 불러오기 -->
+    <select id="answersByQnaNo" parameterType="int" resultType="Answer">
+        <include refid="selectAnswer"/>
+         FROM
+                ANSWER
+         WHERE
+            	QNA_NO = #{qnaNo}
+         ORDER 
+         	BY
+            	ANSWER_DATE ASC
+    </select>
+	
+    <!-- 관리자 답변 조회 -->
+    <select id="findAnswerById" parameterType="int" resultType="com.kh.artspark.qna.model.vo.Answer">
+        SELECT 
+	            ANSWER_NO answerNo,
+	            ANSWER_TITLE answerTitle,
+	            ANSWER_CONTENT answerContent,
+	            ANSWER_DATE answerDate,
+	            MEM_ID memId,
+	            STATUS status,
+	            QNA_NO qnaNo
+          FROM 
+        		ANSWER
+         WHERE 
+        		ANSWER_NO = #{answerNo}
+    </select>
+    
+    <!-- 관리자답변 파일 조회 -->
+	<select id="findImgFileByAnswerNo" parameterType="int" resultType="com.kh.artspark.common.model.vo.ImgFile">
+		SELECT
+		        FILE_NO imgFile,
+		        BOARD_TYPE boardType,
+		        BOARD_NO boardNo,
+		        ORIGIN_NAME originName,
+		        CHANGE_NAME changeName,
+		        FILE_PATH imgFilePath,
+		        FILE_DATE imgFileDate
+    	  FROM 
+        		IMG_FILE 
+         WHERE 
+        	    BOARD_NO = #{answerNo} 
+           AND       
+                BOARD_TYPE = '답변'
+	</select>
+	
+    <!-- 판매자 답변 조회 -->
+	<select id="findProductAnswerById" parameterType="int" resultType="com.kh.artspark.qna.model.vo.Answer">
+    	SELECT
+		        ANSWER_NO,
+		        ANSWER_TITLE,
+		        ANSWER_CONTENT,
+		        ANSWER_DATE,
+		        MEM_ID,
+		        QNA_NO
+    	  FROM 
+    			PRODUCT_ANSWER
+   		 WHERE 
+   		 		ANSWER_NO = #{answerNo}
+	</select>
+	
+
+	<!-- 새로운 답변 조회 -->
+	<select id="getAnswersByQnaNo" parameterType="int" resultType="Answer">
+	    SELECT 
+		        ANSWER_NO answerNo,
+		        QNA_NO qnaNo,
+		        ANSWER_TITLE answerTitle,
+		        ANSWER_CONTENT answerContent,
+		        ANSWER_DATE answerDate,
+		        MEM_ID memId,
+		        STATUS status
+	      FROM 
+	    		ANSWER
+	     WHERE 
+	     		QNA_NO = #{qnaNo}
+	</select>
+	
+	
+	<!-- 마이페이지 판매자에게 문의 / 판매자가 답변 조회 -->
+	<select id="getProductQnaWithAnswers" parameterType="string" resultType="com.kh.artspark.qna.model.vo.ProductQna">
+    	SELECT
+		        PQ.QNA_NO,
+		        PQ.QNA_TITLE,
+		        PQ.QNA_CONTENT,
+		        PQ.QNA_DATE,
+		        PQ.MEM_ID,
+		        PA.ANSWER_NO,
+		        PA.ANSWER_TITLE,
+		        PA.ANSWER_CONTENT,
+		        PA.ANSWER_DATE,
+		        PA.MEM_ID ANSWER_MEM_ID,
+		        IMF.FILE_PATH filePath
+    	  FROM 
+    	 		PRODUCT_QNA PQ
+    	  LEFT 
+    	  JOIN 
+    	  		PRODUCT_ANSWER PA ON PQ.QNA_NO = PA.QNA_NO
+    	 WHERE 
+    	 		PQ.MEM_ID = #{memId}
+	</select>
+	
+
+</mapper>

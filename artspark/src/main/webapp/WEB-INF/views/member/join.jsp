@@ -10,8 +10,6 @@
     <style>
         body {
             background-color: #f8f9fa;
-            padding-top: 5vh;
-            padding-bottom: 5vh;
         }
         .form-container {
             background-color: white;
@@ -33,7 +31,6 @@
             flex: 1;
         }
         .container-fluid {
-            margin-top: 5vh; /* 컨테이너를 아래로 내리기 위해 추가 */
         }
     </style>
 </head>
@@ -46,7 +43,7 @@
             <div class="col-md-8">
                 <div class="form-container">
                     <h2 class="text-center mb-4">회원가입</h2>
-                    <form action="join.do" method="post">
+                    <form action="join" method="post">
                 <div class="form-group">
                     <label for="userId">아이디: </label>
                     <input type="text" class="form-control" id="userId" placeholder="아이디를 입력해주세요." name="memId" required> <br>
@@ -65,7 +62,7 @@
                 </div> 
                 <br>
                 <div class="btns" align="center">
-                    <button type="submit" id="join-btn" class="btn btn-primary disabled">회원가입</button>
+                    <button type="submit" id="joinBtn" class="btn btn-primary">회원가입</button>
                     <button type="reset" class="btn btn-danger">초기화</button>
                 </div>
             </form>
@@ -74,7 +71,7 @@
 	            	$(() => {
 	            		const $idInput = $('.form-group #userId');
 	            		const $checkResult = $('#checkResult');
-	            		const $joinSubmit = $('#join-btn');
+	            		const $joinSubmit = $('#joinBtn');
 	            		
 	            		$idInput.keyup(() =>{
 	            			

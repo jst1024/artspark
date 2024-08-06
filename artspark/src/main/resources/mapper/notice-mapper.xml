@@ -66,9 +66,6 @@
 		  FROM
 		        NOTICE
 		 WHERE  
-		  <if test="condition == 'writer'">      
-		        MEM_ID LIKE '%' || #{keyword} || '%'
-	      </if>
 		  <if test="condition == 'title'">
 		   		NOTICE_TITLE LIKE '%' || #{keyword} || '%'
 		  </if>
@@ -96,6 +93,7 @@
      	    BY
      			NOTICE_NO DESC
 	</select>
+	
 	<insert id="insertNotice" parameterType="notice">
 		INSERT
 	      INTO
@@ -117,7 +115,7 @@
       			)
 	</insert>	
 	
-	<insert id="insertImgFile" parameterType="ImgFile" useGeneratedKeys="true" keyProperty="imgFileNo">
+	<insert id="insertImgFile" parameterType="ImgFile">
 		INSERT
 	      INTO
 	      		IMG_FILE
@@ -169,7 +167,8 @@
         	IMG_FILE 
     WHERE 
         	BOARD_NO = #{noticeNo} 
-      AND   BOARD_TYPE = '공지'
+      AND   
+      		BOARD_TYPE = '공지'
 	</select>
 	
 	<delete id="deleteNotice" parameterType="_int">
@@ -179,6 +178,7 @@
 	   	 WHERE
 	   	 		NOTICE_NO = #{noticeNo}
 	</delete>
+	
 	<update id="updateNotice" parameterType="notice">
 		UPDATE
 				NOTICE

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.artspark.chat.model.dao.ChatMapper">
+	
+	<resultMap type="hashmap" id="findByIdChatroomMap">
+		<result property="chatroomNo" column="CHATROOM_NO"/>
+		<result property="chatroomActive" column="CHATROOM_ACTIVE"/>
+		<result property="workStatus" column="WORK_STATUS"/>
+		<result property="myReadStatus" column="MY_READ_STATUS"/>
+		<result property="yourReadStatus" column="YOUR_READ_STATUS"/>
+		<result property="memId" column="MEM_ID"/>
+		<result property="memId2" column="MEM_ID2"/>
+		<result property="lastChat" column="CHAT_CONTENT"/>
+	</resultMap>
+	
+	<!-- 로그인 유저 채팅방 목록 -->
+	<select id="findByIdChatroom" parameterType="String" resultMap="findByIdChatroomMap">
+		SELECT
+		        CR.CHATROOM_NO,
+		        CR.CHATROOM_ACTIVE,
+		        CR.WORK_STATUS,
+		        CR.MY_READ_STATUS,
+		        CR.YOUR_READ_STATUS,
+		        CR.MEM_ID,
+		        CR.MEM_ID2,
+		        C.CHAT_CONTENT
+		  FROM
+		        CHATROOM CR
+		        LEFT JOIN (
+		                    SELECT
+		                            CHATROOM_NO,
+		                            CHAT_CONTENT,
+		                            CHAT_TIME
+		                    FROM
+		                        CHAT C1
+		                    WHERE
+		                            C1.CHAT_TIME =   (
+		                                                SELECT MAX(C2.CHAT_TIME)
+		                                                FROM CHAT C2
+		                                                WHERE C2.CHATROOM_NO = C1.CHATROOM_NO
+		                                            )
+		                ) C ON CR.CHATROOM_NO = C.CHATROOM_NO
+		 WHERE
+		        CR.MEM_ID = #{loginUserId}
+		    OR
+		        CR.MEM_ID2 = #{loginUserId}
+	</select>
+	
+	<!-- 채팅방에 해당하는 채팅 조회 -->
+	<select id="findChatings" parameterType="_int" resultType="chat">
+		SELECT
+				CHAT_NO chatNo,
+				CHAT_TIME chatTime,
+				CHAT_CONTENT chatContent,
+				MEM_ID memId,
+				CHATROOM_NO chatroomNo
+		  FROM
+		  		CHAT
+		 WHERE
+		 		CHATROOM_NO = #{chatroomNo}
+		 ORDER
+		 	BY
+		 		CHAT_TIME 
+	</select>
+	
+	<!-- 입력한 채팅 저장 -->
+	<insert id="insertChat" parameterType="map">
+		INSERT
+		  INTO
+		  		CHAT
+		  		(
+		  		CHAT_NO,
+		  		CHAT_TIME,
+		  		CHAT_CONTENT,
+		  		MEM_ID,
+		  		CHATROOM_NO
+		  		)	
+		VALUES
+				(
+				CHAT_SEQ.NEXTVAL,
+				DEFAULT,
+				#{message},
+				#{loginUserId},
+				#{chatroomNo}
+				)
+	</insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+

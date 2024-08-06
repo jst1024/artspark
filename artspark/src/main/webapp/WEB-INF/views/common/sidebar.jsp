@@ -69,14 +69,14 @@
         <div class="menu-items">
             <c:choose>
                 <c:when test="${sessionScope.loginUser.memId eq 'admin'}">
-                    <a href="#">회원관리</a>
-                    <a href="#">게시판관리</a>
-                    <a href="#">배너설정</a>
+			        <a href="#" data-page="${path2}/admin/memberManagement">회원관리</a>
+			        <a href="#" data-page="${path2}/admin/boardManagement">게시판관리</a>
+			        <a href="#" data-page="${path2}/admin/bannerSettings">배너설정</a>
                 </c:when>
                 <c:otherwise>
-                    <a href="#">상품관리</a>
-                    <a href="#">판매관리</a>
-                    <a href="#">문의/리뷰관리</a>
+                    <a href="#" data-page="productManagement.jsp">상품관리</a>
+			        <a href="#" data-page="salesManagement.jsp">판매관리</a>
+			        <a href="#" data-page="inquiryReviewManagement.jsp">문의/리뷰관리</a>
                 </c:otherwise>
             </c:choose>
         </div>

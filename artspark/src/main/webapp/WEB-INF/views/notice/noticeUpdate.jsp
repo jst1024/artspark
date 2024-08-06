@@ -82,8 +82,6 @@
             <button type="submit" class="btn btn-primary" style="float: right;">수정하기</button>
         </form>
     </div>
-    
-    <jsp:include page="../common/footer.jsp" />
 
     <script type="text/javascript">
         var oEditors = [];
@@ -114,5 +112,8 @@
             document.getElementById('file-name').textContent = fileName;
         }
     </script>
+    
+    <jsp:include page="../common/footer.jsp" />
+    
 </body>
 </html>

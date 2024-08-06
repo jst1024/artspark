@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="path2" value="${pageContext.servletContext.contextPath }" />
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -44,6 +47,26 @@
         #p2 {
             text-align: center;
         }
+        .sticky-button {
+		    position: fixed;
+		    bottom: 60px;
+		    right: 40px;
+		    width: 70px;
+		    height: 70px;
+		    background-color: #ff6e40;
+		    border-radius: 50%;
+		    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    cursor: pointer;
+		    z-index: 1000;
+		}
+		
+		.sticky-button p {
+		    margin: 0;
+		    line-height: 1;
+		}
     </style>
 </head>
 <body>
@@ -52,7 +75,7 @@
             <a href="#">이용약관</a> | 
             <a href="#">개인정보취급방침</a> | 
             <a href="noticelist">공지사항</a> | 
-            <a href="#">문의사항</a>
+            <a href="qnalist">문의사항</a>
         </div>
         <br>
         <br>
@@ -66,5 +89,22 @@
             <p id="p2">Copyright © 2024 All Right Reserved</p>
         </div>
     </div>
+    
+    <div class="sticky-button">
+	    <p style="color:white;">채팅</p>
+	    <div class="badge"></div>
+	</div>
+    
+    <script>
+		const loginUser = '${sessionScope.loginUser.memId}';
+		
+		$('.sticky-button').on('click', function() {
+			if(loginUser === '') {
+				alertify.alert("로그인 후 이용 가능합니다.").setHeader('ArtSpark').set({'movable':true, 'moveBounded': true});
+			} else {
+				location.href = "${path2}/private-chat";
+			}
+		});
+	</script>
 </body>
 </html>
